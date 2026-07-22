@@ -41,11 +41,12 @@ export default function Auth() {
   return (
     <div className="min-h-screen w-full flex bg-background font-sans overflow-hidden">
       {/* Left side - Visual branding */}
-      <div className="hidden lg:flex flex-1 relative bg-sidebar overflow-hidden flex-col justify-between p-12">
+      <div className="hidden lg:flex flex-1 relative bg-gradient-to-br from-sidebar to-sidebar-border/30 overflow-hidden flex-col justify-between p-12">
         {/* Animated Background Elements */}
         <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/20 rounded-full blur-[120px]"></div>
+          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/25 rounded-full blur-[130px]"></div>
+          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/15 rounded-full blur-[120px]"></div>
+          <div className="absolute top-1/2 right-1/2 w-1/3 h-1/3 bg-primary/10 rounded-full blur-[100px]"></div>
         </div>
         
         {/* Floating cards animation to simulate dashboard feel */}
@@ -89,8 +90,10 @@ export default function Auth() {
       </div>
 
       {/* Right side - Login Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 md:px-24 bg-background relative z-10">
+      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 md:px-24 bg-gradient-to-b from-background via-background to-muted/5 relative z-10">
         <div className="w-full max-w-md mx-auto">
+          {/* Decorative element */}
+          <div className="absolute top-8 right-8 w-20 h-20 bg-primary/5 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
           <div className="lg:hidden flex items-center gap-3 mb-12">
             <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">U</div>
             <span className="font-heading font-bold text-xl tracking-tight">UniFlow</span>
