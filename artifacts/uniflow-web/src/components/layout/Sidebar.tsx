@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { Logo } from '@/components/ui/logo';
 
 interface NavItem {
   href: string;
@@ -78,9 +79,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       {/* Header */}
       <div className="flex h-16 items-center px-4 justify-between shrink-0 border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold">
-            U
-          </div>
+          <Logo size="md" showText={false} />
           {!collapsed && (
             <motion.div 
               initial={{ opacity: 0, width: 0 }}

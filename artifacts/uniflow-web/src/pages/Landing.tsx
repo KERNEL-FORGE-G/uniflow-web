@@ -13,6 +13,7 @@ import {
   LineChart
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 
 export default function Landing() {
   const fadeIn = {
@@ -33,10 +34,7 @@ export default function Landing() {
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">U</div>
-            <span className="font-heading font-bold text-xl tracking-tight">UniFlow</span>
-          </div>
+          <Logo size="md" />
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
             <a href="#stats" className="hover:text-foreground transition-colors">Impact</a>
@@ -261,10 +259,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-background border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">U</div>
-            <span className="font-heading font-bold">UniFlow</span>
-          </div>
+          <Logo size="sm" />
           <div className="text-muted-foreground text-sm">
             © {new Date().getFullYear()} UniFlow Cameroun. Tous droits réservés.
           </div>
