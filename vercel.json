@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm run build",
+  "buildCommand": "cd artifacts/uniflow-web && pnpm run build",
   "outputDirectory": "artifacts/uniflow-web/dist/public",
   "installCommand": "pnpm install",
   "framework": null,
