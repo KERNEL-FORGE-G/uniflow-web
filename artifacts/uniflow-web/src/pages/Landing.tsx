@@ -70,7 +70,7 @@ export default function Landing() {
             </motion.div>
             <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-heading font-extrabold tracking-tight leading-[1.1] mb-6">
               L'excellence académique <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">parfaitement orchestrée.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">parfaitement orchestrée.</span>
             </motion.h1>
             <motion.p variants={fadeIn} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
               UniFlow est le système nerveux central des universités modernes au Cameroun. Gérez vos étudiants, vos cours, vos présences et vos salles depuis une plateforme unique, rapide et fiable.
