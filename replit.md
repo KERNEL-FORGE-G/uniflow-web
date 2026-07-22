@@ -1,44 +1,54 @@
-# [Project name]
+# UniFlow — Plateforme Universitaire Intelligente
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Application web de gestion universitaire pour les universités camerounaises. Frontend React complet avec données mock, optimisé pour un déploiement Vercel.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/uniflow-web run dev` — run the UniFlow frontend (managed via workflow)
+- `pnpm --filter @workspace/api-server run dev` — run the API server
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React + Vite + Tailwind CSS + shadcn/ui
+- Charts: Recharts
+- Routing: Wouter
+- Animations: Framer Motion
+- Icons: Lucide React
+- Fonts: Plus Jakarta Sans + Inter (Google Fonts)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/uniflow-web/src/pages/` — all 10 pages (Landing, Auth, Dashboard, Students, Courses, Schedule, Attendance, Rooms, Notifications, Settings)
+- `artifacts/uniflow-web/src/lib/mock-data.ts` — all mock data
+- `artifacts/uniflow-web/src/components/layout/` — Sidebar + AppShell
+- `artifacts/uniflow-web/src/index.css` — full theme (dark/light mode, CSS vars)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Frontend-only: all data is mock (no backend calls), ready to wire to any REST API
+- Dark mode by default, togglable from Settings > Apparence
+- Sidebar collapsible to icon-only mode (framer-motion animation)
+- Wouter for routing — flat Switch in App.tsx, AppShell wraps authenticated routes
+- Vercel-ready: static SPA build via `vite build`
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+10 pages complètes : Landing page marketing, Authentification multi-rôles, Dashboard avec KPIs et graphiques, Gestion des étudiants, Unités d'Enseignement, Emploi du temps hebdomadaire, Suivi des présences, Gestion des salles, Centre de notifications, Paramètres.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Frontend uniquement — ne pas ajouter de backend sans instruction explicite
+- Données mock dans src/lib/mock-data.ts
+- Optimisé pour déploiement Vercel (SPA statique)
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- CSS vars utilisent HSL sans wrapper : `--primary: 221 83% 53%` (pas `hsl(...)`)
+- Google Fonts @import doit être LA PREMIÈRE ligne dans index.css
+- Wouter : ne pas envelopper les pages dans un Route parent "/" (cela casse la navigation)
 
 ## Pointers
 
