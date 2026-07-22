@@ -5,7 +5,7 @@ interface LogoProps {
   className?: string;
   showText?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'full' | 'nobg' | 'text';
+  variant?: 'full' | 'nobg';
 }
 
 export function Logo({ className = '', showText = true, size = 'md', variant = 'full' }: LogoProps) {
@@ -22,9 +22,8 @@ export function Logo({ className = '', showText = true, size = 'md', variant = '
   };
 
   const logoImages = {
-    full: '/uniflow-logo-bg.png',
-    nobg: '/uniflow-logo-nobg.png',
-    text: '/uniflow-logo-text.png'
+    full: '/uniflow-logo.png',
+    nobg: '/uniflow-logo-nobg.png'
   };
 
   return (
@@ -34,7 +33,7 @@ export function Logo({ className = '', showText = true, size = 'md', variant = '
         alt="UniFlow Logo" 
         className={`${sizeClasses[size]} object-contain`}
       />
-      {showText && variant !== 'text' && (
+      {showText && (
         <span className={`font-heading font-bold tracking-tight ${textSizeClasses[size]}`}>
           UniFlow
         </span>
