@@ -18,9 +18,9 @@ import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   const kpis = [
-    { title: 'Étudiants Inscrits', value: '4,832', icon: Users, trend: '+12% vs an passé', trendUp: true, color: 'text-blue-500' },
-    { title: 'Cours Actifs', value: '127', icon: BookOpen, trend: 'Semestre 1', trendUp: true, color: 'text-indigo-500' },
-    { title: 'Salles Disponibles', value: '48/62', icon: MapPin, trend: '77% d\'occupation', trendUp: false, color: 'text-amber-500' },
+    { title: 'Étudiants Inscrits', value: '4,832', icon: Users, trend: '+12% vs an passé', trendUp: true, color: 'text-primary' },
+    { title: 'Cours Actifs', value: '127', icon: BookOpen, trend: 'Semestre 1', trendUp: true, color: 'text-secondary' },
+    { title: 'Salles Disponibles', value: '48/62', icon: MapPin, trend: '77% d\'occupation', trendUp: false, color: 'text-accent' },
     { title: 'Présents Aujourd\'hui', value: '3,241', icon: UserCheck, trend: '85% taux moyen', trendUp: true, color: 'text-emerald-500' },
   ];
 

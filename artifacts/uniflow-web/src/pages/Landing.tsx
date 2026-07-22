@@ -52,7 +52,7 @@ export default function Landing() {
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/5 via-background to-background"></div>
         <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-primary/15 blur-[140px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-1/4 w-1/3 h-1/3 bg-accent/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/4 w-1/3 h-1/3 bg-secondary/10 blur-[100px] rounded-full pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div 
@@ -61,10 +61,10 @@ export default function Landing() {
             variants={staggerContainer}
             className="max-w-3xl"
           >
-            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-6 border border-primary/20">
+            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent font-semibold text-sm mb-6 border border-accent/20">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
               </span>
               Nouveau: Déploiement Cloud 2024
             </motion.div>

@@ -84,11 +84,11 @@ export const mockChartData = {
     { day: 'Sam', rate: 40 },
   ],
   deptBreakdown: [
-    { name: 'INFO', value: 450, fill: 'var(--color-chart-1)' },
-    { name: 'MATH', value: 300, fill: 'var(--color-chart-2)' },
-    { name: 'PHYS', value: 200, fill: 'var(--color-chart-3)' },
-    { name: 'CHIMIE', value: 150, fill: 'var(--color-chart-4)' },
-    { name: 'SVT', value: 350, fill: 'var(--color-chart-5)' },
+    { name: 'INFO', value: 450, fill: 'hsl(220 63% 33%)' },
+    { name: 'MATH', value: 300, fill: 'hsl(177 84% 31%)' },
+    { name: 'PHYS', value: 200, fill: 'hsl(38 92% 50%)' },
+    { name: 'CHIMIE', value: 150, fill: 'hsl(142 71% 45%)' },
+    { name: 'SVT', value: 350, fill: 'hsl(262 83% 58%)' },
   ],
   roomOccupancy: [
     { room: 'Amphi A', occupancy: 85 },
