@@ -17,6 +17,18 @@ import {
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
+interface NavItem {
+  href: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string;
+  badge?: number;
+}
+
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
 interface SidebarProps {
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
@@ -27,7 +39,7 @@ interface SidebarProps {
 export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: SidebarProps) {
   const [location] = useLocation();
 
-  const navGroups = [
+  const navGroups: NavGroup[] = [
     {
       label: "VUE D'ENSEMBLE",
       items: [{ href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard Principal' }]

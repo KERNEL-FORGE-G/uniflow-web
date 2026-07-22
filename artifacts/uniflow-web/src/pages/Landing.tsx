@@ -52,8 +52,9 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-accent/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/5 via-background to-background"></div>
+        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-primary/15 blur-[140px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/4 w-1/3 h-1/3 bg-accent/10 blur-[100px] rounded-full pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div 
@@ -91,7 +92,7 @@ export default function Landing() {
       </section>
 
       {/* Stats Section */}
-      <section id="stats" className="py-20 bg-muted/50 border-y border-border">
+      <section id="stats" className="py-24 bg-gradient-to-b from-muted/30 via-background to-muted/30 border-y border-border/50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
             initial="hidden"
@@ -101,12 +102,13 @@ export default function Landing() {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
           >
             {[
-              { label: "Universités actives", value: "12+" },
-              { label: "Étudiants gérés", value: "45,000+" },
-              { label: "Cours dispensés", value: "3,200+" },
-              { label: "Heures économisées/mois", value: "850h" }
+              { label: "Universités actives", value: "12+", icon: "🏛️" },
+              { label: "Étudiants gérés", value: "45,000+", icon: "👥" },
+              { label: "Cours dispensés", value: "3,200+", icon: "📚" },
+              { label: "Heures économisées/mois", value: "850h", icon: "⏱️" }
             ].map((stat, i) => (
-              <motion.div key={i} variants={fadeIn} className="flex flex-col gap-2">
+              <motion.div key={i} variants={fadeIn} className="flex flex-col gap-3">
+                <div className="text-3xl">{stat.icon}</div>
                 <div className="text-4xl md:text-5xl font-heading font-bold text-foreground">{stat.value}</div>
                 <div className="text-sm md:text-base font-medium text-muted-foreground">{stat.label}</div>
               </motion.div>
@@ -152,8 +154,9 @@ export default function Landing() {
       </section>
 
       {/* Trust & Security */}
-      <section className="py-24 bg-sidebar border-y border-sidebar-border relative overflow-hidden">
-        <div className="absolute -left-[20%] top-1/2 -translate-y-1/2 w-1/2 h-[120%] bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
+      <section className="py-24 bg-gradient-to-r from-sidebar to-sidebar-border/50 border-y border-sidebar-border relative overflow-hidden">
+        <div className="absolute -left-[20%] top-1/2 -translate-y-1/2 w-1/2 h-[120%] bg-primary/8 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute -right-[10%] top-1/4 w-96 h-96 bg-accent/5 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16 relative z-10">
           <div className="flex-1">
             <motion.div
