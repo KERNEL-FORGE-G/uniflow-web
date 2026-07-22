@@ -34,7 +34,7 @@ export default function Landing() {
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Logo size="md" />
+          <Logo size="md" variant="full" />
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
             <a href="#stats" className="hover:text-foreground transition-colors">Impact</a>
@@ -259,7 +259,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-background border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <Logo size="sm" />
+          <Logo size="sm" variant="full" />
           <div className="text-muted-foreground text-sm">
             © {new Date().getFullYear()} UniFlow Cameroun. Tous droits réservés.
           </div>

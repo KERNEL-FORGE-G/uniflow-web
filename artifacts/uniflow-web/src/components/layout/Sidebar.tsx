@@ -79,7 +79,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       {/* Header */}
       <div className="flex h-16 items-center px-4 justify-between shrink-0 border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
-          <Logo size="md" showText={false} />
+          <Logo size="md" showText={false} variant="nobg" />
           {!collapsed && (
             <motion.div 
               initial={{ opacity: 0, width: 0 }}
