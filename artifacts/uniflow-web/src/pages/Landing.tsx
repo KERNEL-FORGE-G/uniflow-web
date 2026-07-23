@@ -87,7 +87,7 @@ export default function Landing() {
               </motion.div>
             </motion.div>
 
-            {/* Mascot Character */}
+            {/* Mascot Character - UniFlow Owl */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.8, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -96,11 +96,11 @@ export default function Landing() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 blur-3xl rounded-full"></div>
               <motion.img 
-                src="/mascot-student.png" 
-                alt="UniFlow Student Mascot" 
-                className="relative z-10 w-full max-w-md drop-shadow-xl"
-                animate={{ y: [0, -20, 0] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                src="/uniflow-mascot-owl.png" 
+                alt="UniFlow Mascot - Wise Owl" 
+                className="relative z-10 w-full max-w-sm drop-shadow-2xl"
+                animate={{ y: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
               />
             </motion.div>
           </div>
