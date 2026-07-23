@@ -1,8 +1,9 @@
 {
   "buildCommand": "cd artifacts/uniflow-web && pnpm run build",
   "outputDirectory": "artifacts/uniflow-web/dist/public",
-  "installCommand": "pnpm install",
+  "installCommand": "pnpm install --frozen-lockfile",
   "framework": null,
+  "env": [],
   "rewrites": [
     {
       "source": "/api/:path*",
@@ -11,6 +12,13 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/dashboard",
+      "permanent": true
     }
   ],
   "headers": [
@@ -28,6 +36,14 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=()"
         }
       ]
     },
@@ -39,11 +55,32 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/(js|css)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
     }
   ],
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs20.x"
     }
+  },
+  "images": {
+    "domains": ["images.unsplash.com", "api.example.com"]
   }
 }
