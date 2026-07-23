@@ -14,6 +14,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/ui/logo';
 
 export default function Auth() {
   const [_, setLocation] = useLocation();
@@ -41,7 +42,7 @@ export default function Auth() {
   return (
     <div className="min-h-screen w-full flex bg-background font-sans overflow-hidden">
       {/* Left side - Visual branding */}
-      <div className="hidden lg:flex flex-1 relative bg-gradient-to-br from-sidebar to-sidebar-border/30 overflow-hidden flex-col justify-between p-12">
+      <div className="hidden lg:flex flex-1 relative bg-gradient-to-br from-sidebar to-sidebar-border/30 overflow-hidden flex-col justify-center gap-8 p-12">
         {/* Animated Background Elements */}
         <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
           <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/25 rounded-full blur-[130px]"></div>
@@ -54,16 +55,16 @@ export default function Auth() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="absolute right-12 top-1/2 -translate-y-1/2 w-80 space-y-4 pointer-events-none z-10"
+          className="absolute right-12 top-1/3 -translate-y-1/2 w-80 space-y-4 pointer-events-none z-10"
         >
-          <div className="bg-card border border-border rounded-xl p-4 shadow-xl shadow-black/5 flex items-center gap-4">
+          <div className="bg-card/40 backdrop-blur-md border border-border/60 rounded-xl p-4 shadow-xl shadow-black/5 flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary"><User size={20} /></div>
             <div>
               <div className="h-4 w-32 bg-muted rounded mb-2"></div>
               <div className="h-3 w-20 bg-muted/50 rounded"></div>
             </div>
           </div>
-          <div className="bg-card border border-border rounded-xl p-4 shadow-xl shadow-black/5 flex items-center gap-4 translate-x-8">
+          <div className="bg-card/40 backdrop-blur-md border border-border/60 rounded-xl p-4 shadow-xl shadow-black/5 flex items-center gap-4 translate-x-8">
             <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent"><UserCheck size={20} /></div>
             <div>
               <div className="h-4 w-28 bg-muted rounded mb-2"></div>
@@ -73,9 +74,8 @@ export default function Auth() {
         </motion.div>
 
         <div className="relative z-20">
-          <Link href="/" className="inline-flex items-center gap-3 mb-12">
-            <div className="w-10 h-10 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-2xl shadow-lg shadow-primary/30">U</div>
-            <span className="font-heading font-bold text-2xl tracking-tight text-sidebar-foreground">UniFlow</span>
+          <Link href="/" className="inline-flex items-center gap-3">
+            <Logo size="lg" variant="full" />
           </Link>
         </div>
 
@@ -83,10 +83,35 @@ export default function Auth() {
           <h1 className="text-4xl font-heading font-extrabold text-sidebar-foreground mb-6 leading-tight">
             Gérez votre institution avec précision.
           </h1>
-          <p className="text-sidebar-foreground/70 text-lg">
+          <p className="text-sidebar-foreground/70 text-lg mb-8">
             La plateforme centralisée pour les étudiants, les enseignants et l'administration universitaire.
           </p>
         </div>
+
+        {/* Mascot representation on Left sidebar */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="relative z-20 max-w-sm bg-card/50 backdrop-blur-md border border-border/60 rounded-2xl p-5 shadow-lg flex items-center gap-4"
+        >
+          <div className="w-20 h-20 bg-gradient-to-b from-background to-primary/5 rounded-xl p-2 border border-border flex items-center justify-center shrink-0">
+            <img
+              src="/UniFlow_Mascotte_Owl.png"
+              alt="UniFlow Mascot"
+              className="w-full h-full object-contain filter drop-shadow-[0_5px_5px_rgba(13,148,136,0.2)]"
+              data-testid="auth-mascot"
+            />
+          </div>
+          <div>
+            <h4 className="font-bold text-sm text-foreground flex items-center gap-1.5">
+              Flowy vous accompagne ! 🦉
+            </h4>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              Sélectionnez votre rôle ci-contre pour accéder instantanément à vos cours, plannings, et outils académiques.
+            </p>
+          </div>
+        </motion.div>
       </div>
 
       {/* Right side - Login Form */}
@@ -95,8 +120,7 @@ export default function Auth() {
           {/* Decorative element */}
           <div className="absolute top-8 right-8 w-20 h-20 bg-primary/5 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
           <div className="lg:hidden flex items-center gap-3 mb-12">
-            <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">U</div>
-            <span className="font-heading font-bold text-xl tracking-tight">UniFlow</span>
+            <Logo size="md" variant="full" />
           </div>
 
           <div className="mb-10">
