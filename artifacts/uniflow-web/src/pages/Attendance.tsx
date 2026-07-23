@@ -93,13 +93,13 @@ export default function Attendance() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg">
-                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold bg-emerald-500 text-white shadow-sm flex items-center justify-center gap-1 transition-all">
+                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold bg-secondary text-secondary-foreground shadow-sm flex items-center justify-center gap-1 transition-all">
                             <CheckCircle2 size={14} /> Présent
                           </button>
-                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold text-muted-foreground hover:bg-card hover:text-red-500 transition-all">
+                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold text-muted-foreground hover:bg-card hover:text-destructive transition-all">
                             Absent
                           </button>
-                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold text-muted-foreground hover:bg-card hover:text-amber-500 transition-all">
+                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold text-muted-foreground hover:bg-card hover:text-accent transition-all">
                             Excusé
                           </button>
                         </div>
@@ -125,15 +125,15 @@ export default function Attendance() {
             
             <div className="space-y-3">
               <div className="flex justify-between items-center text-sm">
-                <span className="flex items-center gap-2 font-medium text-emerald-500"><CheckCircle2 size={16} /> Présents</span>
+                <span className="flex items-center gap-2 font-medium text-secondary"><CheckCircle2 size={16} /> Présents</span>
                 <span className="font-bold">3,241</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="flex items-center gap-2 font-medium text-red-500"><XCircle size={16} /> Absents</span>
+                <span className="flex items-center gap-2 font-medium text-destructive"><XCircle size={16} /> Absents</span>
                 <span className="font-bold">642</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="flex items-center gap-2 font-medium text-amber-500"><AlertCircle size={16} /> Excusés</span>
+                <span className="flex items-center gap-2 font-medium text-accent"><AlertCircle size={16} /> Excusés</span>
                 <span className="font-bold">45</span>
               </div>
             </div>

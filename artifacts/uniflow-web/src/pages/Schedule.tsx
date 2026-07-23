@@ -18,10 +18,10 @@ export default function Schedule() {
 
   const getEventStyle = (type: string) => {
     switch(type) {
-      case 'Cours Magistral': return 'bg-blue-500/20 text-blue-500 border-blue-500/30 hover:bg-blue-500/30';
-      case 'TD': return 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30';
-      case 'TP': return 'bg-purple-500/20 text-purple-500 border-purple-500/30 hover:bg-purple-500/30';
-      case 'Examen': return 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30';
+      case 'Cours Magistral': return 'bg-primary/20 text-primary border-primary/30 hover:bg-primary/30';
+      case 'TD': return 'bg-secondary/20 text-secondary border-secondary/30 hover:bg-secondary/30';
+      case 'TP': return 'bg-accent/20 text-accent border-accent/30 hover:bg-accent/30';
+      case 'Examen': return 'bg-destructive/20 text-destructive border-destructive/30 hover:bg-destructive/30';
       default: return 'bg-primary/20 text-primary border-primary/30 hover:bg-primary/30';
     }
   };

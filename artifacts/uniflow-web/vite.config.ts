@@ -28,6 +28,7 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, 'dist/public'),
     emptyOutDir: true,
     sourcemap: false,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -35,10 +36,17 @@ export default defineConfig({
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           'charts': ['recharts'],
           'framer': ['framer-motion'],
+          'utils': ['wouter', 'clsx', 'tailwind-merge'],
         },
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash][extname]',
       },
     },
     chunkSizeWarningLimit: 1000,
+    cssCodeSplit: true,
+    reportCompressedSize: false,
+    target: ['es2020'],
   },
   server: {
     port: 3000,

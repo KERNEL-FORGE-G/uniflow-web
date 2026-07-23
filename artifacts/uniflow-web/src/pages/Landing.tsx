@@ -55,37 +55,55 @@ export default function Landing() {
         <div className="absolute bottom-0 left-1/4 w-1/3 h-1/3 bg-secondary/10 blur-[100px] rounded-full pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <motion.div 
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="max-w-3xl"
-          >
-            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent font-semibold text-sm mb-6 border border-accent/20">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-              </span>
-              Nouveau: Déploiement Cloud 2024
-            </motion.div>
-            <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-heading font-extrabold tracking-tight leading-[1.1] mb-6">
-              L'excellence académique <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">parfaitement orchestrée.</span>
-            </motion.h1>
-            <motion.p variants={fadeIn} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
-              UniFlow est le système nerveux central des universités modernes au Cameroun. Gérez vos étudiants, vos cours, vos présences et vos salles depuis une plateforme unique, rapide et fiable.
-            </motion.p>
-            <motion.div variants={fadeIn} className="flex flex-wrap items-center gap-4">
-              <Link href="/auth">
-                <Button size="lg" className="rounded-full px-8 h-14 text-base font-semibold shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all">
-                  Découvrir la plateforme <ArrowRight className="ml-2 h-5 w-5" />
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+            >
+              <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent font-semibold text-sm mb-6 border border-accent/20">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                </span>
+                Nouveau: Déploiement Cloud 2024
+              </motion.div>
+              <motion.h1 variants={fadeIn} className="text-5xl md:text-6xl font-heading font-extrabold tracking-tight leading-[1.1] mb-6">
+                L'excellence académique <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">parfaitement orchestrée.</span>
+              </motion.h1>
+              <motion.p variants={fadeIn} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
+                UniFlow est le système nerveux central des universités modernes au Cameroun. Gérez vos étudiants, vos cours, vos présences et vos salles depuis une plateforme unique, rapide et fiable.
+              </motion.p>
+              <motion.div variants={fadeIn} className="flex flex-wrap items-center gap-4">
+                <Link href="/auth">
+                  <Button size="lg" className="rounded-full px-8 h-14 text-base font-semibold shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all">
+                    Découvrir la plateforme <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base font-semibold border-border hover:bg-muted">
+                  Contacter les ventes
                 </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base font-semibold border-border hover:bg-muted">
-                Contacter les ventes
-              </Button>
+              </motion.div>
             </motion.div>
-          </motion.div>
+
+            {/* Mascot Character - UniFlow Owl */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="relative hidden md:flex items-center justify-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 blur-3xl rounded-full"></div>
+              <motion.img 
+                src="/uniflow-mascot-owl.png" 
+                alt="UniFlow Mascot - Wise Owl" 
+                className="relative z-10 w-full max-w-sm drop-shadow-2xl"
+                animate={{ y: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+              />
+            </motion.div>
+          </div>
         </div>
       </section>
 
