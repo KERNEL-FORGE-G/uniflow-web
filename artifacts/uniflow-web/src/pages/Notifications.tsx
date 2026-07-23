@@ -12,20 +12,20 @@ export default function Notifications() {
 
   const getIcon = (type: string) => {
     switch(type) {
-      case 'cours_annule': return <AlertTriangle className="text-red-500 h-5 w-5" />;
-      case 'salle_changee': return <MapPin className="text-amber-500 h-5 w-5" />;
-      case 'note_publiee': return <BookOpen className="text-blue-500 h-5 w-5" />;
-      case 'alerte_presence': return <Bell className="text-orange-500 h-5 w-5" />;
+      case 'cours_annule': return <AlertTriangle className="text-destructive h-5 w-5" />;
+      case 'salle_changee': return <MapPin className="text-accent h-5 w-5" />;
+      case 'note_publiee': return <BookOpen className="text-primary h-5 w-5" />;
+      case 'alerte_presence': return <Bell className="text-secondary h-5 w-5" />;
       default: return <MessageSquare className="text-primary h-5 w-5" />;
     }
   };
 
   const getBgColor = (type: string) => {
     switch(type) {
-      case 'cours_annule': return 'bg-red-500/10';
-      case 'salle_changee': return 'bg-amber-500/10';
-      case 'note_publiee': return 'bg-blue-500/10';
-      case 'alerte_presence': return 'bg-orange-500/10';
+      case 'cours_annule': return 'bg-destructive/10';
+      case 'salle_changee': return 'bg-accent/10';
+      case 'note_publiee': return 'bg-primary/10';
+      case 'alerte_presence': return 'bg-secondary/10';
       default: return 'bg-primary/10';
     }
   };

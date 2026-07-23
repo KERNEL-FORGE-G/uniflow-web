@@ -32,11 +32,11 @@ export default function Courses() {
 
   const getFiliereColor = (filiere: string) => {
     switch(filiere) {
-      case 'INFO': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'MATH': return 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20';
-      case 'PHYS': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
-      case 'CHIMIE': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
-      case 'SVT': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+      case 'INFO': return 'bg-primary/10 text-primary border-primary/20';
+      case 'MATH': return 'bg-secondary/10 text-secondary border-secondary/20';
+      case 'PHYS': return 'bg-accent/10 text-accent border-accent/20';
+      case 'CHIMIE': return 'bg-primary/20 text-primary border-primary/30';
+      case 'SVT': return 'bg-secondary/20 text-secondary border-secondary/30';
       default: return 'bg-primary/10 text-primary border-primary/20';
     }
   };
