@@ -79,8 +79,5 @@
     "api/**/*.js": {
       "runtime": "nodejs20.x"
     }
-  },
-  "images": {
-    "domains": ["images.unsplash.com", "api.example.com"]
   }
 }
