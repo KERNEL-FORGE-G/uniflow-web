@@ -4,16 +4,21 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { AppShell } from '@/components/layout/AppShell';
 
-// Pages
 import Landing from '@/pages/Landing';
 import Auth from '@/pages/Auth';
+import Register from '@/pages/Register';
 import Dashboard from '@/pages/Dashboard';
-import Students from '@/pages/Students';
 import Courses from '@/pages/Courses';
 import Schedule from '@/pages/Schedule';
 import Attendance from '@/pages/Attendance';
-import Rooms from '@/pages/Rooms';
 import Notifications from '@/pages/Notifications';
+import Students from '@/pages/Students';
+import Profile from '@/pages/Profile';
+import Notes from '@/pages/Notes';
+import Devoirs from '@/pages/Devoirs';
+import Messages from '@/pages/Messages';
+import VideoConference from '@/pages/VideoConference';
+import Rooms from '@/pages/Rooms';
 import Settings from '@/pages/Settings';
 import NotFound from '@/pages/not-found';
 
@@ -22,40 +27,32 @@ const queryClient = new QueryClient();
 function Router() {
   return (
     <Switch>
+      {/* Public */}
       <Route path="/" component={Landing} />
       <Route path="/auth" component={Auth} />
-      
-      <Route path="/dashboard">
-        <AppShell><Dashboard /></AppShell>
-      </Route>
-      <Route path="/students">
-        <AppShell><Students /></AppShell>
-      </Route>
-      <Route path="/courses">
-        <AppShell><Courses /></AppShell>
-      </Route>
-      <Route path="/schedule">
-        <AppShell><Schedule /></AppShell>
-      </Route>
-      <Route path="/attendance">
-        <AppShell><Attendance /></AppShell>
-      </Route>
-      <Route path="/rooms">
-        <AppShell><Rooms /></AppShell>
-      </Route>
-      <Route path="/notifications">
-        <AppShell><Notifications /></AppShell>
-      </Route>
-      <Route path="/settings">
-        <AppShell><Settings /></AppShell>
-      </Route>
+      <Route path="/register" component={Register} />
+
+      {/* Authenticated — wrapped in AppShell */}
+      <Route path="/dashboard"><AppShell><Dashboard /></AppShell></Route>
+      <Route path="/courses"><AppShell><Courses /></AppShell></Route>
+      <Route path="/schedule"><AppShell><Schedule /></AppShell></Route>
+      <Route path="/attendance"><AppShell><Attendance /></AppShell></Route>
+      <Route path="/notifications"><AppShell><Notifications /></AppShell></Route>
+      <Route path="/students"><AppShell><Students /></AppShell></Route>
+      <Route path="/profile"><AppShell><Profile /></AppShell></Route>
+      <Route path="/notes"><AppShell><Notes /></AppShell></Route>
+      <Route path="/devoirs"><AppShell><Devoirs /></AppShell></Route>
+      <Route path="/messages"><AppShell><Messages /></AppShell></Route>
+      <Route path="/video"><AppShell><VideoConference /></AppShell></Route>
+      <Route path="/rooms"><AppShell><Rooms /></AppShell></Route>
+      <Route path="/settings"><AppShell><Settings /></AppShell></Route>
 
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -67,5 +64,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;

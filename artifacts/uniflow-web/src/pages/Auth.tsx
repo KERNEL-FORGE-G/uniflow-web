@@ -1,177 +1,171 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
-  UserCog, 
-  User, 
-  GraduationCap, 
-  UserCheck, 
-  ShieldAlert,
-  ArrowRight,
-  Loader2
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Eye, EyeOff, Shield, Users, GraduationCap, UserCog, BookUser } from 'lucide-react';
+
+const roles = [
+  { id: 'superadmin', label: 'Super Admin', icon: Shield },
+  { id: 'admin', label: 'Administrateur', icon: UserCog },
+  { id: 'enseignant', label: 'Enseignant', icon: BookUser },
+  { id: 'delegue', label: 'Délégué', icon: Users },
+  { id: 'etudiant', label: 'Étudiant', icon: GraduationCap },
+];
 
 export default function Auth() {
-  const [_, setLocation] = useLocation();
-  const [loading, setLoading] = useState(false);
-  const [selectedRole, setSelectedRole] = useState('admin');
+  const [, navigate] = useLocation();
+  const [role, setRole] = useState('etudiant');
+  const [showPwd, setShowPwd] = useState(false);
+  const [login, setLogin] = useState('');
+  const [pwd, setPwd] = useState('');
 
-  const roles = [
-    { id: 'super', icon: ShieldAlert, label: 'Super Admin' },
-    { id: 'admin', icon: UserCog, label: 'Administrateur' },
-    { id: 'teacher', icon: UserCheck, label: 'Enseignant' },
-    { id: 'delegate', icon: User, label: 'Délégué' },
-    { id: 'student', icon: GraduationCap, label: 'Étudiant' },
-  ];
-
-  const handleLogin = (e: React.FormEvent) => {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    // Mock login delay
-    setTimeout(() => {
-      setLoading(false);
-      setLocation('/dashboard');
-    }, 1200);
-  };
+    navigate('/dashboard');
+  }
 
   return (
-    <div className="min-h-screen w-full flex bg-background font-sans overflow-hidden">
-      {/* Left side - Visual branding */}
-      <div className="hidden lg:flex flex-1 relative bg-gradient-to-br from-sidebar to-sidebar-border/30 overflow-hidden flex-col justify-between p-12">
-        {/* Animated Background Elements */}
-        <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/25 rounded-full blur-[130px]"></div>
-          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/15 rounded-full blur-[120px]"></div>
-          <div className="absolute top-1/2 right-1/2 w-1/3 h-1/3 bg-primary/10 rounded-full blur-[100px]"></div>
-        </div>
-        
-        {/* Floating cards animation to simulate dashboard feel */}
-        <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="absolute right-12 top-1/2 -translate-y-1/2 w-80 space-y-4 pointer-events-none z-10"
-        >
-          <div className="bg-card border border-border rounded-xl p-4 shadow-xl shadow-black/5 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary"><User size={20} /></div>
-            <div>
-              <div className="h-4 w-32 bg-muted rounded mb-2"></div>
-              <div className="h-3 w-20 bg-muted/50 rounded"></div>
-            </div>
-          </div>
-          <div className="bg-card border border-border rounded-xl p-4 shadow-xl shadow-black/5 flex items-center gap-4 translate-x-8">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent"><UserCheck size={20} /></div>
-            <div>
-              <div className="h-4 w-28 bg-muted rounded mb-2"></div>
-              <div className="h-3 w-24 bg-muted/50 rounded"></div>
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="relative z-20">
-          <Link href="/" className="inline-flex items-center gap-3 mb-12">
-            <div className="w-10 h-10 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-2xl shadow-lg shadow-primary/30">U</div>
-            <span className="font-heading font-bold text-2xl tracking-tight text-sidebar-foreground">UniFlow</span>
-          </Link>
+    <div className="min-h-screen flex font-sans">
+      {/* ── Gauche — navy ── */}
+      <div className="hidden md:flex flex-col w-[55%] bg-[#1E3A8A] relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/5" />
+          <div className="absolute top-1/2 -right-24 w-64 h-64 rounded-full bg-[#0D9488]/20" />
+          <div className="absolute -bottom-20 left-1/4 w-80 h-80 rounded-full bg-white/5" />
         </div>
 
-        <div className="relative z-20 max-w-md">
-          <h1 className="text-4xl font-heading font-extrabold text-sidebar-foreground mb-6 leading-tight">
-            Gérez votre institution avec précision.
-          </h1>
-          <p className="text-sidebar-foreground/70 text-lg">
-            La plateforme centralisée pour les étudiants, les enseignants et l'administration universitaire.
+        <div className="relative z-10 flex flex-col h-full p-12">
+          {/* Logo blanc */}
+          <img src="/uniflow-logo.png" alt="UniFlow" className="h-10 object-contain self-start brightness-0 invert" />
+
+          {/* Main content */}
+          <div className="flex-1 flex flex-col justify-center">
+            <h2 className="text-4xl font-bold text-white leading-tight mb-4">
+              Gérez votre institution<br />avec précision.
+            </h2>
+            <p className="text-blue-200 text-lg leading-relaxed mb-10">
+              La plateforme centralisée pour les étudiants, les enseignants et l'administration universitaire.
+            </p>
+
+            {/* Floating cards mockup */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 max-w-sm">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold shrink-0">EM</div>
+                <div>
+                  <p className="text-white text-sm font-semibold">Emma Martin</p>
+                  <p className="text-blue-200 text-xs">Étudiante · Licence 2 Informatique</p>
+                </div>
+                <div className="ml-auto flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-green-400" />
+                  <span className="text-green-300 text-xs">En ligne</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 max-w-sm ml-8">
+                <div className="w-10 h-10 rounded-full bg-[#0D9488]/30 flex items-center justify-center text-white font-bold shrink-0">DN</div>
+                <div>
+                  <p className="text-white text-sm font-semibold">Dr. Nkam</p>
+                  <p className="text-blue-200 text-xs">Enseignant · Algorithmique</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p className="relative z-10 text-blue-300 text-xs">
+            UniFlow — KERNEL FORGE · Université de Yaoundé I
           </p>
         </div>
       </div>
 
-      {/* Right side - Login Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 md:px-24 bg-gradient-to-b from-background via-background to-muted/5 relative z-10">
-        <div className="w-full max-w-md mx-auto">
-          {/* Decorative element */}
-          <div className="absolute top-8 right-8 w-20 h-20 bg-primary/5 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
-          <div className="lg:hidden flex items-center gap-3 mb-12">
-            <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">U</div>
-            <span className="font-heading font-bold text-xl tracking-tight">UniFlow</span>
+      {/* ── Droite — formulaire ── */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          {/* Mobile logo */}
+          <div className="md:hidden mb-8 flex justify-center">
+            <img src="/uniflow-logo.png" alt="UniFlow" className="h-9 object-contain" />
           </div>
 
-          <div className="mb-10">
-            <h2 className="text-3xl font-heading font-bold mb-2">Bienvenue</h2>
-            <p className="text-muted-foreground">Connectez-vous à votre espace personnel.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Bienvenue</h2>
+          <p className="text-gray-500 text-sm mb-8">Connectez-vous à votre espace personnel.</p>
+
+          {/* Role selector */}
+          <div className="mb-6">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Je suis un...</p>
+            <div className="flex flex-wrap gap-2">
+              {roles.map((r) => {
+                const active = role === r.id;
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => setRole(r.id)}
+                    className={[
+                      'flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-medium border transition-all',
+                      active
+                        ? 'bg-[#1E3A8A] text-white border-[#1E3A8A] shadow-sm'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-[#1E3A8A] hover:text-[#1E3A8A]',
+                    ].join(' ')}
+                  >
+                    <r.icon size={16} />
+                    {r.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Role Selector */}
-          <div className="mb-8">
-            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 block">
-              Je suis un...
-            </Label>
-            <div className="flex flex-wrap gap-3">
-              {roles.map((role) => (
-                <button
-                  key={role.id}
-                  type="button"
-                  onClick={() => setSelectedRole(role.id)}
-                  className={cn(
-                    "flex flex-col items-center justify-center gap-2 p-3 rounded-xl border transition-all flex-1 min-w-[80px]",
-                    selectedRole === role.id 
-                      ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/25 scale-[1.02]" 
-                      : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:bg-muted"
-                  )}
-                >
-                  <role.icon size={20} />
-                  <span className="text-[10px] font-bold">{role.label}</span>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Identifiant ou Email</label>
+              <input
+                type="text"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                placeholder="Ex: admin@uniflow.cm ou 21A001"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-sm font-medium text-gray-700">Mot de passe</label>
+                <button type="button" className="text-xs text-[#1E3A8A] hover:underline font-medium">
+                  Mot de passe oublié ?
                 </button>
-              ))}
-            </div>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="identifiant">Identifiant ou Email</Label>
-              <Input 
-                id="identifiant" 
-                type="text" 
-                placeholder="Ex: admin@uniflow.cm ou 21A001" 
-                required 
-                className="h-12 bg-card"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
-                <a href="#" className="text-xs font-medium text-primary hover:underline">Mot de passe oublié ?</a>
               </div>
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="••••••••" 
-                required 
-                className="h-12 bg-card"
-              />
+              <div className="relative">
+                <input
+                  type={showPwd ? 'text' : 'password'}
+                  value={pwd}
+                  onChange={(e) => setPwd(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-11 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] focus:border-transparent transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(!showPwd)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full h-12 text-base font-bold mt-4 shadow-lg shadow-primary/20" 
-              disabled={loading}
-              data-testid="btn-submit-login"
+            <button
+              type="submit"
+              className="w-full bg-[#0D9488] text-white font-semibold py-3.5 rounded-xl hover:bg-[#0D9488]/90 transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
             >
-              {loading ? (
-                <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Connexion en cours...</>
-              ) : (
-                <>Se connecter <ArrowRight className="ml-2 h-5 w-5" /></>
-              )}
-            </Button>
+              Se connecter →
+            </button>
           </form>
 
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            Problème de connexion ? <a href="#" className="text-primary font-medium hover:underline">Contacter le support</a>
-          </div>
+          <p className="mt-6 text-center text-sm text-gray-400">
+            Problème de connexion ?{' '}
+            <button className="text-[#1E3A8A] hover:underline font-medium">Contacter le support</button>
+          </p>
+
+          <p className="mt-3 text-center text-sm text-gray-400">
+            Pas encore de compte ?{' '}
+            <Link href="/register" className="text-[#1E3A8A] hover:underline font-medium">S'inscrire</Link>
+          </p>
         </div>
       </div>
     </div>

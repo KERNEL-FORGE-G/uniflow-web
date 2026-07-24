@@ -1,38 +1,49 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Menu } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+interface AppShellProps {
+  children: React.ReactNode;
+}
+
+export function AppShell({ children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const sidebarW = collapsed ? 72 : 256;
+
   return (
-    <div className="min-h-[100dvh] bg-background text-foreground flex w-full">
-      <Sidebar 
-        collapsed={collapsed} 
-        setCollapsed={setCollapsed} 
+    <div className="min-h-screen bg-[#F3F4F6]">
+      <Sidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
         mobileOpen={mobileOpen}
         setMobileOpen={setMobileOpen}
       />
-      
-      <div 
-        className="flex-1 flex flex-col min-w-0 transition-all duration-300"
-        style={{ marginLeft: typeof window !== 'undefined' && window.innerWidth >= 768 ? (collapsed ? '80px' : '280px') : '0px' }}
+
+      {/* Main content */}
+      <motion.div
+        animate={{ marginLeft: sidebarW }}
+        transition={{ duration: 0.2, ease: 'easeInOut' }}
+        className="hidden md:block min-h-screen"
       >
-        {/* Mobile header area */}
-        <div className="md:hidden flex h-16 items-center px-4 border-b border-border bg-card sticky top-0 z-30">
-          <button 
+        <main className="p-6 min-h-screen">{children}</main>
+      </motion.div>
+
+      {/* Mobile layout */}
+      <div className="md:hidden min-h-screen flex flex-col">
+        {/* Mobile header */}
+        <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-3 sticky top-0 z-20">
+          <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 -ml-2 rounded-md hover:bg-muted"
+            className="h-8 w-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-gray-100"
           >
             <Menu size={20} />
           </button>
-          <div className="font-heading font-bold ml-2">UniFlow</div>
-        </div>
-        
-        <main className="flex-1 overflow-x-hidden p-4 md:p-8 w-full max-w-7xl mx-auto">
-          {children}
-        </main>
+          <img src="/uniflow-logo.png" alt="UniFlow" className="h-7 object-contain" />
+        </header>
+        <main className="flex-1 p-4">{children}</main>
       </div>
     </div>
   );

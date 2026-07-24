@@ -1,175 +1,228 @@
-import React, { useState } from 'react';
-import { 
-  Calendar as CalendarIcon, ChevronDown, CheckCircle2, XCircle, AlertCircle, Download
-} from 'lucide-react';
-import { mockCourses, mockStudents } from '@/lib/mock-data';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { useState, useEffect } from 'react';
+import { Download, QrCode, UserCheck, RefreshCw, Eye, Edit, Trash2 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { mockPresences, mockPresenceStats, mockPresenceChart } from '@/lib/mock-data';
+
+const statutStyle: Record<string, string> = {
+  'Régulier': 'bg-green-100 text-green-700',
+  'Attention': 'bg-amber-100 text-amber-700',
+  'Critique': 'bg-red-100 text-red-700',
+};
+
+// Simulated QR code using SVG pattern
+function QrSvg() {
+  return (
+    <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      {/* Corner squares */}
+      {[[5,5],[65,5],[5,65]].map(([x,y],i) => (
+        <g key={i}>
+          <rect x={x} y={y} width={30} height={30} fill="none" stroke="#1E3A8A" strokeWidth="3" rx="2" />
+          <rect x={x+8} y={y+8} width={14} height={14} fill="#1E3A8A" rx="1" />
+        </g>
+      ))}
+      {/* Data cells */}
+      {[
+        [40,5],[45,5],[50,5],[55,5],
+        [40,15],[50,15],[55,15],
+        [40,25],[42,25],[48,25],[55,25],
+        [40,35],[44,35],[52,35],
+        [70,40],[75,40],[80,40],[85,40],[90,40],
+        [70,50],[80,50],[90,50],
+        [70,60],[75,60],[85,60],[90,60],
+        [70,70],[72,70],[80,70],[90,70],
+        [70,80],[78,80],[83,80],[90,80],
+        [70,90],[75,90],[80,90],[88,90],
+        [5,40],[10,40],[18,40],[25,40],[32,40],
+        [5,50],[15,50],[25,50],[32,50],
+        [5,60],[8,60],[18,60],[28,60],[35,60],
+        [5,70],[12,70],[22,70],[30,70],
+        [5,80],[10,80],[20,80],[28,80],[35,80],
+        [5,90],[8,90],[15,90],[25,90],[35,90],
+      ].map(([x,y],i) => (
+        <rect key={i} x={x} y={y} width={4} height={4} fill="#1E3A8A" rx="0.5" />
+      ))}
+    </svg>
+  );
+}
+
+function CountdownTimer() {
+  const [secs, setSecs] = useState(512);
+  useEffect(() => {
+    const id = setInterval(() => setSecs(s => s > 0 ? s - 1 : 0), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const m = Math.floor(secs / 60).toString().padStart(2, '0');
+  const s = (secs % 60).toString().padStart(2, '0');
+  return <span className="text-3xl font-bold text-[#1E3A8A] tabular-nums">{m}:{s}</span>;
+}
 
 export default function Attendance() {
-  const [date, setDate] = useState<Date>(new Date());
-  const formattedDate = format(date, 'EEEE d MMMM yyyy', { locale: fr });
-  
-  // Create heatmap data mock
-  const heatmapData = Array.from({ length: 30 }).map((_, i) => ({
-    date: i + 1,
-    rate: Math.floor(Math.random() * 40) + 60 // 60-100%
-  }));
+  const [selectedUE, setSelectedUE] = useState('Toutes');
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-heading font-bold tracking-tight">Suivi des Présences</h1>
-          <p className="text-muted-foreground mt-1">Gérez les appels et analysez l'assiduité des étudiants.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Gestion des présences</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Suivi et marquage des présences par séance</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="font-medium bg-card">
-            <CalendarIcon className="mr-2 h-4 w-4" /> {formattedDate}
-          </Button>
-          <Button className="font-medium">
-            <Download className="mr-2 h-4 w-4" /> Rapport PDF
-          </Button>
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-1.5 bg-[#0D9488] text-white px-3.5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#0D9488]/90 shadow-sm transition-colors">
+            <QrCode size={15} /> Générer QR
+          </button>
+          <button className="flex items-center gap-1.5 bg-[#1E3A8A] text-white px-3.5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1E3A8A]/90 shadow-sm transition-colors">
+            <UserCheck size={15} /> Marquer présence
+          </button>
+          <button className="flex items-center gap-1.5 border border-gray-200 bg-white px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:border-gray-300 shadow-sm transition-colors">
+            <Download size={15} /> Exporter
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-4">
-          <h2 className="text-lg font-bold font-heading mb-4">Cours du jour</h2>
-          
-          {mockCourses.slice(0, 3).map((course, idx) => (
-            <Collapsible key={course.id} className="bg-card border border-border rounded-xl shadow-sm overflow-hidden" defaultOpen={idx === 0}>
-              <CollapsibleTrigger className="w-full p-5 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                <div className="flex items-center gap-4 text-left">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold font-mono text-sm border border-primary/20">
-                    {course.code.replace(/[0-9]/g, '')}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">{course.intitule}</h3>
-                    <div className="text-sm text-muted-foreground flex items-center gap-2 mt-0.5">
-                      <span className="font-medium text-foreground">08h00 - 10h00</span> • Amphi A • {course.filiere} {course.niveau}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="hidden md:flex flex-col items-end">
-                    <div className="text-xs font-medium text-muted-foreground mb-1">Taux de présence</div>
-                    <div className="flex items-center gap-2 w-32">
-                      <Progress value={course.tauxPresence} className="h-2 flex-1" />
-                      <span className="text-sm font-bold">{course.tauxPresence}%</span>
-                    </div>
-                  </div>
-                  <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
-                </div>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="border-t border-border bg-muted/10 p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-semibold text-sm">Liste d'appel</h4>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" className="text-xs h-8">Tout marquer présent</Button>
-                      <Button size="sm" className="text-xs h-8">Valider l'appel</Button>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin">
-                    {mockStudents.filter(s => s.filiere === course.filiere && s.niveau === course.niveau).map((student) => (
-                      <div key={student.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-card border border-border rounded-lg gap-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold uppercase">
-                            {student.nom[0]}{student.prenom[0]}
-                          </div>
-                          <div>
-                            <div className="font-semibold text-sm">{student.nom} {student.prenom}</div>
-                            <div className="text-xs font-mono text-muted-foreground">{student.matricule}</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg">
-                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold bg-secondary text-secondary-foreground shadow-sm flex items-center justify-center gap-1 transition-all">
-                            <CheckCircle2 size={14} /> Présent
-                          </button>
-                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold text-muted-foreground hover:bg-card hover:text-destructive transition-all">
-                            Absent
-                          </button>
-                          <button className="flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-bold text-muted-foreground hover:bg-card hover:text-accent transition-all">
-                            Excusé
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    {mockStudents.filter(s => s.filiere === course.filiere && s.niveau === course.niveau).length === 0 && (
-                      <div className="text-center py-8 text-muted-foreground text-sm border border-dashed rounded-lg">
-                        Aucun étudiant inscrit dans cette filière/niveau.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          ))}
-        </div>
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2 items-center">
+        {['UE ▾', 'Groupe ▾', 'Semaine ▾'].map(f => (
+          <select key={f} className="border border-gray-200 bg-white rounded-xl px-3 py-2 text-sm font-medium text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] shadow-sm">
+            <option>{f}</option>
+          </select>
+        ))}
+      </div>
 
-        <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-            <h2 className="text-sm font-bold font-heading mb-4 text-muted-foreground uppercase tracking-wider">Statistiques du jour</h2>
-            <div className="text-4xl font-heading font-extrabold text-primary mb-2">82.5%</div>
-            <p className="text-sm text-muted-foreground mb-6">Taux de présence global sur le campus aujourd'hui.</p>
-            
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-sm">
-                <span className="flex items-center gap-2 font-medium text-secondary"><CheckCircle2 size={16} /> Présents</span>
-                <span className="font-bold">3,241</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="flex items-center gap-2 font-medium text-destructive"><XCircle size={16} /> Absents</span>
-                <span className="font-bold">642</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="flex items-center gap-2 font-medium text-accent"><AlertCircle size={16} /> Excusés</span>
-                <span className="font-bold">45</span>
-              </div>
-            </div>
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Taux global — ring */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+          <div className="relative w-16 h-16 shrink-0">
+            <svg viewBox="0 0 60 60" className="w-full h-full -rotate-90">
+              <circle cx="30" cy="30" r="24" fill="none" stroke="#F3F4F6" strokeWidth="8" />
+              <circle cx="30" cy="30" r="24" fill="none" stroke="#0D9488" strokeWidth="8"
+                strokeDasharray={`${2 * Math.PI * 24 * mockPresenceStats.tauxGlobal / 100} ${2 * Math.PI * 24}`}
+                strokeLinecap="round" />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-900">{mockPresenceStats.tauxGlobal}%</span>
           </div>
-
-          <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-            <h2 className="text-sm font-bold font-heading mb-4 text-muted-foreground uppercase tracking-wider">Tendance du mois</h2>
-            <div className="grid grid-cols-7 gap-1">
-              {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
-                <div key={i} className="text-center text-[10px] font-bold text-muted-foreground mb-1">{d}</div>
-              ))}
-              {Array.from({length: 3}).map((_, i) => <div key={`empty-${i}`} />)}
-              {heatmapData.map((day) => (
-                <div 
-                  key={day.date} 
-                  className={`aspect-square rounded-sm ${
-                    day.rate > 90 ? 'bg-primary' : 
-                    day.rate > 80 ? 'bg-primary/70' : 
-                    day.rate > 70 ? 'bg-primary/40' : 'bg-primary/20'
-                  }`}
-                  title={`${day.date} - ${day.rate}%`}
-                />
-              ))}
-            </div>
-            <div className="flex items-center justify-between text-[10px] text-muted-foreground mt-3 font-medium">
-              <span>Moins</span>
-              <div className="flex gap-1">
-                <div className="w-3 h-3 bg-primary/20 rounded-sm"></div>
-                <div className="w-3 h-3 bg-primary/40 rounded-sm"></div>
-                <div className="w-3 h-3 bg-primary/70 rounded-sm"></div>
-                <div className="w-3 h-3 bg-primary rounded-sm"></div>
-              </div>
-              <span>Plus</span>
-            </div>
+          <div>
+            <p className="text-2xl font-bold text-gray-900">{mockPresenceStats.tauxGlobal}%</p>
+            <p className="text-xs text-gray-500">Taux de présence global</p>
           </div>
         </div>
+
+        {[
+          { label: 'Total sessions', value: mockPresenceStats.totalSessions, sub: `Sur ${mockPresences.length * 4} étudiants`, color: '#1E3A8A' },
+          { label: "Présents aujourd'hui", value: mockPresenceStats.presentsAujourdhui, sub: 'Sur 20 étudiants', color: '#0D9488' },
+          { label: 'Absences à justifier', value: mockPresenceStats.absencesAJustifier, sub: '6.7% des étudiants', color: '#EF4444' },
+        ].map((s) => (
+          <div key={s.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p className="text-3xl font-bold" style={{ color: s.color }}>{s.value}</p>
+            <p className="text-sm font-semibold text-gray-900 mt-1">{s.label}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{s.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Table + QR code */}
+      <div className="grid lg:grid-cols-3 gap-5">
+        {/* Table */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-gray-50 flex items-center justify-between">
+            <h2 className="font-semibold text-gray-900">Liste de présence</h2>
+            <span className="text-xs text-gray-400">{mockPresences.length} étudiants</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-50">
+                  {['#', 'Étudiant', 'N° Étudiant', 'Présences', 'Absences', 'Retards', 'Taux', 'Justifiées', 'Statut', 'Actions'].map(h => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {mockPresences.map((p, i) => (
+                  <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 text-gray-400 text-xs">{i + 1}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-[#1E3A8A]/10 flex items-center justify-center text-[#1E3A8A] text-[10px] font-bold shrink-0">
+                          {p.etudiant.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <span className="font-medium text-gray-900 whitespace-nowrap">{p.etudiant}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">{p.num}</td>
+                    <td className="px-4 py-3 text-gray-900 font-semibold text-center">{p.presences}</td>
+                    <td className="px-4 py-3 text-red-600 font-semibold text-center">{p.absences}</td>
+                    <td className="px-4 py-3 text-amber-600 font-semibold text-center">{p.retards}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                          <div className="h-full rounded-full bg-[#0D9488]" style={{ width: `${p.taux}%` }} />
+                        </div>
+                        <span className="text-xs font-semibold text-gray-700 tabular-nums">{p.taux}%</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center text-gray-700">{p.justifiees}</td>
+                    <td className="px-4 py-3">
+                      <span className={['text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap', statutStyle[p.statut]].join(' ')}>
+                        {p.statut}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        <button className="p-1.5 text-gray-400 hover:text-[#1E3A8A] hover:bg-[#1E3A8A]/10 rounded-lg transition-colors"><Eye size={14} /></button>
+                        <button className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"><Edit size={14} /></button>
+                        <button className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* QR Code panel */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col items-center gap-4">
+          <div className="w-full flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 text-sm">QR Code session active</h3>
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-green-100 text-green-700">● Actif</span>
+          </div>
+
+          <div className="w-48 h-48 p-3 border-2 border-dashed border-[#1E3A8A]/20 rounded-2xl">
+            <QrSvg />
+          </div>
+
+          <div className="text-center">
+            <p className="text-xs text-gray-500 mb-1">Scannez pour marquer votre présence</p>
+            <CountdownTimer />
+            <p className="text-[11px] text-gray-400 mt-1">Expire dans ce délai</p>
+          </div>
+
+          <button className="flex items-center gap-2 w-full justify-center border border-[#1E3A8A] text-[#1E3A8A] py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1E3A8A]/5 transition-colors">
+            <RefreshCw size={14} /> Générer nouveau QR
+          </button>
+
+          <p className="text-xs text-gray-400 text-center">
+            <strong className="text-gray-700">{mockPresenceStats.presentsAujourdhui}</strong> étudiants sur la liste
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom chart */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <h2 className="font-semibold text-gray-900 mb-4">Évolution des présences par semaine</h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={mockPresenceChart} barSize={12}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+            <XAxis dataKey="semaine" tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} domain={[60, 100]} />
+            <Tooltip contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }} />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Bar dataKey="presences" name="Taux présences (%)" fill="#1E3A8A" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="groupe" name="Taux groupe (%)" fill="#0D9488" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
