@@ -2,7 +2,7 @@ import { Link, useLocation } from 'wouter';
 import {
   Home, BookOpen, Calendar, ClipboardList, CheckSquare,
   BarChart2, MessageSquare, Bell, Settings, LogOut,
-  ChevronLeft, ChevronRight, X, Users, Video, DoorOpen,
+  ChevronLeft, ChevronRight, X, Video, Library, HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,9 +25,9 @@ const navItems = [
   { href: '/messages',       icon: MessageSquare,  label: 'Messages',      badge: 1 },
   { href: '/notifications',  icon: Bell,           label: 'Notifications', badge: 3 },
   { href: '/video',          icon: Video,          label: 'Visioconférence' },
-  { href: '/students',       icon: Users,          label: 'Étudiants' },
-  { href: '/rooms',          icon: DoorOpen,       label: 'Salles' },
+  { href: '/resources',      icon: Library,        label: 'Bibliothèque' },
   { href: '/settings',       icon: Settings,       label: 'Paramètres' },
+  { href: '/support',        icon: HelpCircle,     label: 'Aide' },
 ];
 
 function SidebarContent({ collapsed, setCollapsed, onClose }: {

@@ -88,16 +88,6 @@ export const mockStudents = [
   { id: '8', matricule: '23D101', nom: 'Etoundi Sophie', filiere: 'SVT', niveau: 'L1', email: 's.etoundi@uniflow.cm', statut: 'Inscrit' },
   { id: '9', matricule: '21A111', nom: 'Fouda Yves', filiere: 'INFO', niveau: 'L3', email: 'y.fouda@uniflow.cm', statut: 'Inscrit' },
   { id: '10', matricule: '20C003', nom: 'Mbia Alice', filiere: 'PHYS', niveau: 'M1', email: 'a.mbia@uniflow.cm', statut: 'En attente' },
-  { id: '11', matricule: '22A045', nom: 'Njoya Ibrahim', filiere: 'INFO', niveau: 'L2', email: 'i.njoya@uniflow.cm', statut: 'Inscrit' },
-  { id: '12', matricule: '23B099', nom: 'Abba Moussa', filiere: 'MATH', niveau: 'L1', email: 'm.abba@uniflow.cm', statut: 'Inscrit' },
-  { id: '13', matricule: '19C012', nom: 'Biya Chantal', filiere: 'PHYS', niveau: 'M2', email: 'c.biya@uniflow.cm', statut: 'Inscrit' },
-  { id: '14', matricule: '21D076', nom: 'Etoa Alain', filiere: 'SVT', niveau: 'L3', email: 'a.etoa@uniflow.cm', statut: 'Inscrit' },
-  { id: '15', matricule: '22E034', nom: 'Ndi Rosalie', filiere: 'CHIMIE', niveau: 'L2', email: 'r.ndi@uniflow.cm', statut: 'Inscrit' },
-  { id: '16', matricule: '23A005', nom: 'Mvondo Charles', filiere: 'INFO', niveau: 'L1', email: 'c.mvondo@uniflow.cm', statut: 'Inscrit' },
-  { id: '17', matricule: '20B048', nom: 'Talla Hervé', filiere: 'MATH', niveau: 'M1', email: 'h.talla@uniflow.cm', statut: 'Inscrit' },
-  { id: '18', matricule: '21C091', nom: 'Kemajou Blandine', filiere: 'PHYS', niveau: 'L3', email: 'b.kemajou@uniflow.cm', statut: 'Suspendu' },
-  { id: '19', matricule: '22D011', nom: 'Oumarou Ali', filiere: 'SVT', niveau: 'L2', email: 'a.oumarou@uniflow.cm', statut: 'Inscrit' },
-  { id: '20', matricule: '19E002', nom: 'Djoumessi Francine', filiere: 'CHIMIE', niveau: 'M2', email: 'f.djoumessi@uniflow.cm', statut: 'Inscrit' },
 ];
 
 // ── Emploi du temps ───────────────────────────────────────────────────────────
@@ -112,8 +102,6 @@ export const mockScheduleEvents = [
   { id: '8', day: 4, startHour: 10, endHour: 12, type: 'TP', ue: 'Algorithmique', code: 'INF301', salle: 'Labo SVT', enseignant: 'Dr. M', couleur: '#DBEAFE', border: '#1E3A8A', texte: '#1E3A8A' },
   { id: '9', day: 4, startHour: 16, endHour: 18, type: 'CM', ue: 'Économie', code: 'ECO201', salle: 'Salle 301', enseignant: 'Pr. F', couleur: '#CCFBF1', border: '#0D9488', texte: '#0F766E' },
   { id: '10', day: 5, startHour: 14, endHour: 16, type: 'CM', ue: 'Informatique', code: 'INF101', salle: 'Amphi B', enseignant: 'M. B', couleur: '#FEF3C7', border: '#D97706', texte: '#92400E' },
-  { id: '11', day: 4, startHour: 16, endHour: 18, type: 'CM', ue: 'Philosophie', code: 'PHY101', salle: 'Salle 201', enseignant: 'Pr. Be', couleur: '#FCE7F3', border: '#DB2777', texte: '#9D174D' },
-  { id: '12', day: 5, startHour: 8, endHour: 10, type: 'CM', ue: 'Anglais', code: 'ANG201', salle: 'Salle L101', enseignant: 'Mme J', couleur: '#F0FDF4', border: '#16A34A', texte: '#14532D' },
 ];
 
 // ── Présences ─────────────────────────────────────────────────────────────────
@@ -122,8 +110,6 @@ export const mockPresences = [
   { id: '2', etudiant: 'Lucas Bernard', num: '14052402', presences: 16, absences: 3, retards: 1, taux: 80, justifiees: 1, statut: 'Régulier' },
   { id: '3', etudiant: 'Chloé Dubois', num: '14052403', presences: 14, absences: 5, retards: 2, taux: 70, justifiees: 2, statut: 'Attention' },
   { id: '4', etudiant: 'Hugo Leroy', num: '14052404', presences: 10, absences: 8, retards: 3, taux: 50, justifiees: 1, statut: 'Critique' },
-  { id: '5', etudiant: 'Sarah Benat', num: '14052405', presences: 16, absences: 3, retards: 2, taux: 80, justifiees: 1, statut: 'Régulier' },
-  { id: '6', etudiant: 'Yasmine Khalil', num: '14052406', presences: 14, absences: 4, retards: 2, taux: 70, justifiees: 2, statut: 'Attention' },
 ];
 
 export const mockPresenceStats = {
@@ -138,18 +124,14 @@ export const mockPresenceChart = [
   { semaine: 'S15', presences: 88, groupe: 82 },
   { semaine: 'S16', presences: 82, groupe: 79 },
   { semaine: 'S17', presences: 90, groupe: 85 },
-  { semaine: 'S18', presences: 87, groupe: 83 },
-  { semaine: 'S19', presences: 85, groupe: 80 },
-  { semaine: 'S20', presences: 88, groupe: 84 },
 ];
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 export const mockNotifications = [
-  { id: '1', type: 'annonce', titre: 'Annonce importante', apercu: "Changement de salle pour le cours d'Algo de demain (14/05) : Amphi B → Salle B102", expediteur: 'Admin UniFlow', time: 'Il y a 1 min', nonLu: true, body: "Bonjour à tous,\n\nNous vous informons que le cours d'Algorithmique prévu demain mardi 14 mai à 10:00 aura lieu en Salle B102 au lieu de l'Amphi B.\n\nMerci de votre compréhension,\nL'équipe pédagogique" },
-  { id: '2', type: 'devoir', titre: 'Nouveau devoir', apercu: 'Bases de données – À rendre avant le 20 mai 23:58', expediteur: 'Dr. Benkamm', time: 'Il y a 3h', nonLu: true, body: "Un nouveau devoir a été ajouté pour le cours de Bases de données.\n\nTitre: Modélisation Entité-Association\nDate limite: 20 mai 2024 à 23:58\n\nBonne chance !" },
-  { id: '3', type: 'visio', titre: 'Visioconférence dans 30 min', apercu: 'Algorithmique – Session en ligne à 14:00', expediteur: 'Pr. Martin', time: 'Hier', nonLu: false, body: "La session de visioconférence pour le cours d'Algorithmique aura lieu aujourd'hui à 14:00.\n\nLien de connexion disponible dans la section Cours." },
-  { id: '4', type: 'systeme', titre: 'Absence justifiée', apercu: 'Votre absence du 19/05 a été justifiée', expediteur: 'Admin', time: 'Hier', nonLu: false, body: "Votre demande de justification d'absence pour le 19 mai 2024 a été acceptée.\n\nStatut: Justifiée ✓" },
-  { id: '5', type: 'systeme', titre: 'Nouvelle annonce système', apercu: 'Maintenance prévue le 25/05 de 02:00 à 04:00', expediteur: 'Admin UniFlow', time: 'Lundi', nonLu: false, body: "Une maintenance système est prévue le 25 mai de 02h00 à 04h00.\n\nLa plateforme sera temporairement indisponible.\n\nMerci de votre compréhension." },
+  { id: '1', type: 'annonce', titre: 'Annonce importante', apercu: "Changement de salle pour le cours d'Algo de demain (14/05) : Amphi B → Salle B102", expediteur: 'Admin UniFlow', time: 'Il y a 1 min', nonLu: true, body: "Bonjour à tous,\n\nNous vous informons que le cours d'Algorithmique prévu demain aura lieu en Salle B102." },
+  { id: '2', type: 'devoir', titre: 'Nouveau devoir', apercu: 'Bases de données – À rendre avant le 20 mai 23:58', expediteur: 'Dr. Benkamm', time: 'Il y a 3h', nonLu: true, body: "Un nouveau devoir a été ajouté pour le cours de Bases de données." },
+  { id: '3', type: 'visio', titre: 'Visioconférence dans 30 min', apercu: 'Algorithmique – Session en ligne à 14:00', expediteur: 'Pr. Martin', time: 'Hier', nonLu: false, body: "La session de visioconférence pour le cours d'Algorithmique aura lieu aujourd'hui à 14:00." },
+  { id: '4', type: 'systeme', titre: 'Absence justifiée', apercu: 'Votre absence du 19/05 a été justifiée', expediteur: 'Admin', time: 'Hier', nonLu: false, body: "Votre demande de justification d'absence a été acceptée." },
 ];
 
 // ── Notes / Résultats ─────────────────────────────────────────────────────────
@@ -158,23 +140,23 @@ export const mockNotes = [
   { code: 'MAT201', intitule: 'Algèbre Linéaire', type: 'Obligatoire', credits: 4, cc: 12, tp: null, examen: 11, moyenne: 11.5, valide: true },
   { code: 'PHY405', intitule: 'Physique Quantique', type: 'Obligatoire', credits: 6, cc: 9, tp: 8, examen: 10, moyenne: 9.2, valide: false },
   { code: 'INF302', intitule: 'Bases de Données', type: 'Obligatoire', credits: 5, cc: 16, tp: 18, examen: 17, moyenne: 17.0, valide: true },
-  { code: 'CHM502', intitule: 'Chimie Organique II', type: 'Optionnel', credits: 5, cc: 13, tp: 14, examen: 12, moyenne: 12.8, valide: true },
 ];
 
 // ── Devoirs ───────────────────────────────────────────────────────────────────
 export const mockDevoirs = [
-  { id: '1', ue: 'INF301', couleur: '#1E3A8A', titre: 'Exercices Graphes — Chapitre 7', enseignant: 'Dr. Nkam', dateLimite: '20 mai 2024 — 23:58', statut: 'À faire', urgent: true },
-  { id: '2', ue: 'MAT201', couleur: '#0D9488', titre: 'DM2 — Algèbre', enseignant: 'Pr. Fotso', dateLimite: '22 mai 2024', statut: 'À faire', urgent: false },
-  { id: '3', ue: 'INF302', couleur: '#7C3AED', titre: 'TP Base de Données — Modélisation', enseignant: 'Dr. Nkam', dateLimite: '25 mai 2024', statut: 'À faire', urgent: false },
-  { id: '4', ue: 'INF301', couleur: '#1E3A8A', titre: 'TP Algorithmes de tri', enseignant: 'Dr. Nkam', dateLimite: '10 mai 2024', statut: 'Rendu', urgent: false },
-  { id: '5', ue: 'MAT201', couleur: '#0D9488', titre: 'DM1 — Matrices', enseignant: 'Pr. Fotso', dateLimite: '5 mai 2024', statut: 'Rendu', urgent: false },
+  { id: '1', ue: 'INF301', couleur: '#1E3A8A', titre: 'Exercices Graphes — Chapitre 7', enseignant: 'Dr. Nkam', dateLimite: '20 mai 2024 — 23:58', statut: 'À faire', urgent: true, progression: 0 },
+  { id: '2', ue: 'MAT201', couleur: '#0D9488', titre: 'DM2 — Algèbre', enseignant: 'Pr. Fotso', dateLimite: '22 mai 2024', statut: 'À faire', urgent: false, progression: 30 },
+  { id: '3', ue: 'INF302', couleur: '#7C3AED', titre: 'TP Base de Données', enseignant: 'Dr. Nkam', dateLimite: '25 mai 2024', statut: 'À faire', urgent: false, progression: 50 },
+  { id: '4', ue: 'INF301', couleur: '#1E3A8A', titre: 'TP Algorithmes de tri', enseignant: 'Dr. Nkam', dateLimite: '10 mai 2024', statut: 'En retard', urgent: true, progression: 80 },
+  { id: '5', ue: 'MAT201', couleur: '#0D9488', titre: 'DM1 — Matrices', enseignant: 'Pr. Fotso', dateLimite: '5 mai 2024', statut: 'Soumis', urgent: false, progression: 100 },
+  { id: '6', ue: 'PHY101', couleur: '#10B981', titre: 'Dissertation', enseignant: 'Pr. Bernard', dateLimite: '2 mai 2024', statut: 'Noté', urgent: false, progression: 100, note: '15/20' },
 ];
 
 // ── Messages ──────────────────────────────────────────────────────────────────
 export const mockMessages = [
   {
-    id: '1', contact: 'Dr. Nkam', initiales: 'DN', couleur: '#1E3A8A',
-    role: 'Algorithmique · L3 INFO', dernierMsg: 'Bonne note ! Continuez ainsi.', time: '10:15', nonLu: 1,
+    id: '1', contact: 'Dr. Nkam', initiales: 'DN', couleur: '#1E3A8A', email: 'nkam@uniflow.cm', bureau: 'Bâtiment B, Bureau 204',
+    role: 'Enseignant - Algorithmique · L3 INFO', dernierMsg: 'Bonne note ! Continuez ainsi.', time: '10:15', nonLu: 1,
     messages: [
       { id: 'm1', de: 'Dr. Nkam', texte: "Bonjour Emma, j'ai reçu votre rendu du TP.", time: '10:10' },
       { id: 'm2', de: 'Emma', texte: 'Merci beaucoup Docteur !', time: '10:12' },
@@ -182,22 +164,22 @@ export const mockMessages = [
     ],
   },
   {
-    id: '2', contact: 'Pr. Fotso', initiales: 'PF', couleur: '#0D9488',
-    role: 'Mathématiques · L2', dernierMsg: "N'oubliez pas le DM2.", time: 'Hier', nonLu: 0,
+    id: '2', contact: 'Pr. Fotso', initiales: 'PF', couleur: '#0D9488', email: 'fotso@uniflow.cm', bureau: 'Bâtiment A, Bureau 102',
+    role: 'Enseignant - Mathématiques · L2', dernierMsg: "N'oubliez pas le DM2.", time: 'Hier', nonLu: 0,
     messages: [
       { id: 'm4', de: 'Pr. Fotso', texte: 'Rappel : le DM2 est à rendre avant le 22 mai.', time: 'Hier 08:30' },
       { id: 'm5', de: 'Pr. Fotso', texte: "N'oubliez pas le DM2.", time: 'Hier 14:00' },
     ],
   },
   {
-    id: '3', contact: 'Délégué (Emma B.)', initiales: 'EB', couleur: '#8B5CF6',
+    id: '3', contact: 'Délégué (Emma B.)', initiales: 'EB', couleur: '#8B5CF6', email: 'eb@uniflow.cm', bureau: 'Local Associatif',
     role: 'Déléguée L2 INFO', dernierMsg: 'Réunion annulée ce soir.', time: 'Lun', nonLu: 0,
     messages: [
       { id: 'm6', de: 'Emma B.', texte: 'La réunion de ce soir est annulée.', time: 'Lun 14:00' },
     ],
   },
   {
-    id: '4', contact: 'Admin UniFlow', initiales: 'AU', couleur: '#F59E0B',
+    id: '4', contact: 'Admin UniFlow', initiales: 'AU', couleur: '#F59E0B', email: 'admin@uniflow.cm', bureau: 'Scolarité',
     role: 'Administration', dernierMsg: 'Votre compte a été mis à jour.', time: 'Mar', nonLu: 0,
     messages: [
       { id: 'm7', de: 'Admin UniFlow', texte: 'Bonjour, votre compte a été mis à jour.', time: 'Mar 09:00' },
@@ -211,10 +193,6 @@ export const mockRooms = [
   { id: '2', nom: 'Amphi B', capacite: 500, type: 'Amphithéâtre', statut: 'Libre', equipements: ['Projecteur', 'WiFi'] },
   { id: '3', nom: 'Amphi C', capacite: 300, type: 'Amphithéâtre', statut: 'Libre', equipements: ['Projecteur', 'Climatisation'] },
   { id: '4', nom: 'Salle TD 101', capacite: 40, type: 'Salle de TD', statut: 'Occupée', equipements: ['Tableau blanc'] },
-  { id: '5', nom: 'Salle TD 102', capacite: 40, type: 'Salle de TD', statut: 'Libre', equipements: ['Tableau blanc', 'WiFi'] },
-  { id: '6', nom: 'Labo Info 1', capacite: 30, type: 'Laboratoire', statut: 'Maintenance', equipements: ['Ordinateurs', 'Projecteur', 'WiFi'] },
-  { id: '7', nom: 'Labo Info 2', capacite: 30, type: 'Laboratoire', statut: 'Libre', equipements: ['Ordinateurs', 'WiFi'] },
-  { id: '8', nom: 'Labo SVT', capacite: 25, type: 'Laboratoire', statut: 'Libre', equipements: ['Microscopes', 'Évier'] },
 ];
 
 // ── Visioconférence ───────────────────────────────────────────────────────────
@@ -229,4 +207,76 @@ export const mockVideoChat = [
   { id: '1', auteur: 'Emma Martin', initiales: 'EM', texte: 'Pouvez-vous répéter la partie sur les graphes ?', time: '10:15', moi: true },
   { id: '2', auteur: 'Prof. Dubois', initiales: 'PD', texte: 'Bien sûr, je reviens dessus', time: '10:15', moi: false },
   { id: '3', auteur: 'Lucas Bernard', initiales: 'LB', texte: "J'ai la même question que Emma", time: '10:16', moi: false },
+];
+
+// ── Ressources (Bibliothèque) ─────────────────────────────────────────────────
+export const mockResources = [
+  { id: '1', titre: 'Support de cours - Algorithmique des graphes', type: 'PDF', ue: 'INF301', enseignant: 'Dr. Nkam', dateAjout: '12 Mai 2024', taille: '2.4 MB', couleur: '#EF4444' },
+  { id: '2', titre: 'Tutoriel SQL Avancé', type: 'Vidéo', ue: 'INF302', enseignant: 'Pr. Fotso', dateAjout: '10 Mai 2024', taille: '450 MB', couleur: '#3B82F6' },
+  { id: '3', titre: 'Documentation Python 3', type: 'Lien', ue: 'INF301', enseignant: 'Dr. Nkam', dateAjout: '08 Mai 2024', taille: '-', couleur: '#10B981' },
+  { id: '4', titre: 'Exercices corrigés de Microéconomie', type: 'PDF', ue: 'ECO201', enseignant: 'Dr. Dubois', dateAjout: '05 Mai 2024', taille: '1.2 MB', couleur: '#EF4444' },
+  { id: '5', titre: 'Introduction au Machine Learning', type: 'Présentation', ue: 'AI401', enseignant: 'Dr. Lefèvre', dateAjout: '02 Mai 2024', taille: '15 MB', couleur: '#F59E0B' },
+  { id: '6', titre: 'Annales d\'examens 2020-2023', type: 'Archive', ue: 'Général', enseignant: 'Scolarité', dateAjout: '01 Mai 2024', taille: '25 MB', couleur: '#8B5CF6' },
+];
+
+// ── Tickets de support ────────────────────────────────────────────────────────
+export const mockTickets = [
+  { id: '#2847', sujet: 'Problème accès Moodle', statut: 'Open', date: 'Il y a 2h' },
+  { id: '#2801', sujet: 'Correction note Algèbre', statut: 'Résolu', date: 'Le 12/05' },
+  { id: '#2790', sujet: 'Demande de certificat de scolarité', statut: 'Résolu', date: 'Le 10/05' },
+];
+
+// ── Admin Dashboard Stats ─────────────────────────────────────────────────────
+export const mockAdminStats = {
+  etudiants: { value: 1247, delta: '+12', label: 'Étudiants actifs' },
+  enseignants: { value: 86, delta: '+2', label: 'Enseignants' },
+  cours: { value: 142, delta: '+5', label: 'Cours actifs' },
+  sessions: { value: 28, delta: '+3', label: 'Sessions aujourd\'hui' },
+  presences: { value: '89%', delta: '+2%', label: 'Taux présence global' },
+};
+
+export const mockAdminInscriptions = [
+  { mois: 'Jan', value: 120 },
+  { mois: 'Fév', value: 150 },
+  { mois: 'Mar', value: 180 },
+  { mois: 'Avr', value: 220 },
+  { mois: 'Mai', value: 310 },
+  { mois: 'Juin', value: 280 },
+];
+
+export const mockAdminFiliere = [
+  { name: 'Informatique', value: 450, color: '#1E3A8A' },
+  { name: 'Économie', value: 320, color: '#0D9488' },
+  { name: 'Mathématiques', value: 210, color: '#F59E0B' },
+  { name: 'Physique', value: 150, color: '#8B5CF6' },
+  { name: 'SVT', value: 117, color: '#10B981' },
+];
+
+export const mockAdminActivity = [
+  { id: '1', action: 'Nouveau cours créé', detail: 'IA Avancée par Dr. Lefèvre', time: 'Il y a 10 min', icon: 'BookOpen' },
+  { id: '2', action: 'Inscription étudiant', detail: '3 nouveaux étudiants en INFO', time: 'Il y a 1h', icon: 'UserPlus' },
+  { id: '3', action: 'Note modifiée', detail: 'Par Pr. Fotso (Mathématiques)', time: 'Il y a 2h', icon: 'Edit' },
+  { id: '4', action: 'Alerte présence', detail: 'Taux anormalement bas en L1 ECO', time: 'Il y a 4h', icon: 'AlertTriangle' },
+];
+
+// ── Admin Users ───────────────────────────────────────────────────────────────
+export const mockAdminUsers = [
+  { id: '1', nom: 'Emma Martin', email: 'emma.martin@uniflow.cm', role: 'Étudiant', filiere: 'Informatique', statut: 'Actif', appareil: 'MacBook Pro - Safari', matricule: '2023042', tel: '+237 6XX XX XX XX', inscription: '12/09/2023' },
+  { id: '2', nom: 'Dr. Nkam', email: 'nkam@uniflow.cm', role: 'Enseignant', filiere: 'Informatique', statut: 'Actif', appareil: 'Windows 10 - Chrome', matricule: 'ENS001', tel: '+237 6YY YY YY YY', inscription: '01/08/2020' },
+  { id: '3', nom: 'Pr. Fotso', email: 'fotso@uniflow.cm', role: 'Enseignant', filiere: 'Mathématiques', statut: 'Actif', appareil: 'iPad - Safari', matricule: 'ENS012', tel: '+237 6ZZ ZZ ZZ ZZ', inscription: '15/09/2018' },
+  { id: '4', nom: 'Admin Général', email: 'admin@uniflow.cm', role: 'Administrateur', filiere: '-', statut: 'Actif', appareil: 'Linux - Firefox', matricule: 'ADM001', tel: '+237 6AA AA AA AA', inscription: '01/01/2020' },
+  { id: '5', nom: 'Lucas Bernard', email: 'lucas.b@uniflow.cm', role: 'Étudiant', filiere: 'Économie', statut: 'Inactif', appareil: 'iPhone - Safari', matricule: '2023089', tel: '+237 6BB BB BB BB', inscription: '14/09/2023' },
+  { id: '6', nom: 'Chloé Dubois', email: 'chloe.d@uniflow.cm', role: 'Étudiant', filiere: 'Physique', statut: 'Actif', appareil: 'Windows 11 - Edge', matricule: '2023102', tel: '+237 6CC CC CC CC', inscription: '15/09/2023' },
+  { id: '7', nom: 'Hugo Leroy', email: 'hugo.l@uniflow.cm', role: 'Étudiant', filiere: 'SVT', statut: 'Suspendu', appareil: 'Android - Chrome', matricule: '2023204', tel: '+237 6DD DD DD DD', inscription: '18/09/2023' },
+  { id: '8', nom: 'Dr. Dubois', email: 'dubois@uniflow.cm', role: 'Enseignant', filiere: 'Économie', statut: 'Actif', appareil: 'MacBook Air - Safari', matricule: 'ENS045', tel: '+237 6EE EE EE EE', inscription: '10/08/2021' },
+];
+
+// ── Admin Courses ─────────────────────────────────────────────────────────────
+export const mockAdminCoursesData = [
+  { id: '1', code: 'INF301', intitule: 'Algorithmique — Mathématiques', semestre: 'S5', enseignant: 'Dr. Nkam', etudiants: 145, presence: 85, statut: 'Actif', couleur: '#1E3A8A' },
+  { id: '2', code: 'ECO201', intitule: 'Économie', semestre: 'S3', enseignant: 'Dr. Dubois', etudiants: 210, presence: 60, statut: 'Actif', couleur: '#0D9488' },
+  { id: '3', code: 'INF302', intitule: 'Réseaux Informatiques', semestre: 'S5', enseignant: 'Dr. Nkam', etudiants: 145, presence: 45, statut: 'Brouillon', couleur: '#3B82F6' },
+  { id: '4', code: 'AI401', intitule: 'Intelligence Artificielle', semestre: 'S7', enseignant: 'Dr. Lefèvre', etudiants: 80, presence: 87, statut: 'Actif', couleur: '#8B5CF6' },
+  { id: '5', code: 'ECO301', intitule: 'Économie Avancée', semestre: 'S5', enseignant: 'Pr. Fotso', etudiants: 120, presence: 55, statut: 'Archivé', couleur: '#F59E0B' },
+  { id: '6', code: 'PHY101', intitule: 'Philosophie', semestre: 'S1', enseignant: 'Pr. Bernard', etudiants: 200, presence: 30, statut: 'Brouillon', couleur: '#10B981' },
 ];
