@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { Search, Bell } from 'lucide-react'
-import { navItems, currentUser, Role } from '../../data/navigation'
+import type { Role } from '../../data/navigation'
+import { navItems, currentUser } from '../../data/navigation'
 import { Avatar } from '../ui/Avatar'
 import { cn } from '../../utils/cn'
 

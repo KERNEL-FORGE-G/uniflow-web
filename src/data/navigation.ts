@@ -2,21 +2,14 @@ import {
   Home,
   BookOpen,
   Calendar,
-  ClipboardList,
   UserCheck,
   MessageSquare,
-  Bell,
   Settings,
   GraduationCap,
-  Library,
-  HelpCircle,
   BarChart3,
-  FileText,
   Users,
   BookMarked,
-  Megaphone,
   Database,
-  HeadphonesIcon,
 } from 'lucide-react'
 
 export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
@@ -37,11 +30,6 @@ export const navItems = [
   // Commun
   { to: '/app/messages', icon: MessageSquare, label: 'Messages', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/parametres', icon: Settings, label: 'Paramètres', roles: ['student', 'delegate', 'teacher', 'admin'] },
-]
-
-// ... (keep adminNavGroups or adapt it)
-export const adminNavGroups = [
-  // ...
 ]
 
 export const adminNavGroups = [
