@@ -1,10 +1,15 @@
 import { NavLink } from 'react-router-dom'
 import { Search, Bell } from 'lucide-react'
-import { studentNavItems, currentUser } from '../../data/navigation'
+import { navItems, currentUser, Role } from '../../data/navigation'
 import { Avatar } from '../ui/Avatar'
 import { cn } from '../../utils/cn'
 
 export function Sidebar() {
+  // Determine role based on currentUser (needs a better mapping from role string to Role type)
+  const userRole: Role = currentUser.role.toLowerCase().includes('étudiant') ? 'student' : 'student'; 
+
+  const filteredNav = navItems.filter(item => item.roles.includes(userRole));
+
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-border bg-white">
       <div className="flex items-center gap-2 border-b border-border px-5 py-4">
@@ -27,7 +32,7 @@ export function Sidebar() {
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
-          {studentNavItems.map(({ to, icon: Icon, label, end }) => (
+          {filteredNav.map(({ to, icon: Icon, label, end }) => (
             <li key={to}>
               <NavLink
                 to={to}

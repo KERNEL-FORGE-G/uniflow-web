@@ -19,18 +19,29 @@ import {
   HeadphonesIcon,
 } from 'lucide-react'
 
-export const studentNavItems = [
-  { to: '/app', icon: Home, label: 'Accueil', end: true },
-  { to: '/app/cours', icon: BookOpen, label: 'Cours' },
-  { to: '/app/emploi-du-temps', icon: Calendar, label: 'Emploi du temps' },
-  { to: '/app/devoirs', icon: ClipboardList, label: 'Devoirs' },
-  { to: '/app/presences', icon: UserCheck, label: 'Présences' },
-  { to: '/app/notes', icon: GraduationCap, label: 'Notes' },
-  { to: '/app/messages', icon: MessageSquare, label: 'Messages' },
-  { to: '/app/notifications', icon: Bell, label: 'Notifications' },
-  { to: '/app/bibliotheque', icon: Library, label: 'Ressources' },
-  { to: '/app/aide', icon: HelpCircle, label: 'Aide' },
-  { to: '/app/parametres', icon: Settings, label: 'Paramètres' },
+export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
+
+export const navItems = [
+  // Étudiant
+  { to: '/app', icon: Home, label: 'Accueil', end: true, roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/cours', icon: BookOpen, label: 'Cours', roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/emploi-du-temps', icon: Calendar, label: 'Emploi du temps', roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/presences', icon: UserCheck, label: 'Présences', roles: ['student', 'delegate'] },
+  
+  // Délégué (rôle spécial)
+  { to: '/app/gestion-presences', icon: UserCheck, label: 'Gérer Présences', roles: ['delegate'] },
+  
+  // Enseignant
+  { to: '/app/mes-cours-enseignant', icon: BookMarked, label: 'Mes Cours', roles: ['teacher'] },
+  
+  // Commun
+  { to: '/app/messages', icon: MessageSquare, label: 'Messages', roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/parametres', icon: Settings, label: 'Paramètres', roles: ['student', 'delegate', 'teacher', 'admin'] },
+]
+
+// ... (keep adminNavGroups or adapt it)
+export const adminNavGroups = [
+  // ...
 ]
 
 export const adminNavGroups = [
@@ -38,28 +49,29 @@ export const adminNavGroups = [
     title: "Vue d'ensemble",
     items: [
       { to: '/admin', icon: BarChart3, label: 'Tableau de bord', end: true },
-      { to: '/admin/statistiques', icon: BarChart3, label: 'Statistiques' },
-      { to: '/admin/rapports', icon: FileText, label: 'Rapports' },
     ],
   },
   {
-    title: 'Gestion',
+    title: 'Gestion Académique',
+    items: [
+      { to: '/admin/structure', icon: Database, label: 'Structure Académique' },
+      { to: '/admin/ue', icon: BookOpen, label: 'UE' },
+      { to: '/admin/cours', icon: BookMarked, label: 'Cours' },
+      { to: '/admin/salles', icon: Calendar, label: 'Salles' },
+    ],
+  },
+  {
+    title: 'Gestion Utilisateurs',
     items: [
       { to: '/admin/utilisateurs', icon: Users, label: 'Utilisateurs' },
-      { to: '/admin/cours', icon: BookMarked, label: 'Cours' },
-      { to: '/admin/inscriptions', icon: ClipboardList, label: 'Inscriptions' },
-      { to: '/admin/presences', icon: UserCheck, label: 'Présences' },
-      { to: '/admin/devoirs', icon: ClipboardList, label: 'Devoirs' },
-      { to: '/admin/annonces', icon: Megaphone, label: 'Annonces' },
+      { to: '/admin/etudiants', icon: GraduationCap, label: 'Étudiants' },
+      { to: '/admin/enseignants', icon: UserCheck, label: 'Enseignants' },
     ],
   },
   {
     title: 'Système',
     items: [
       { to: '/admin/parametres', icon: Settings, label: 'Paramètres' },
-      { to: '/admin/sauvegardes', icon: Database, label: 'Sauvegardes' },
-      { to: '/admin/logs', icon: FileText, label: 'Logs' },
-      { to: '/admin/support', icon: HeadphonesIcon, label: 'Support' },
     ],
   },
 ]
