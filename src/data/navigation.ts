@@ -10,6 +10,8 @@ import {
   Users,
   BookMarked,
   Database,
+  ClipboardList,
+  HelpCircle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -18,7 +20,8 @@ export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
 export interface NavItem {
   to: string
   icon: LucideIcon
-  label: string
+  labelFr: string
+  labelEn: string
   end?: boolean
   roles?: Role[]
 }
@@ -29,59 +32,57 @@ export interface AdminNavGroup {
 }
 
 export const navItems: NavItem[] = [
-  // Étudiant
-  { to: '/app', icon: Home, label: 'Accueil', end: true, roles: ['student', 'delegate', 'teacher'] },
-  { to: '/app/cours', icon: BookOpen, label: 'Cours', roles: ['student', 'delegate', 'teacher'] },
-  { to: '/app/emploi-du-temps', icon: Calendar, label: 'Emploi du temps', roles: ['student', 'delegate', 'teacher'] },
-  { to: '/app/presences', icon: UserCheck, label: 'Présences', roles: ['student', 'delegate'] },
+  // Commun / Student & Delegate
+  { to: '/app', icon: Home, labelFr: 'Accueil', labelEn: 'Dashboard', end: true, roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/cours', icon: BookOpen, labelFr: 'Mes cours', labelEn: 'My Courses', roles: ['student', 'delegate'] },
+  { to: '/app/emploi-du-temps', icon: Calendar, labelFr: 'Emploi du temps', labelEn: 'Schedule', roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/presences', icon: UserCheck, labelFr: 'Présences', labelEn: 'My Attendance', roles: ['student', 'delegate'] },
   
-  // Délégué (rôle spécial)
-  { to: '/app/gestion-presences', icon: UserCheck, label: 'Gérer Présences', roles: ['delegate'] },
+  // Devoirs & Notes
+  { to: '/app/devoirs', icon: ClipboardList, labelFr: 'Devoirs', labelEn: 'Assignments', roles: ['student', 'delegate'] },
+  { to: '/app/notes', icon: GraduationCap, labelFr: 'Mes notes', labelEn: 'My Grades', roles: ['student', 'delegate'] },
   
-  // Enseignant
-  { to: '/app/mes-cours-enseignant', icon: BookMarked, label: 'Mes Cours', roles: ['teacher'] },
+  // Délégué Spécifique
+  { to: '/app/gestion-presences', icon: UserCheck, labelFr: 'Gérer Présences', labelEn: 'Manage Attendance', roles: ['delegate'] },
+
+  // Enseignant Spécifique
+  { to: '/app/mes-cours-enseignant', icon: BookMarked, labelFr: 'Espace Pédagogique', labelEn: 'Teacher Space', roles: ['teacher'] },
   
   // Commun
-  { to: '/app/messages', icon: MessageSquare, label: 'Messages', roles: ['student', 'delegate', 'teacher'] },
-  { to: '/app/parametres', icon: Settings, label: 'Paramètres', roles: ['student', 'delegate', 'teacher', 'admin'] },
+  { to: '/app/messages', icon: MessageSquare, labelFr: 'Messages', labelEn: 'Messages', roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/bibliotheque', icon: BookMarked, labelFr: 'Bibliothèque', labelEn: 'Library', roles: ['student', 'delegate'] },
+  { to: '/app/parametres', icon: Settings, labelFr: 'Paramètres', labelEn: 'Settings', roles: ['student', 'delegate', 'teacher', 'admin'] },
+  { to: '/app/aide', icon: HelpCircle, labelFr: 'Aide & FAQ', labelEn: 'Help & FAQ', roles: ['student', 'delegate', 'teacher'] },
 ]
 
 export const adminNavGroups: AdminNavGroup[] = [
   {
     title: "Vue d'ensemble",
     items: [
-      { to: '/admin', icon: BarChart3, label: 'Tableau de bord', end: true },
+      { to: '/admin', icon: BarChart3, labelFr: 'Tableau de bord', labelEn: 'Admin Dashboard', end: true },
     ],
   },
   {
     title: 'Gestion Académique',
     items: [
-      { to: '/admin/structure', icon: Database, label: 'Structure Académique' },
-      { to: '/admin/ue', icon: BookOpen, label: 'UE' },
-      { to: '/admin/cours', icon: BookMarked, label: 'Cours' },
-      { to: '/admin/salles', icon: Calendar, label: 'Salles' },
+      { to: '/admin/structure', icon: Database, labelFr: 'Structure Académique', labelEn: 'Academic Structure' },
+      { to: '/admin/ue', icon: BookOpen, labelFr: 'UE', labelEn: 'Teaching Units' },
+      { to: '/admin/cours', icon: BookMarked, labelFr: 'Cours', labelEn: 'Courses' },
+      { to: '/admin/salles', icon: Calendar, labelFr: 'Salles', labelEn: 'Classrooms' },
     ],
   },
   {
     title: 'Gestion Utilisateurs',
     items: [
-      { to: '/admin/utilisateurs', icon: Users, label: 'Utilisateurs' },
-      { to: '/admin/etudiants', icon: GraduationCap, label: 'Étudiants' },
-      { to: '/admin/enseignants', icon: UserCheck, label: 'Enseignants' },
+      { to: '/admin/utilisateurs', icon: Users, labelFr: 'Utilisateurs', labelEn: 'Users' },
+      { to: '/admin/etudiants', icon: GraduationCap, labelFr: 'Étudiants', labelEn: 'Students' },
+      { to: '/admin/enseignants', icon: UserCheck, labelFr: 'Enseignants', labelEn: 'Teachers' },
     ],
   },
   {
     title: 'Système',
     items: [
-      { to: '/admin/parametres', icon: Settings, label: 'Paramètres' },
+      { to: '/admin/parametres', icon: Settings, labelFr: 'Paramètres', labelEn: 'Settings' },
     ],
   },
 ]
-
-export const currentUser = {
-  name: 'Emma Martin',
-  role: 'Étudiante - L2 Info',
-  email: 'emma.martin@uniflow.edu',
-  avatar: undefined as string | undefined,
-  status: 'En ligne' as const,
-}
