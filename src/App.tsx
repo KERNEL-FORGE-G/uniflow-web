@@ -19,6 +19,13 @@ import HelpPage from './pages/HelpPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import AdminCoursesPage from './pages/admin/AdminCoursesPage'
+import StudentsPage from './pages/admin/StudentsPage'
+import TeachersPage from './pages/admin/TeachersPage'
+import AcademicStructurePage from './pages/admin/AcademicStructurePage'
+import UEPage from './pages/admin/UEPage'
+import ClassroomsPage from './pages/admin/ClassroomsPage'
+import LoginPage from './pages/auth/LoginPage'
+import RegisterPage from './pages/auth/RegisterPage'
 
 function StudentApp({ children }: { children: React.ReactNode }) {
   return <AppLayout>{children}</AppLayout>
@@ -28,6 +35,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
       {/* Partie 1 — Dashboard */}
       <Route path="/app" element={<StudentApp><DashboardPage /></StudentApp>} />
@@ -57,7 +66,12 @@ export default function App() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
         <Route path="utilisateurs" element={<AdminUsersPage />} />
+        <Route path="etudiants" element={<StudentsPage />} />
+        <Route path="enseignants" element={<TeachersPage />} />
+        <Route path="structure" element={<AcademicStructurePage />} />
         <Route path="cours" element={<AdminCoursesPage />} />
+        <Route path="ue" element={<UEPage />} />
+        <Route path="salles" element={<ClassroomsPage />} />
         <Route path="*" element={<AdminDashboardPage />} />
       </Route>
 
