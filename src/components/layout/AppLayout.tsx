@@ -9,7 +9,7 @@ export function Sidebar() {
   // Determine role based on currentUser (needs a better mapping from role string to Role type)
   const userRole: Role = currentUser.role.toLowerCase().includes('étudiant') ? 'student' : 'student'; 
 
-  const filteredNav = navItems.filter(item => item.roles.includes(userRole));
+  const filteredNav = navItems.filter(item => item.roles && item.roles.includes(userRole));
 
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-border bg-white">
