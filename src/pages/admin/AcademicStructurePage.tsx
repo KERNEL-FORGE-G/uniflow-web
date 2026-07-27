@@ -1,5 +1,3 @@
-import React from 'react';
-
 const AcademicStructurePage = () => {
   return (
     <div className="p-6">

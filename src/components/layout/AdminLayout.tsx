@@ -17,7 +17,7 @@ function AdminSidebar() {
           <div key={group.title} className="mb-6">
             <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted">{group.title}</p>
             <ul className="space-y-1">
-              {group.items.map(({ to, icon: Icon, label, end }) => (
+              {group.items.map(({ to, icon: Icon, labelFr, end }) => (
                 <li key={to}>
                   <NavLink
                     to={to}
@@ -32,7 +32,7 @@ function AdminSidebar() {
                     }
                   >
                     <Icon className="h-5 w-5 shrink-0" />
-                    {label}
+                    {labelFr}
                   </NavLink>
                 </li>
               ))}
