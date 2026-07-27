@@ -10,11 +10,25 @@ import {
   Users,
   BookMarked,
   Database,
+  type LucideIcon,
 } from 'lucide-react'
 
 export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
 
-export const navItems = [
+export interface NavItem {
+  to: string
+  icon: LucideIcon
+  label: string
+  end?: boolean
+  roles?: Role[]
+}
+
+export interface AdminNavGroup {
+  title: string
+  items: NavItem[]
+}
+
+export const navItems: NavItem[] = [
   // Étudiant
   { to: '/app', icon: Home, label: 'Accueil', end: true, roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/cours', icon: BookOpen, label: 'Cours', roles: ['student', 'delegate', 'teacher'] },
@@ -32,7 +46,7 @@ export const navItems = [
   { to: '/app/parametres', icon: Settings, label: 'Paramètres', roles: ['student', 'delegate', 'teacher', 'admin'] },
 ]
 
-export const adminNavGroups = [
+export const adminNavGroups: AdminNavGroup[] = [
   {
     title: "Vue d'ensemble",
     items: [
