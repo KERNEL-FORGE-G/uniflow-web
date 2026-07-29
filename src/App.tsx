@@ -31,6 +31,9 @@ import AdminClassroomsPage from './pages/admin/ClassroomsPage'
 import ClassroomsPage from './pages/ClassroomsPage'
 import CourseDetailPage from './pages/CourseDetailPage'
 import PresentationPage from './pages/PresentationPage'
+import AboutPage from './pages/AboutPage'
+import PricingPage from './pages/PricingPage'
+import ContactPage from './pages/ContactPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 
@@ -43,6 +46,9 @@ export default function App() {
     <RoleProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/presentation" element={<PresentationPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

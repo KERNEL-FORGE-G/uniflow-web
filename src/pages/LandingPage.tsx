@@ -25,10 +25,10 @@ export default function LandingPage() {
             <img src="/logos/logo-principal.png" alt="UniFlow" className="h-10 w-auto object-contain" />
           </div>
           <div className="hidden items-center gap-8 md:flex">
-            {['Fonctionnalités', 'À propos', 'Tarifs', 'Contact'].map(label => (
-              <a key={label} href={`#${label.toLowerCase().replace('é','e').replace('à','a')}`}
-                className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">{label}</a>
-            ))}
+            <a href="#fonctionnalites" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">Fonctionnalités</a>
+            <Link to="/about" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">À propos</Link>
+            <Link to="/pricing" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">Tarifs</Link>
+            <Link to="/contact" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">Contact</Link>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/login"
