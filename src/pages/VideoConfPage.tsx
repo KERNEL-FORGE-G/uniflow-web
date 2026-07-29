@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   Mic, MicOff, Video, VideoOff, MonitorUp, Users, MessageSquare,
   MoreHorizontal, PhoneOff, Radio, Hand, Download, AlertCircle,
-  Sparkles, Wifi, WifiOff, Shield, VolumeX, HardDrive, Send, X
+  Sparkles, Wifi, WifiOff, Shield, VolumeX, HardDrive, Send
 } from 'lucide-react'
 import { useUserRole } from '../utils/userRole'
 import { Avatar } from '../components/ui/Avatar'

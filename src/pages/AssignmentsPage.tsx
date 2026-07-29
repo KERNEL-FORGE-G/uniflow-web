@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Plus, Clock, CheckCircle, AlertCircle, FileText, ChevronRight, X } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { mockAssignments, type AssignmentStatus } from '../data/mockData'
-import { useNavigate } from 'react-router-dom'
 
 const statusMeta: Record<AssignmentStatus, { variant: 'warning'|'danger'|'success'|'info'; icon: any; label: string }> = {
   'À rendre': { variant: 'warning', icon: Clock,        label: 'À rendre' },
@@ -19,7 +18,7 @@ const summary = [
 ] as const
 
 export default function AssignmentsPage() {
-  const navigate = useNavigate()
+
   const [filter, setFilter] = useState<AssignmentStatus | 'Tous'>('Tous')
   const [showNew, setShowNew] = useState(false)
   const [newTitle, setNewTitle] = useState('')

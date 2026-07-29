@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Download, Printer, Sparkles, X } from 'lucide-react'
-import { Badge } from '../components/ui/Badge'
+
 import { mockScheduleEvents, eventColors, type ScheduleEvent } from '../data/mockData'
 
 const hours = ['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00']

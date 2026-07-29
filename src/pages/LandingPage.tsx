@@ -22,7 +22,7 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-50 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e3a8a] text-white font-black text-lg">U</div>
+            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-8 w-auto object-contain" />
             <span className="text-lg font-bold text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
           </div>
           <div className="hidden items-center gap-8 md:flex">
@@ -91,11 +91,11 @@ export default function LandingPage() {
                   https://www.uniflow.education
                 </div>
               </div>
-              {/* Hero illustration area */}
+              {/* Hero illustration area with mascotte */}
               <div className="bg-gradient-to-br from-[#eff3ff] via-white to-[#f0fdfa] p-8 min-h-[280px] flex items-center justify-center">
                 <div className="text-center">
-                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1e3a8a] shadow-lg">
-                    <span className="text-4xl font-black text-white">U</span>
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl overflow-hidden">
+                    <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain" />
                   </div>
                   <p className="text-lg font-bold text-[#1e3a8a]">UniFlow Dashboard</p>
                   <p className="text-sm text-[#6b7280] mt-1">Interfaces Web Responsive</p>
@@ -184,7 +184,7 @@ export default function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-[#e5e7eb] py-8 text-center text-sm text-[#9ca3af]">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded bg-[#1e3a8a] text-white font-bold text-xs">U</div>
+          <img src="/logos/logo-principal.png" alt="UniFlow" className="h-6 w-auto object-contain" />
           <span className="font-semibold text-[#374151]">UniFlow</span>
         </div>
         <p>© 2024 UniFlow — KERNEL FORGE · Université de Yaoundé I · Licence MIT</p>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check, BookOpen, TrendingUp, BarChart3 } from 'lucide-react'
+import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
@@ -9,7 +9,7 @@ import { mockTeacherCourses, mockTeacherStudents, mockResources, type TeacherStu
 const CC_W = 0.3, EXAM_W = 0.7
 
 export default function TeacherCoursesPage() {
-  const { language } = useUserRole()
+  const {} = useUserRole()
   const navigate = useNavigate()
   const [selCode, setSelCode] = useState('INFO101')
   const [students, setStudents] = useState<TeacherStudent[]>(mockTeacherStudents)

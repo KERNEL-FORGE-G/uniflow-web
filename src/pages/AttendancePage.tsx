@@ -11,8 +11,7 @@ const statusVariant: Record<AttendanceStatus, 'success'|'warning'|'danger'> = {
 
 export default function AttendancePage() {
   const [showQR, setShowQR] = useState(false)
-  const [qrTimer, setQrTimer] = useState(532) // seconds
-  const [activeUE, setActiveUE] = useState('Tous')
+  const [qrTimer] = useState(532) // seconds
 
   const total = mockAttendanceStudents.length
   const globalRate = Math.round(mockAttendanceStudents.reduce((s, st) => s + st.rate, 0) / total)

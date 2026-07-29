@@ -31,9 +31,10 @@ export default function RegisterPage() {
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-[#0d9488] p-12">
         <div className="max-w-md text-center text-white">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
-            <span className="text-3xl font-black text-white">U</span>
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center">
+            <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain drop-shadow-2xl" />
           </div>
+          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-10 mb-2 object-contain brightness-0 invert" />
           <h1 className="text-3xl font-extrabold">Rejoignez UniFlow</h1>
           <p className="mt-3 text-teal-100 text-base">Créez votre espace en quelques minutes.</p>
           <div className="mt-8 space-y-3 text-left">
@@ -56,7 +57,7 @@ export default function RegisterPage() {
       <div className="flex flex-1 items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1e3a8a] text-white font-black text-lg">U</div>
+            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-9 w-auto object-contain" />
             <span className="text-xl font-bold text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
           </div>
 

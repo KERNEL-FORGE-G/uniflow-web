@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Search, Bell, LogOut, Wifi, WifiOff, Globe, ChevronDown } from 'lucide-react'
 import { useUserRole } from '../../utils/userRole'
 import { navItems } from '../../data/navigation'
@@ -8,14 +8,14 @@ import { useState } from 'react'
 import { mockNotifications } from '../../data/mockData'
 
 export function Sidebar() {
-  const { currentRole, setCurrentRole, currentUser, isOfflineMode, setIsOfflineMode, language, setLanguage } = useUserRole()
+  const { currentRole, currentUser, isOfflineMode, setIsOfflineMode, language, setLanguage } = useUserRole()
   const filteredNav = navItems.filter(item => item.roles && item.roles.includes(currentRole))
 
   return (
     <aside className="flex h-screen w-[220px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white">
       {/* Logo */}
       <div className="flex items-center gap-2.5 border-b border-[#e5e7eb] px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e3a8a] text-white font-black text-lg select-none">U</div>
+        <img src="/logos/logo-principal.png" alt="UniFlow" className="h-8 w-auto object-contain" />
         <span className="text-[17px] font-bold tracking-tight text-[#111827]">
           Uni<span className="text-[#0d9488]">Flow</span>
         </span>
@@ -37,16 +37,7 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* Role switcher */}
-        <select
-          value={currentRole}
-          onChange={(e) => setCurrentRole(e.target.value as any)}
-          className="mt-2 w-full rounded-lg border border-[#e5e7eb] bg-white px-2.5 py-1.5 text-xs font-medium text-[#374151] outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
-        >
-          <option value="student">🎓 Espace Étudiant</option>
-          <option value="delegate">📢 Espace Délégué</option>
-          <option value="teacher">👨‍🏫 Espace Enseignant</option>
-        </select>
+        {/* Role switcher - REMOVED */}
       </div>
 
       {/* Nav */}
@@ -108,7 +99,7 @@ export function Sidebar() {
 export function TopBar() {
   const navigate = useNavigate()
   const { language, currentUser } = useUserRole()
-  const [showNotifDropdown, setShowNotifDropdown] = useState(false)
+  const [, setShowNotifDropdown] = useState(false)
   const unreadCount = mockNotifications.filter(n => n.unread).length
 
   return (

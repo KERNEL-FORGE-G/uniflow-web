@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage'
 import SchedulePage from './pages/SchedulePage'
 import AttendancePage from './pages/AttendancePage'
 import VideoConfPage from './pages/VideoConfPage'
+import VideoConferenceRoomPage from './pages/VideoConferenceRoomPage'
 import NotificationsPage from './pages/NotificationsPage'
 import AssignmentsPage from './pages/AssignmentsPage'
 import GradesPage from './pages/GradesPage'
@@ -53,6 +54,7 @@ export default function App() {
 
         {/* Partie 3 — Présences, Visioconf, Notifications */}
         <Route path="/app/presences" element={<StudentApp><AttendancePage /></StudentApp>} />
+        <Route path="/app/visio" element={<StudentApp><VideoConferenceRoomPage /></StudentApp>} />
         <Route path="/app/visioconference" element={<VideoConfPage />} />
         <Route path="/app/notifications" element={<StudentApp><NotificationsPage /></StudentApp>} />
 

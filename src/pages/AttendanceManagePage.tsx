@@ -44,14 +44,7 @@ export default function AttendanceManagePage() {
     setTimeout(() => setSaved(false), 3500)
   }
 
-  const iconBtn = (status: RollStatus, current: RollStatus, icon: React.ReactNode, active: string, inactive: string) => (
-    <label className="inline-flex cursor-pointer">
-      <input type="radio" className="sr-only" checked={current === status} onChange={() => {}} />
-      <span onClick={() => {}} className={cn('flex h-7 w-7 items-center justify-center rounded-full border text-xs font-bold transition-all cursor-pointer', current === status ? active : inactive)}>
-        {icon}
-      </span>
-    </label>
-  )
+
 
   return (
     <div className="space-y-5 animate-fade-in">

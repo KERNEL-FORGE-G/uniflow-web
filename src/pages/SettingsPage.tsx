@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Camera, Bell, Globe, Shield, Database, HelpCircle, Save } from 'lucide-react'
+import { Camera, Bell, Globe, Shield, Database, Save } from 'lucide-react'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
 import { mockUsers } from '../data/mockData'

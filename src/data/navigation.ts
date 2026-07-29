@@ -12,6 +12,7 @@ import {
   Database,
   ClipboardList,
   HelpCircle,
+  Video,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -49,6 +50,7 @@ export const navItems: NavItem[] = [
   { to: '/app/mes-cours-enseignant', icon: BookMarked, labelFr: 'Espace Pédagogique', labelEn: 'Teacher Space', roles: ['teacher'] },
   
   // Commun
+  { to: '/app/visio', icon: Video, labelFr: 'Visioconférence', labelEn: 'Video Conference', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/messages', icon: MessageSquare, labelFr: 'Messages', labelEn: 'Messages', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/bibliotheque', icon: BookMarked, labelFr: 'Bibliothèque', labelEn: 'Library', roles: ['student', 'delegate'] },
   { to: '/app/parametres', icon: Settings, labelFr: 'Paramètres', labelEn: 'Settings', roles: ['student', 'delegate', 'teacher', 'admin'] },

@@ -1,8 +1,23 @@
 import { useState } from 'react'
-import { Filter, LayoutGrid, List, BookOpen, Clock, Users, ChevronRight } from 'lucide-react'
+import { Filter, LayoutGrid, List, BookOpen, Clock, Users, ChevronRight, Code2, Database, Network, Brain, DollarSign, BookMarked, Laptop, GraduationCap } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { useNavigate } from 'react-router-dom'
 import { mockCourses } from '../data/mockData'
+import type { LucideIcon } from 'lucide-react'
+
+// Map course codes to icons
+const courseIconMap: Record<string, LucideIcon> = {
+  'INFO101': Code2,       // Algorithmique
+  'INFO201': Database,    // Bases de données
+  'INFO301': Network,     // Réseaux
+  'INFO401': Brain,       // IA
+  'ECO101': DollarSign,   // Économie
+  'PHIL101': BookMarked,  // Philosophie
+}
+
+const getCourseIcon = (code: string): LucideIcon => {
+  return courseIconMap[code] || GraduationCap // Default icon
+}
 
 const tabs = ['Tous', 'En cours', 'À venir', 'Terminés'] as const
 type Tab = typeof tabs[number]
@@ -74,14 +89,20 @@ export default function CoursesPage() {
               <p className="font-medium">Aucun cours trouvé</p>
             </div>
           )}
-          {filtered.map(course => (
-            view === 'grid' ? (
+          {filtered.map(course => {
+            const CourseIcon = getCourseIcon(course.code)
+            return view === 'grid' ? (
               <div key={course.id} className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm hover:shadow-md transition-all overflow-hidden group">
-                {/* Cover */}
-                <div className={`h-28 bg-gradient-to-r ${course.color} relative p-4 flex flex-col justify-end`}>
-                  <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
+                {/* Cover with icon */}
+                <div className={`h-28 bg-gradient-to-r ${course.color} relative p-4 flex flex-col justify-between`}>
+                  <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm self-start">
                     {course.code}
                   </span>
+                  <div className="flex justify-center items-center">
+                    <div className="rounded-xl bg-white/20 backdrop-blur-sm p-3">
+                      <CourseIcon className="h-10 w-10 text-white" strokeWidth={1.5} />
+                    </div>
+                  </div>
                 </div>
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2 mb-1">
@@ -105,16 +126,17 @@ export default function CoursesPage() {
                       <div className="h-full rounded-full bg-[#0d9488] transition-all" style={{ width: `${course.progress}%` }} />
                     </div>
                   </div>
-                  <button onClick={() => navigate('/app/visioconference')}
-                    className="mt-4 w-full rounded-lg bg-[#1e3a8a] py-2 text-xs font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+                  <button onClick={() => navigate('/app/visio')}
+                    className="mt-4 w-full rounded-lg bg-[#1e3a8a] py-2 text-xs font-semibold text-white hover:bg-[#2d4fa8] transition-colors flex items-center justify-center gap-1.5">
+                    <Laptop className="h-3.5 w-3.5" />
                     Continuer
                   </button>
                 </div>
               </div>
             ) : (
               <div key={course.id} className="flex items-center gap-4 rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm hover:shadow-md transition-all">
-                <div className={`h-12 w-12 rounded-lg bg-gradient-to-br ${course.color} flex items-center justify-center text-white font-bold text-xs shrink-0`}>
-                  {course.code.slice(0, 4)}
+                <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${course.color} flex items-center justify-center shrink-0`}>
+                  <CourseIcon className="h-7 w-7 text-white" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -134,7 +156,7 @@ export default function CoursesPage() {
                 </button>
               </div>
             )
-          ))}
+          })}
         </div>
 
         {/* Sidebar: upcoming homework */}

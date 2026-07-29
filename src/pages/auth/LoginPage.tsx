@@ -43,9 +43,10 @@ export default function LoginPage() {
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-[#1e3a8a] p-12">
         <div className="max-w-md text-center text-white">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
-            <span className="text-3xl font-black text-white">U</span>
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center">
+            <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain drop-shadow-2xl" />
           </div>
+          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-10 mb-2 object-contain brightness-0 invert" />
           <h1 className="text-3xl font-extrabold">UniFlow</h1>
           <p className="mt-3 text-blue-200 text-lg">La plateforme universitaire intelligente</p>
           <div className="mt-10 space-y-4 text-left">
@@ -71,7 +72,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1e3a8a] text-white font-black text-lg">U</div>
+            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-9 w-auto object-contain" />
             <span className="text-xl font-bold text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
           </div>
 

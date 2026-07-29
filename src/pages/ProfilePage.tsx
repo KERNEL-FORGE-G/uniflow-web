@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Edit, Users, Star, TrendingUp, BookOpen, UserCheck, Camera } from 'lucide-react'
+import { Edit, Users, Star, TrendingUp, UserCheck, Camera } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'

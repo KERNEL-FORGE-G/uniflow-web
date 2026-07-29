@@ -8,7 +8,7 @@ function AdminSidebar() {
   return (
     <aside className="flex h-screen w-[220px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white">
       <div className="flex items-center gap-2.5 border-b border-[#e5e7eb] px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e3a8a] text-white font-black text-lg">U</div>
+        <img src="/logos/logo-principal.png" alt="UniFlow Admin" className="h-8 w-auto object-contain" />
         <div>
           <span className="text-[17px] font-bold tracking-tight text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
           <p className="text-[10px] font-semibold text-[#6b7280] uppercase tracking-wider">Administration</p>

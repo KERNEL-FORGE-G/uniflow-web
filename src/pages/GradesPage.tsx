@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Download, Eye, TrendingUp } from 'lucide-react'
+import { Download, Eye } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { mockGrades, mockGradesEvolution, mockRadarData } from '../data/mockData'
 import {
@@ -144,7 +144,7 @@ export default function GradesPage() {
           <LineChart data={mockGradesEvolution} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
             <XAxis dataKey="sem" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis domain={[10, 16]} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(v: any, n: string) => [`${v}/20`, n]} />
+            <Tooltip formatter={(v: any) => [`${v}/20`]} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Line type="monotone" dataKey="personal" name="Moyenne personnelle" stroke="#1e3a8a" strokeWidth={2.5} dot={{ r: 4, fill: '#1e3a8a' }} />
             <Line type="monotone" dataKey="classAvg" name="Moyenne classe" stroke="#0d9488" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 3, fill: '#0d9488' }} />

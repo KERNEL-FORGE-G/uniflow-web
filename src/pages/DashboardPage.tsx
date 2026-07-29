@@ -1,10 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { BookOpen, ClipboardList, Clock, TrendingUp, UserCheck, ChevronUp, ChevronDown, Calendar, Bell } from 'lucide-react'
-import { Card } from '../components/ui/Card'
+
 import { Badge } from '../components/ui/Badge'
 import { useUserRole } from '../utils/userRole'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
-import { mockGrades } from '../data/mockData'
 
 const calDays = ['L','M','M','J','V','S','D']
 // May 2024 starts Wednesday (offset 2)
@@ -64,7 +63,7 @@ export default function DashboardPage() {
     { text: 'Physique : Document ajouté',               time: 'Hier' },
   ]
 
-  const avg = (mockGrades.reduce((s, g) => s + g.grade, 0) / mockGrades.length).toFixed(1)
+
 
   return (
     <div className="space-y-6 animate-fade-in">
