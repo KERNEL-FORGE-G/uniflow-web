@@ -1,77 +1,57 @@
-import { NavLink, useNavigate } from 'react-router-dom'
-import { Search, Bell, LogOut, Wifi, WifiOff, Globe } from 'lucide-react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { Search, Bell, LogOut, Wifi, WifiOff, Globe, ChevronDown } from 'lucide-react'
 import { useUserRole } from '../../utils/userRole'
 import { navItems } from '../../data/navigation'
 import { Avatar } from '../ui/Avatar'
 import { cn } from '../../utils/cn'
+import { useState } from 'react'
+import { mockNotifications } from '../../data/mockData'
 
 export function Sidebar() {
   const { currentRole, setCurrentRole, currentUser, isOfflineMode, setIsOfflineMode, language, setLanguage } = useUserRole()
   const filteredNav = navItems.filter(item => item.roles && item.roles.includes(currentRole))
 
   return (
-    <aside className="flex h-screen w-66 shrink-0 flex-col border-r border-border bg-white shadow-sm">
-      {/* Brand logo */}
-      <div className="flex items-center gap-2 border-b border-border px-5 py-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white font-black text-lg">U</div>
-          <div>
-            <span className="text-lg font-bold tracking-tight text-gray-900">Uni<span className="text-teal">Flow</span></span>
-            <span className="block text-[9px] text-muted tracking-wider uppercase font-semibold">Web Workspace</span>
-          </div>
-        </div>
+    <aside className="flex h-screen w-[220px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white">
+      {/* Logo */}
+      <div className="flex items-center gap-2.5 border-b border-[#e5e7eb] px-5 py-4">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e3a8a] text-white font-black text-lg select-none">U</div>
+        <span className="text-[17px] font-bold tracking-tight text-[#111827]">
+          Uni<span className="text-[#0d9488]">Flow</span>
+        </span>
       </div>
 
-      {/* User profile with active Role details */}
-      <div className="border-b border-border px-4 py-4">
-        <div className={cn(
-          "flex flex-col gap-3 rounded-xl p-3.5 transition-all",
-          isOfflineMode ? "bg-red-50/50 border border-red-100" : "bg-slate-50 border border-slate-100"
-        )}>
-          <div className="flex items-center gap-3">
-            <Avatar name={currentUser.name} size="md" className={cn(currentRole === 'teacher' ? 'bg-indigo-600' : currentRole === 'delegate' ? 'bg-teal' : 'bg-primary')} />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-gray-900">{currentUser.name}</p>
-              <p className="truncate text-xs font-medium text-muted">{currentUser.roleLabel}</p>
-
-              <div className="mt-1 flex items-center gap-1.5">
-                <span className={cn(
-                  "h-2 w-2 rounded-full animate-pulse",
-                  isOfflineMode ? "bg-red-500" : "bg-emerald-500"
-                )} />
-                <span className={cn(
-                  "text-[10px] font-semibold uppercase tracking-wider",
-                  isOfflineMode ? "text-red-600" : "text-emerald-600"
-                )}>
-                  {isOfflineMode
-                    ? (language === 'FR' ? 'Mode Local (LAN)' : 'Local LAN Mode')
-                    : (language === 'FR' ? 'En ligne' : 'Online')}
-                </span>
-              </div>
+      {/* User card */}
+      <div className="border-b border-[#e5e7eb] px-3 py-3">
+        <div className="flex items-center gap-3 rounded-lg bg-[#f9fafb] px-3 py-2.5">
+          <Avatar name={currentUser.name} size="md" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-[#111827]">{currentUser.name}</p>
+            <p className="truncate text-xs text-[#6b7280]">{currentUser.roleLabel}</p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <span className={cn('h-1.5 w-1.5 rounded-full', isOfflineMode ? 'bg-red-500' : 'bg-emerald-500')} />
+              <span className={cn('text-[10px] font-medium', isOfflineMode ? 'text-red-600' : 'text-emerald-600')}>
+                {isOfflineMode ? 'Mode Local' : 'En ligne'}
+              </span>
             </div>
           </div>
-
-          {/* Quick role switcher */}
-          <div className="mt-1">
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
-              {language === 'FR' ? 'Espace de travail' : 'Active Workspace'}
-            </label>
-            <select
-              value={currentRole}
-              onChange={(e) => setCurrentRole(e.target.value as any)}
-              className="w-full text-xs font-medium rounded-lg border border-border bg-white py-1.5 px-2 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            >
-              <option value="student">🎓 {language === 'FR' ? 'Espace Étudiant' : 'Student Space'}</option>
-              <option value="delegate">📢 {language === 'FR' ? 'Espace Délégué' : 'Delegate Space'}</option>
-              <option value="teacher">👨‍🏫 {language === 'FR' ? 'Espace Enseignant' : 'Teacher Space'}</option>
-            </select>
-          </div>
         </div>
+
+        {/* Role switcher */}
+        <select
+          value={currentRole}
+          onChange={(e) => setCurrentRole(e.target.value as any)}
+          className="mt-2 w-full rounded-lg border border-[#e5e7eb] bg-white px-2.5 py-1.5 text-xs font-medium text-[#374151] outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
+        >
+          <option value="student">🎓 Espace Étudiant</option>
+          <option value="delegate">📢 Espace Délégué</option>
+          <option value="teacher">👨‍🏫 Espace Enseignant</option>
+        </select>
       </div>
 
-      {/* Navigation links */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <ul className="space-y-1">
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto px-2 py-3">
+        <ul className="space-y-0.5">
           {filteredNav.map(({ to, icon: Icon, labelFr, labelEn, end }) => (
             <li key={to}>
               <NavLink
@@ -79,70 +59,45 @@ export function Sidebar() {
                 end={end}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                    'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                     isActive
-                      ? 'border-l-4 border-primary bg-primary/5 text-primary font-semibold'
-                      : 'border-l-4 border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                      ? 'bg-[#eff3ff] text-[#1e3a8a] font-semibold'
+                      : 'text-[#374151] hover:bg-[#f9fafb] hover:text-[#111827]',
                   )
                 }
               >
-                <Icon className="h-4.5 w-4.5 shrink-0" />
-                {language === 'FR' ? labelFr : labelEn}
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{language === 'FR' ? labelFr : labelEn}</span>
               </NavLink>
             </li>
           ))}
         </ul>
       </nav>
 
-      {/* Preferences & Utilities footer */}
-      <div className="border-t border-border p-4 bg-gray-50/50 space-y-3">
-        {/* Language Toggler */}
+      {/* Footer */}
+      <div className="border-t border-[#e5e7eb] p-3 space-y-2">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted font-medium flex items-center gap-1">
-            <Globe className="h-3.5 w-3.5 text-gray-400" />
-            {language === 'FR' ? 'Langue' : 'Language'}
+          <span className="flex items-center gap-1 text-[#6b7280]">
+            <Globe className="h-3.5 w-3.5" /> Langue
           </span>
-          <div className="inline-flex rounded-lg border border-border p-0.5 bg-white">
-            <button
-              onClick={() => setLanguage('FR')}
-              className={cn(
-                "px-2 py-1 rounded text-[10px] font-bold",
-                language === 'FR' ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-100"
-              )}
-            >
-              FR
-            </button>
-            <button
-              onClick={() => setLanguage('EN')}
-              className={cn(
-                "px-2 py-1 rounded text-[10px] font-bold",
-                language === 'EN' ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-100"
-              )}
-            >
-              EN
-            </button>
+          <div className="flex rounded-md border border-[#e5e7eb] overflow-hidden">
+            {(['FR', 'EN'] as const).map(l => (
+              <button key={l} onClick={() => setLanguage(l)}
+                className={cn('px-2 py-0.5 text-[10px] font-bold transition-colors',
+                  language === l ? 'bg-[#1e3a8a] text-white' : 'text-[#6b7280] hover:bg-[#f9fafb]'
+                )}>{l}</button>
+            ))}
           </div>
         </div>
-
-        {/* Offline Mode Switcher */}
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted font-medium flex items-center gap-1">
-            {isOfflineMode ? <WifiOff className="h-3.5 w-3.5 text-red-500" /> : <Wifi className="h-3.5 w-3.5 text-teal" />}
-            {language === 'FR' ? 'Mode Offline' : 'Offline Simulation'}
+          <span className="flex items-center gap-1 text-[#6b7280]">
+            {isOfflineMode ? <WifiOff className="h-3.5 w-3.5 text-red-500" /> : <Wifi className="h-3.5 w-3.5 text-[#0d9488]" />}
+            Offline
           </span>
-          <button
-            onClick={() => setIsOfflineMode(!isOfflineMode)}
-            className={cn(
-              "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none",
-              isOfflineMode ? "bg-red-500" : "bg-teal"
-            )}
+          <button onClick={() => setIsOfflineMode(!isOfflineMode)}
+            className={cn('relative h-5 w-9 rounded-full transition-colors', isOfflineMode ? 'bg-red-500' : 'bg-[#0d9488]')}
           >
-            <span
-              className={cn(
-                "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
-                isOfflineMode ? "translate-x-4" : "translate-x-0"
-              )}
-            />
+            <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform', isOfflineMode ? 'left-[18px]' : 'left-0.5')} />
           </button>
         </div>
       </div>
@@ -152,64 +107,47 @@ export function Sidebar() {
 
 export function TopBar() {
   const navigate = useNavigate()
-  const { isOfflineMode, setIsOfflineMode, language } = useUserRole()
-
-  const handleLogout = () => {
-    navigate('/login')
-  }
+  const { language, currentUser } = useUserRole()
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false)
+  const unreadCount = mockNotifications.filter(n => n.unread).length
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-border bg-white px-6 shadow-sm">
-      {/* Searchbar */}
+    <header className="sticky top-0 z-20 flex h-14 items-center gap-4 border-b border-[#e5e7eb] bg-white px-6 shadow-sm">
       <div className="relative flex-1 max-w-lg">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]" />
         <input
           type="search"
-          placeholder={language === 'FR' ? "Rechercher un cours, un enseignant, un devoir..." : "Search for a course, a teacher, an assignment..."}
-          className="w-full rounded-lg border border-border bg-bg py-2 pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          placeholder={language === 'FR' ? 'Rechercher (cours, devoirs, enseignants...)' : 'Search courses, assignments...'}
+          className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] py-1.5 pl-9 pr-4 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white transition-all"
         />
       </div>
 
-      {/* Connected / Offline Mode visual banner */}
-      <div className="hidden sm:flex items-center">
-        {isOfflineMode ? (
-          <div className="flex items-center gap-2 rounded-full bg-red-50 border border-red-100 px-3.5 py-1.5 text-xs font-semibold text-red-700 animate-pulse">
-            <WifiOff className="h-4 w-4" />
-            <span>{language === 'FR' ? '🔴 Mode Local (LAN) Activé' : '🔴 Local LAN Mode Active'}</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 rounded-full bg-teal/10 border border-teal/20 px-3.5 py-1.5 text-xs font-semibold text-teal-800">
-            <Wifi className="h-4 w-4 text-teal" />
-            <span>{language === 'FR' ? '🟢 Mode Synchro Auto (Internet)' : '🟢 Auto Sync Mode (Internet)'}</span>
-          </div>
-        )}
-      </div>
+      <div className="flex items-center gap-2 ml-auto">
+        {/* Notif bell */}
+        <div className="relative">
+          <button onClick={() => { setShowNotifDropdown(v => !v); navigate('/app/notifications') }}
+            className="relative rounded-lg p-2 text-[#6b7280] hover:bg-[#f9fafb] transition-colors">
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">{unreadCount}</span>
+            )}
+          </button>
+        </div>
 
-      <div className="flex items-center gap-3 ml-auto">
-        {/* Toggle offline simulator directly in topbar */}
-        <button
-          onClick={() => setIsOfflineMode(!isOfflineMode)}
-          className={cn(
-            "p-2 rounded-lg transition-all",
-            isOfflineMode ? "bg-red-50 text-red-600 hover:bg-red-100" : "bg-teal/10 text-teal hover:bg-teal/20"
-          )}
-          title={language === 'FR' ? "Simuler déconnexion réseau" : "Simulate network disconnection"}
-        >
-          {isOfflineMode ? <WifiOff className="h-5 w-5" /> : <Wifi className="h-5 w-5" />}
+        {/* User avatar with name */}
+        <button onClick={() => navigate('/app/profil')}
+          className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-[#f9fafb] transition-colors">
+          <Avatar name={currentUser.name} size="sm" />
+          <div className="hidden sm:block text-left">
+            <p className="text-sm font-semibold text-[#111827] leading-none">{currentUser.name}</p>
+            <p className="text-xs text-[#6b7280] leading-none mt-0.5">{currentUser.roleLabel}</p>
+          </div>
+          <ChevronDown className="h-4 w-4 text-[#9ca3af]" />
         </button>
 
-        {/* Notification bell */}
-        <button type="button" className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100">
-          <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
-        </button>
-
-        {/* Dynamic Log out */}
-        <button
-          onClick={handleLogout}
-          className="rounded-lg p-2 text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
-          title={language === 'FR' ? "Se déconnecter" : "Log out"}
-        >
+        <button onClick={() => navigate('/login')}
+          className="rounded-lg p-2 text-[#6b7280] hover:bg-red-50 hover:text-red-600 transition-colors"
+          title="Se déconnecter">
           <LogOut className="h-5 w-5" />
         </button>
       </div>
@@ -219,7 +157,7 @@ export function TopBar() {
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-bg">
+    <div className="flex min-h-screen bg-[#f3f4f6]">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar />

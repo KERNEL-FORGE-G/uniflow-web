@@ -1,50 +1,79 @@
 import { Link } from 'react-router-dom'
-import { Card, CardTitle } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
+import { BookOpen, Clock, TrendingUp, UserCheck, ClipboardList } from 'lucide-react'
 
 const schedule = [
-  { time: '08h00 - 10h00', course: 'Algorithmique', teacher: 'Pr. Martin', room: 'A101', type: 'CM', status: 'Terminé' as const },
-  { time: '10h15 - 12h15', course: 'Mathématiques', teacher: 'Dr. Dupont', room: 'B204', type: 'TD', status: 'Terminé' as const },
-  { time: '14h00 - 16h00', course: 'Réseaux', teacher: 'Pr. Kamga', room: 'C302', type: 'TP', status: 'À venir' as const },
-  { time: '16h15 - 18h00', course: 'Anglais', teacher: 'Mme. Johnson', room: 'D105', type: 'CM', status: 'À venir' as const },
+  { time: '08h30 – 10h00', course: 'Mathématiques', teacher: 'Dr. Martin', room: 'A204', type: 'Cours', status: 'Terminé' as const },
+  { time: '10h15 – 11h45', course: 'Économie',      teacher: 'Pr. Dubois', room: 'B101', type: 'TD',    status: 'Terminé' as const },
+  { time: '13h30 – 15h00', course: 'Histoire',       teacher: 'Dr. Bernard',room: 'C203', type: 'Cours', status: 'À venir' as const },
+  { time: '15h15 – 16h45', course: 'Physique',       teacher: 'Dr. Lefèvre', room: 'B202', type: 'TD',   status: 'À venir' as const },
+  { time: '17h00 – 18h30', course: 'Anglais',        teacher: 'Mme Johnson', room: 'A105', type: 'Cours', status: 'À venir' as const },
 ]
 
 const lateHomework = [
-  { title: 'Mathématiques — Devoir 2', due: '10 mai 2024' },
-  { title: 'Économie — Rapport final', due: '8 mai 2024' },
+  { title: 'Économie — TD 3', due: '09 mai 2024' },
+  { title: 'Maths — Devoir 2', due: '10 mai 2024' },
+]
+
+const quickStats = [
+  { label: 'Cours inscrits', value: '12', change: '↑8%', icon: BookOpen, color: 'text-[#1e3a8a]', bg: 'bg-[#eff3ff]' },
+  { label: 'Devoirs à rendre', value: '5', change: '↑1', icon: ClipboardList, color: 'text-[#d97706]', bg: 'bg-[#fef3c7]' },
+  { label: 'Prochain cours', value: '2h30', change: '+15m', icon: Clock, color: 'text-[#0d9488]', bg: 'bg-[#f0fdfa]' },
+  { label: 'Moyenne', value: '14.6/20', change: '+0.6', icon: TrendingUp, color: 'text-[#7c3aed]', bg: 'bg-[#ede9fe]' },
+  { label: 'Présences', value: '87%', change: '+5%', icon: UserCheck, color: 'text-[#059669]', bg: 'bg-[#d1fae5]' },
 ]
 
 export default function DashboardCompactPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-5 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between rounded-xl bg-white border border-[#e5e7eb] px-5 py-4 shadow-sm">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Cours du jour</h1>
-          <p className="text-sm text-muted">Lundi 13 mai 2024</p>
+          <h1 className="text-lg font-bold text-[#111827]">Cours du jour — Lundi 13 mai 2024</h1>
+          <p className="text-xs text-[#6b7280] mt-0.5">Emma Martin · Étudiante · L2 Info</p>
         </div>
-        <Link to="/app" className="text-sm font-medium text-primary hover:underline">
-          ← Vue principale
-        </Link>
+        <Link to="/app" className="text-sm font-medium text-[#1e3a8a] hover:underline">← Vue principale</Link>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2 !p-0 overflow-hidden">
+      {/* Quick stats row */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        {quickStats.map((s, i) => {
+          const Icon = s.icon
+          return (
+            <div key={i} className="rounded-xl border border-[#e5e7eb] bg-white p-3 shadow-sm flex items-center gap-3">
+              <div className={`rounded-lg p-2 ${s.bg}`}><Icon className={`h-4 w-4 ${s.color}`} /></div>
+              <div>
+                <p className="text-base font-extrabold text-[#111827]">{s.value}</p>
+                <p className="text-[10px] text-[#6b7280]">{s.label}</p>
+                <p className={`text-[10px] font-semibold ${s.change.startsWith('+') || s.change.startsWith('↑') ? 'text-[#059669]' : 'text-[#dc2626]'}`}>{s.change}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Schedule + sidebar */}
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-2 rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-[#f3f4f6]">
+            <h2 className="text-sm font-bold text-[#111827]">Programme du jour</h2>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-border bg-gray-50">
+              <thead className="border-b border-[#f3f4f6] bg-[#f9fafb]">
                 <tr>
-                  {['Heure', 'Cours', 'Enseignant', 'Salle', 'Type', 'Statut'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left font-semibold text-gray-700">{h}</th>
+                  {['Heure', 'Cours', 'Enseignant', 'Salle', 'Type', 'Statut'].map(h => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
-                {schedule.map((row) => (
-                  <tr key={row.course} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-muted">{row.time}</td>
-                    <td className="px-4 py-3 font-medium">{row.course}</td>
-                    <td className="px-4 py-3">{row.teacher}</td>
-                    <td className="px-4 py-3">{row.room}</td>
+              <tbody className="divide-y divide-[#f9fafb]">
+                {schedule.map(row => (
+                  <tr key={row.course} className="hover:bg-[#f9fafb] transition-colors">
+                    <td className="px-4 py-3 text-xs text-[#6b7280] font-mono whitespace-nowrap">{row.time}</td>
+                    <td className="px-4 py-3 font-semibold text-[#111827]">{row.course}</td>
+                    <td className="px-4 py-3 text-[#6b7280]">{row.teacher}</td>
+                    <td className="px-4 py-3 text-[#6b7280]">{row.room}</td>
                     <td className="px-4 py-3"><Badge variant="info">{row.type}</Badge></td>
                     <td className="px-4 py-3">
                       <Badge variant={row.status === 'Terminé' ? 'success' : 'warning'}>{row.status}</Badge>
@@ -54,28 +83,36 @@ export default function DashboardCompactPage() {
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardTitle className="mb-4 text-base">Mes devoirs en retard (2)</CardTitle>
-            <ul className="space-y-3">
-              {lateHomework.map((hw) => (
-                <li key={hw.title} className="rounded-lg border border-red-100 bg-red-50 p-3">
-                  <p className="text-sm font-medium text-gray-900">{hw.title}</p>
-                  <p className="text-xs text-muted">Échéance : {hw.due}</p>
+        <div className="space-y-4">
+          {/* Late homework */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-[#111827]">Mes devoirs en retard</h2>
+              <Badge variant="danger">{lateHomework.length}</Badge>
+            </div>
+            <div className="space-y-2">
+              {lateHomework.map(hw => (
+                <div key={hw.title} className="rounded-lg border border-[#fecaca] bg-[#fef2f2] p-3">
+                  <p className="text-sm font-semibold text-[#111827]">{hw.title}</p>
+                  <p className="text-xs text-[#6b7280] mt-0.5">Échéance : {hw.due}</p>
                   <Badge variant="danger" className="mt-2">En retard</Badge>
-                </li>
+                </div>
               ))}
-            </ul>
-          </Card>
+            </div>
+            <Link to="/app/devoirs" className="block mt-3 text-center text-xs font-medium text-[#1e3a8a] hover:underline">
+              Voir tous les devoirs →
+            </Link>
+          </div>
 
-          <Card className="text-center">
-            <CardTitle className="mb-2 text-base">Prochain partiel dans</CardTitle>
-            <p className="text-5xl font-bold text-primary">5</p>
-            <p className="text-lg font-medium text-gray-700">jours</p>
-            <p className="mt-3 text-sm text-muted">Examen Mathématiques — 18 mai 2024</p>
-          </Card>
+          {/* Prochain partiel */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 text-center shadow-sm">
+            <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-2">Prochain partiel dans</h2>
+            <p className="text-5xl font-extrabold text-[#1e3a8a]">5</p>
+            <p className="text-sm font-semibold text-[#374151] mt-1">jours</p>
+            <p className="text-xs text-[#6b7280] mt-2">Samedi 18 mai 2024 · Mathématiques · 09h00</p>
+          </div>
         </div>
       </div>
     </div>

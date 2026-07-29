@@ -1,529 +1,339 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check } from 'lucide-react'
-import { Card, CardTitle } from '../components/ui/Card'
-import { Button } from '../components/ui/Button'
+import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check, BookOpen, TrendingUp, BarChart3 } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
+import { mockTeacherCourses, mockTeacherStudents, mockResources, type TeacherStudent, type TeacherResource } from '../data/mockData'
 
-const initialCourses = [
-  { code: 'INFO201', title: 'Structures de données', students: 45, hours: '30h CM + 15h TD', progress: 78, color: 'from-blue-600 to-indigo-800' },
-  { code: 'INFO101', title: 'Algorithmique & Graphes', students: 120, hours: '40h CM + 20h TD', progress: 90, color: 'from-teal to-teal-dark' },
-  { code: 'INFO301', title: 'Réseaux informatiques', students: 38, hours: '25h CM + 15h TP', progress: 60, color: 'from-purple-600 to-purple-800' },
-]
-
-const initialStudents = [
-  { name: 'Emma Martin', id: 'ETU-0847', cc: 14, exam: 13, val: true },
-  { name: 'Sarah Kamga', id: 'ETU-0849', cc: 16, exam: 15, val: true },
-  { name: 'Yasmine Ngo', id: 'ETU-0850', cc: 10, exam: 8, val: false },
-  { name: 'Thomas Mbarga', id: 'ETU-0851', cc: 12, exam: 11, val: true },
-  { name: 'Lucas Dubois', id: 'ETU-0848', cc: 11, exam: 10, val: true },
-]
-
-const initialResources = [
-  { id: 1, name: 'Syllabus_INFO201_v2.pdf', type: 'Syllabus', size: '2.4 Mo', date: '10 Avril 2024' },
-  { id: 2, name: 'TP1_Structures_Lineaires.pdf', type: 'TP', size: '1.2 Mo', date: '25 Avril 2024' },
-  { id: 3, name: 'Support_Cours_Arbres_Graphes.pdf', type: 'Cours', size: '4.8 Mo', date: 'Aujourd\'hui' },
-]
+const CC_W = 0.3, EXAM_W = 0.7
 
 export default function TeacherCoursesPage() {
   const { language } = useUserRole()
   const navigate = useNavigate()
-  const [selectedCourseCode, setSelectedCourseCode] = useState('INFO201')
-  const [studentsList, setStudentsList] = useState(initialStudents)
-  const [resources, setResources] = useState(initialResources)
-  const [newResourceName, setNewResourceName] = useState('')
-  const [newResourceType, setNewResourceType] = useState('Cours')
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
+  const [selCode, setSelCode] = useState('INFO101')
+  const [students, setStudents] = useState<TeacherStudent[]>(mockTeacherStudents)
+  const [resources, setResources] = useState<TeacherResource[]>(mockResources.filter(r => r.courseId === 'INFO101'))
+  const [newName, setNewName] = useState('')
+  const [newType, setNewType] = useState('Cours')
+  const [uploading, setUploading] = useState(false)
+  const [uploadPct, setUploadPct] = useState(0)
+  const [saved, setSaved] = useState(false)
+  const [activeTab, setActiveTab] = useState<'contenu'|'participants'|'devoirs'|'notes'>('contenu')
 
-  // WebRTC LiveKit local config states
-  const [isLanMode, setIsLanMode] = useState(true)
-  const [isLowBandwidth, setIsLowBandwidth] = useState(false)
+  const course = mockTeacherCourses.find(c => c.id === selCode)!
 
-  // Grade weights
-  const ccWeight = 0.3
-  const examWeight = 0.7
+  const avg = parseFloat((students.reduce((s, st) => s + (st.cc * CC_W + st.exam * EXAM_W), 0) / students.length).toFixed(2))
+  const passRate = Math.round(students.filter(st => (st.cc * CC_W + st.exam * EXAM_W) >= 10).length / students.length * 100)
 
-  const selectedCourse = initialCourses.find(c => c.code === selectedCourseCode) || initialCourses[0]
-
-  const handleGradeChange = (studentId: string, type: 'cc' | 'exam', value: number) => {
-    // clamp between 0 and 20
-    const clamped = Math.max(0, Math.min(20, value))
-    setStudentsList(prev => prev.map(s => s.id === studentId ? { ...s, [type]: clamped } : s))
+  const updateGrade = (id: string, field: 'cc'|'exam', val: number) => {
+    setStudents(prev => prev.map(s => s.id === id ? { ...s, [field]: Math.min(20, Math.max(0, val)) } : s))
   }
 
-  const handleToggleValidation = (studentId: string) => {
-    setStudentsList(prev => prev.map(s => s.id === studentId ? { ...s, val: !s.val } : s))
-  }
+  const toggleLock = (id: string) => setStudents(prev => prev.map(s => s.id === id ? { ...s, locked: !s.locked } : s))
 
-  const handleAddResource = (e: React.FormEvent) => {
+  const handleUpload = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newResourceName.trim()) return
-
-    setIsUploading(true)
-    setUploadProgress(10)
-
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setTimeout(() => {
-            setResources(r => [
-              {
-                id: Date.now(),
-                name: newResourceName.endsWith('.pdf') ? newResourceName : `${newResourceName}.pdf`,
-                type: newResourceType,
-                size: '1.8 Mo',
-                date: language === 'FR' ? 'À l\'instant' : 'Just now'
-              },
-              ...r
-            ])
-            setNewResourceName('')
-            setIsUploading(false)
-            setUploadProgress(0)
-          }, 500)
-          return 100
-        }
-        return prev + 30
-      })
-    }, 200)
+    if (!newName.trim()) return
+    setUploading(true); setUploadPct(10)
+    const iv = setInterval(() => setUploadPct(p => {
+      if (p >= 100) {
+        clearInterval(iv)
+        setTimeout(() => {
+          setResources(r => [{ id: Date.now(), name: newName.endsWith('.pdf') ? newName : `${newName}.pdf`, type: newType, size: '1.8 Mo', date: "Aujourd'hui", courseId: selCode }, ...r])
+          setNewName(''); setUploading(false); setUploadPct(0)
+        }, 400)
+        return 100
+      }
+      return p + 25
+    }), 220)
   }
 
-  const handleDeleteResource = (id: number) => {
-    setResources(prev => prev.filter(r => r.id !== id))
+  const handleSaveGrades = () => {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
   }
 
-  // Calculate stats
-  const totalEnrolled = studentsList.length
-  const averageFinal = parseFloat((studentsList.reduce((acc, curr) => acc + (curr.cc * ccWeight + curr.exam * examWeight), 0) / totalEnrolled).toFixed(2))
-  const validatedCount = studentsList.filter(s => (s.cc * ccWeight + s.exam * examWeight) >= 10).length
-  const validationRate = Math.round((validatedCount / totalEnrolled) * 100)
+  const tabs = [
+    { id: 'contenu',      label: 'Contenu' },
+    { id: 'participants', label: 'Participants' },
+    { id: 'devoirs',      label: 'Devoirs' },
+    { id: 'notes',        label: 'Notes' },
+  ] as const
 
   return (
-    <div className="space-y-6">
-      {/* Dynamic Header */}
-      <div className="bg-white p-6 rounded-xl border border-border shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-5 animate-fade-in">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-5 shadow-sm">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 border border-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700 mb-2">
-            👨‍🏫 {language === 'FR' ? 'ESPACE ENSEIGNANT' : 'TEACHER PEDA PORTAL'}
-          </span>
-          <h1 className="text-2xl font-bold text-gray-900">
-            {language === 'FR' ? 'Espace Pédagogique & Évaluations' : 'Pedagogical Space & Student Grades'}
-          </h1>
-          <p className="text-sm text-muted">
-            {language === 'FR'
-              ? 'Gérez vos syllabus, documents pédagogiques et saisissez les notes de contrôle continu (30%) et d\'examen (70%)'
-              : 'Upload reference materials and enter CC (30%) and Exam (70%) student scores.'}
-          </p>
+          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700 mb-2">👨‍🏫 ESPACE ENSEIGNANT</span>
+          <h1 className="text-xl font-bold text-[#111827]">Espace Pédagogique & Évaluations</h1>
+          <p className="text-sm text-[#6b7280] mt-0.5">Gérez vos syllabus, ressources et notes · CC 30% + Examen 70%</p>
         </div>
-
         <div className="flex gap-2">
-          {initialCourses.map(c => (
-            <button
-              key={c.code}
-              onClick={() => setSelectedCourseCode(c.code)}
-              className={`px-4 py-2 text-xs font-bold rounded-lg border transition-all ${
-                selectedCourseCode === c.code
-                  ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm'
-                  : 'bg-white text-gray-700 border-border hover:bg-gray-50'
-              }`}
-            >
+          {mockTeacherCourses.map(c => (
+            <button key={c.id} onClick={() => { setSelCode(c.id); setResources(mockResources.filter(r => r.courseId === c.id)) }}
+              className={`rounded-lg px-4 py-2 text-xs font-bold border transition-all ${selCode === c.id ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-[#374151] border-[#e5e7eb] hover:bg-[#f9fafb]'}`}>
               {c.code}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Course Info Card & Videoconference Initiator */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Active Course Card */}
-          <Card className="overflow-hidden p-0 bg-white border border-border shadow-sm">
-            <div className={`h-28 bg-gradient-to-r ${selectedCourse.color} p-4 flex flex-col justify-between text-white`}>
-              <Badge className="self-start bg-white/20 border-0 text-white font-bold">{selectedCourse.code}</Badge>
+      {saved && (
+        <div className="rounded-xl bg-slate-900 text-white px-4 py-3 text-sm font-medium flex items-center gap-2 animate-fade-in">
+          <Check className="h-4 w-4 text-[#0d9488]" /> Grille sauvegardée — {students.filter(s => s.locked).length} notes figées publiées.
+        </div>
+      )}
+
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* Course card + visio */}
+        <div className="space-y-4">
+          <div className="rounded-xl border border-[#e5e7eb] bg-white overflow-hidden shadow-sm">
+            <div className={`h-24 bg-gradient-to-r ${course.color} p-4 flex flex-col justify-between`}>
+              <Badge className="self-start bg-white/20 text-white border-0 text-[10px]">{course.code}</Badge>
               <div>
-                <h3 className="font-bold text-lg">{selectedCourse.title}</h3>
-                <p className="text-xs text-white/80">{selectedCourse.hours}</p>
+                <h3 className="font-bold text-white text-base">{course.title}</h3>
+                <p className="text-xs text-white/80">{course.hours}</p>
               </div>
             </div>
             <div className="p-4 space-y-3">
-              <div className="flex justify-between text-xs text-muted">
-                <span>{language === 'FR' ? 'Progression du programme' : 'Syllabus Progress'}</span>
-                <span className="font-semibold text-gray-800">{selectedCourse.progress}%</span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
-                <div className="h-full rounded-full bg-indigo-600 transition-all duration-300" style={{ width: `${selectedCourse.progress}%` }} />
-              </div>
-
-              <div className="pt-2 border-t border-border flex justify-between items-center text-xs text-muted">
-                <span className="flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5" />
-                  {selectedCourse.students} {language === 'FR' ? 'étudiants inscrits' : 'enrolled students'}
-                </span>
-                <span className="font-bold text-indigo-600">{language === 'FR' ? 'L2 Info' : 'L2 CS'}</span>
-              </div>
-            </div>
-          </Card>
-
-          {/* WebRTC Video class initiator block */}
-          <Card className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-0 shadow-md">
-            <CardTitle className="text-white text-base mb-2 flex items-center gap-2">
-              <Video className="h-5 w-5 text-teal" />
-              {language === 'FR' ? 'Planifier / Démarrer Visioconf' : 'Initiate Live Videoconference'}
-            </CardTitle>
-            <p className="text-xs text-indigo-200 mb-4">
-              {language === 'FR'
-                ? 'Hébergez un cours virtuel en temps réel. Parfaitement adapté pour l\'enseignement à distance ou hybride.'
-                : 'Host a live virtual classroom. Built for local offline networks or global remote lecture halls.'}
-            </p>
-
-            <div className="space-y-3.5 bg-white/10 p-3 rounded-lg border border-white/10 text-xs">
-              {/* Server mode switcher */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="font-bold block text-white">{language === 'FR' ? 'Mode Serveur' : 'Server Mode'}</span>
-                  <span className="text-[10px] text-indigo-200">
-                    {isLanMode
-                      ? (language === 'FR' ? 'Réseau local (LAN Campus) — Pas d\'Internet' : 'Campus LAN — Zero Internet cost')
-                      : (language === 'FR' ? 'Internet global (VPS/Cloud)' : 'Global Internet Cloud')}
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsLanMode(!isLanMode)}
-                  className={`px-2.5 py-1 text-[10px] font-bold rounded transition-all ${
-                    isLanMode ? 'bg-teal text-white' : 'bg-white/20 text-indigo-100'
-                  }`}
-                >
-                  {isLanMode ? 'LAN' : 'CLOUD'}
-                </button>
-              </div>
-
-              {/* Bandwidth Optimization Toggle */}
-              <div className="flex items-center justify-between border-t border-white/10 pt-2.5">
-                <div>
-                  <span className="font-bold block text-white">{language === 'FR' ? 'Option Bas-Débit (3G)' : 'Low Bandwidth Mode (3G)'}</span>
-                  <span className="text-[10px] text-indigo-200">
-                    {isLowBandwidth
-                      ? (language === 'FR' ? 'Audio uniquement (8 Ko/s)' : 'Audio-only limits (8 KB/s)')
-                      : (language === 'FR' ? 'Qualité Standard' : 'Standard quality active')}
-                  </span>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={isLowBandwidth}
-                  onChange={(e) => setIsLowBandwidth(e.target.checked)}
-                  className="rounded border-white/20 bg-white/10 text-teal focus:ring-teal h-4 w-4"
-                />
-              </div>
-            </div>
-
-            <Button
-              onClick={() => navigate('/app/visioconference')}
-              className="mt-4 w-full bg-teal text-white hover:bg-teal-light font-bold flex items-center justify-center gap-1.5"
-            >
-              <Video className="h-4 w-4" />
-              {language === 'FR' ? 'Lancer la visioconférence' : 'Start Live Lecture'}
-            </Button>
-          </Card>
-        </div>
-
-        {/* Resources Uploader Form & Resources Explorer */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Upload form card */}
-            <Card className="bg-white border border-border shadow-sm">
-              <CardTitle className="mb-3 text-base flex items-center gap-2">
-                <UploadCloud className="h-5 w-5 text-indigo-600" />
-                {language === 'FR' ? 'Ajouter une ressource' : 'Upload Syllabus / File'}
-              </CardTitle>
-
-              <form onSubmit={handleAddResource} className="space-y-3">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-                    {language === 'FR' ? 'Nom du document (Ex: TD2_Arbres)' : 'Resource Title (e.g. TD2_Trees)'}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newResourceName}
-                    onChange={(e) => setNewResourceName(e.target.value)}
-                    placeholder="Saisissez le titre..."
-                    className="w-full text-xs font-medium rounded-lg border border-border bg-white py-2 px-3 outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-                      {language === 'FR' ? 'Type' : 'Category'}
-                    </label>
-                    <select
-                      value={newResourceType}
-                      onChange={(e) => setNewResourceType(e.target.value)}
-                      className="w-full text-xs font-medium rounded-lg border border-border bg-white py-2 px-2.5 outline-none focus:border-indigo-600"
-                    >
-                      <option value="Cours">{language === 'FR' ? '📖 Cours' : '📖 Course file'}</option>
-                      <option value="TP">🧪 TP</option>
-                      <option value="TD">📝 TD</option>
-                      <option value="Syllabus">📌 Syllabus</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-end">
-                    <Button
-                      type="submit"
-                      disabled={isUploading}
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1 h-[34px]"
-                    >
-                      <Plus className="h-4 w-4" />
-                      {language === 'FR' ? 'Publier' : 'Publish'}
-                    </Button>
-                  </div>
-                </div>
-
-                {isUploading && (
-                  <div className="bg-slate-50 border border-border rounded-lg p-3 text-xs space-y-1.5 animate-pulse">
-                    <div className="flex justify-between font-bold text-gray-700">
-                      <span>{language === 'FR' ? 'Téléversement crypté delta...' : 'Encrypting delta upload...'}</span>
-                      <span>{uploadProgress}%</span>
-                    </div>
-                    <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-teal" style={{ width: `${uploadProgress}%` }} />
-                    </div>
-                    <span className="block text-[10px] text-muted">
-                      {language === 'FR' ? 'Optimisé pour le réseau local' : 'LAN-optimized connection'}
-                    </span>
-                  </div>
-                )}
-              </form>
-            </Card>
-
-            {/* Quick KPIs of scores */}
-            <Card className="bg-slate-50 border border-slate-100 shadow-sm flex flex-col justify-between">
               <div>
-                <CardTitle className="mb-2 text-base">
-                  {language === 'FR' ? 'Statistiques des Notes' : 'Grading Summary'}
-                </CardTitle>
-                <p className="text-xs text-muted mb-4">
-                  {language === 'FR' ? 'Calculs basés sur CC (30%) + Examen (70%)' : 'Averages calculated using CC (30%) + Exam (70%) weights'}
-                </p>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-border text-xs">
-                    <span className="text-muted font-medium">{language === 'FR' ? 'Moyenne générale' : 'Class average'} :</span>
-                    <span className="font-bold text-indigo-600 text-sm font-mono">{averageFinal}/20</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-border text-xs">
-                    <span className="text-muted font-medium">{language === 'FR' ? 'Taux de réussite (>=10)' : 'Pass rate (>=10)'} :</span>
-                    <span className="font-bold text-emerald-600 text-sm">{validationRate}%</span>
-                  </div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-[#6b7280]">Progression</span>
+                  <span className="font-semibold">{course.progress}%</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-[#f3f4f6] overflow-hidden">
+                  <div className="h-full rounded-full bg-indigo-600" style={{ width: `${course.progress}%` }} />
                 </div>
               </div>
-
-              <div className="text-[10px] text-muted leading-relaxed mt-4 bg-white/50 border border-border p-2 rounded-lg">
-                📋 {language === 'FR'
-                  ? 'Conformément aux règles du secrétariat académique camerounais, les notes figeables donnent lieu à l\'acquisition automatique de crédits.'
-                  : 'Subject to validation rules of the Cameroon central Ministry of Higher Education.'}
+              <div className="flex justify-between text-xs text-[#6b7280]">
+                <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{course.students} étudiants</span>
+                <span className="font-semibold text-indigo-600">L2 Info</span>
               </div>
-            </Card>
+            </div>
           </div>
 
-          {/* Resources Explorer */}
-          <Card className="bg-white border border-border shadow-sm">
-            <CardTitle className="mb-3 text-base flex justify-between items-center">
-              <span>📚 {language === 'FR' ? 'Supports & Ressources pédagogiques' : 'Syllabus & Documents'}</span>
-              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
-                {resources.length} {language === 'FR' ? 'fichiers' : 'files'}
-              </span>
-            </CardTitle>
+          {/* Quick stats */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm space-y-2">
+            <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">Stats notes</h2>
+            <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Moyenne générale</span><span className="font-bold text-indigo-600">{avg}/20</span></div>
+            <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Taux de réussite</span><span className="font-bold text-[#059669]">{passRate}%</span></div>
+            <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Notes figées</span><span className="font-bold text-[#374151]">{students.filter(s => s.locked).length}/{students.length}</span></div>
+          </div>
 
-            <div className="divide-y divide-border">
-              {resources.map((file) => (
-                <div key={file.id} className="flex items-center justify-between py-3.5 text-xs first:pt-0 last:pb-0">
-                  <div className="flex items-start gap-2.5">
-                    <div className="h-8 w-8 shrink-0 rounded bg-indigo-50 border border-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold">
-                      PDF
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900">{file.name}</p>
-                      <p className="text-[10px] text-muted flex items-center gap-2 mt-0.5">
-                        <Badge variant="primary" className="py-0 px-1.5 text-[9px]">{file.type}</Badge>
-                        <span>{file.size}</span>
-                        <span>·</span>
-                        <span>{file.date}</span>
-                      </p>
-                    </div>
+          {/* Visio launcher */}
+          <div className="rounded-xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-4 shadow-md">
+            <div className="flex items-center gap-2 mb-2">
+              <Video className="h-4 w-4 text-[#0d9488]" />
+              <h3 className="text-sm font-bold">Planifier / Démarrer Visioconf</h3>
+            </div>
+            <p className="text-xs text-indigo-200 mb-3">Hébergez un cours virtuel en LAN ou Internet. Mode bas-débit disponible.</p>
+            <button onClick={() => navigate('/app/visioconference')}
+              className="w-full rounded-lg bg-[#0d9488] py-2 text-sm font-bold text-white hover:bg-[#0a7167] transition-colors flex items-center justify-center gap-2">
+              <Video className="h-4 w-4" /> Lancer la visioconférence
+            </button>
+          </div>
+        </div>
+
+        {/* Main tabs panel */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex gap-1 border-b border-[#e5e7eb]">
+            {tabs.map(t => (
+              <button key={t.id} onClick={() => setActiveTab(t.id)}
+                className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${activeTab === t.id ? 'border-[#1e3a8a] text-[#1e3a8a]' : 'border-transparent text-[#6b7280] hover:text-[#374151]'}`}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === 'contenu' && (
+            <div className="space-y-4">
+              {/* Upload form */}
+              <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+                <h2 className="text-sm font-bold text-[#111827] mb-3 flex items-center gap-2"><UploadCloud className="h-4 w-4 text-indigo-600" /> Ajouter une ressource</h2>
+                <form onSubmit={handleUpload} className="space-y-3">
+                  <input value={newName} onChange={e => setNewName(e.target.value)} required
+                    placeholder="Nom du document (ex: TD2_Arbres)"
+                    className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" />
+                  <div className="flex gap-2">
+                    <select value={newType} onChange={e => setNewType(e.target.value)}
+                      className="flex-1 rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-indigo-600">
+                      {['Cours','TP','TD','Syllabus'].map(t => <option key={t}>{t}</option>)}
+                    </select>
+                    <button type="submit" disabled={uploading}
+                      className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60">
+                      <Plus className="h-4 w-4" /> Publier
+                    </button>
                   </div>
+                  {uploading && (
+                    <div className="rounded-lg bg-[#f9fafb] border border-[#e5e7eb] p-2.5 text-xs space-y-1 animate-pulse">
+                      <div className="flex justify-between font-medium text-[#374151]"><span>Téléversement...</span><span>{uploadPct}%</span></div>
+                      <div className="h-1.5 w-full bg-[#e5e7eb] rounded-full overflow-hidden">
+                        <div className="h-full bg-[#0d9488] transition-all" style={{ width: `${uploadPct}%` }} />
+                      </div>
+                    </div>
+                  )}
+                </form>
+              </div>
+              {/* Resources list */}
+              <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-bold text-[#111827]">📚 Supports & Ressources</h2>
+                  <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">{resources.length} fichiers</span>
+                </div>
+                <div className="divide-y divide-[#f9fafb]">
+                  {resources.length === 0 && <p className="text-sm text-[#9ca3af] py-4 text-center">Aucune ressource. Ajoutez votre premier fichier.</p>}
+                  {resources.map(f => (
+                    <div key={f.id} className="flex items-center justify-between py-3">
+                      <div className="flex items-start gap-2.5">
+                        <div className="h-8 w-8 rounded bg-indigo-50 border border-indigo-100 text-indigo-700 flex items-center justify-center text-[9px] font-bold shrink-0">PDF</div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#111827]">{f.name}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <Badge variant="primary" className="text-[9px] py-0">{f.type}</Badge>
+                            <span className="text-[10px] text-[#9ca3af]">{f.size} · {f.date}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <button className="rounded p-1 hover:bg-[#f3f4f6] text-[#9ca3af] hover:text-[#374151]"><Download className="h-4 w-4" /></button>
+                        <button onClick={() => setResources(r => r.filter(x => x.id !== f.id))} className="rounded p-1 hover:bg-red-50 text-[#9ca3af] hover:text-red-500"><Trash2 className="h-4 w-4" /></button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
-                  <div className="flex gap-1">
-                    <button type="button" className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-900" title="Télécharger">
-                      <Download className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteResource(file.id)}
-                      className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600"
-                      title="Supprimer"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+          {activeTab === 'participants' && (
+            <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#f3f4f6] bg-[#f9fafb] flex justify-between items-center">
+                <h3 className="text-sm font-bold text-[#111827]">Étudiants inscrits — {course.code}</h3>
+                <span className="text-xs text-[#9ca3af]">{students.length} étudiants</span>
+              </div>
+              <div className="divide-y divide-[#f9fafb]">
+                {students.map(s => {
+                  const final = parseFloat((s.cc * CC_W + s.exam * EXAM_W).toFixed(2))
+                  return (
+                    <div key={s.id} className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#f9fafb]">
+                      <Avatar name={s.name} size="sm" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-[#111827] text-sm">{s.name}</p>
+                        <p className="text-xs text-[#9ca3af] font-mono">{s.id}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className={`text-sm font-bold ${final >= 10 ? 'text-[#059669]' : 'text-[#dc2626]'}`}>{final}/20</p>
+                        <Badge variant={final >= 10 ? 'success' : 'danger'} className="text-[9px]">{final >= 10 ? 'Validé' : 'Échoué'}</Badge>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'devoirs' && (
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm space-y-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-[#111827]">Devoirs publiés — {course.code}</h3>
+                <button className="flex items-center gap-1.5 rounded-lg bg-[#1e3a8a] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2d4fa8]">
+                  <Plus className="h-3.5 w-3.5" /> Nouveau devoir
+                </button>
+              </div>
+              {[
+                { title: 'TP Bases de données — Requêtes SQL complexes', due: '18 sept.', submitted: 45, corrected: 23, status: 'En cours' },
+                { title: 'Quiz Algorithmique', due: '20 sept.', submitted: 52, corrected: 52, status: 'Terminé' },
+              ].map(d => (
+                <div key={d.title} className="rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb]">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold text-[#111827] text-sm">{d.title}</p>
+                    <Badge variant={d.status === 'Terminé' ? 'success' : 'warning'}>{d.status}</Badge>
+                  </div>
+                  <div className="mt-2 flex gap-4 text-xs text-[#6b7280]">
+                    <span>📅 {d.due}</span>
+                    <span>📤 {d.submitted} soumissions</span>
+                    <span>✅ {d.corrected} corrigés</span>
                   </div>
                 </div>
               ))}
             </div>
-          </Card>
+          )}
+
+          {activeTab === 'notes' && (
+            <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#f3f4f6] bg-[#f9fafb] flex justify-between items-center">
+                <div>
+                  <h3 className="text-sm font-bold text-[#111827]">Grille d'évaluation — {course.code}</h3>
+                  <p className="text-xs text-[#9ca3af] mt-0.5">CC (×0.3) + Examen (×0.7)</p>
+                </div>
+                <button className="flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb]">
+                  <Download className="h-3.5 w-3.5" /> Exporter
+                </button>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-[#f3f4f6] bg-[#f9fafb]">
+                    <tr>
+                      {['Étudiant','CC /20','Examen /20','Moyenne','Statut','Figer'].map(h => (
+                        <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#f9fafb]">
+                    {students.map(s => {
+                      const final = parseFloat((s.cc * CC_W + s.exam * EXAM_W).toFixed(2))
+                      return (
+                        <tr key={s.id} className="hover:bg-[#f9fafb]">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <Avatar name={s.name} size="sm" />
+                              <div>
+                                <p className="font-semibold text-[#111827]">{s.name}</p>
+                                <p className="text-xs font-mono text-[#9ca3af]">{s.id}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <input type="number" min={0} max={20} step={0.25} value={s.cc} disabled={s.locked}
+                              onChange={e => updateGrade(s.id, 'cc', parseFloat(e.target.value) || 0)}
+                              className={`w-16 text-center font-mono font-bold text-sm rounded-lg border py-1 px-2 outline-none ${s.locked ? 'bg-[#f9fafb] text-[#6b7280] border-[#e5e7eb]' : 'border-[#e5e7eb] focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'}`} />
+                          </td>
+                          <td className="px-4 py-3">
+                            <input type="number" min={0} max={20} step={0.25} value={s.exam} disabled={s.locked}
+                              onChange={e => updateGrade(s.id, 'exam', parseFloat(e.target.value) || 0)}
+                              className={`w-16 text-center font-mono font-bold text-sm rounded-lg border py-1 px-2 outline-none ${s.locked ? 'bg-[#f9fafb] text-[#6b7280] border-[#e5e7eb]' : 'border-[#e5e7eb] focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'}`} />
+                          </td>
+                          <td className="px-4 py-3 font-mono font-extrabold text-sm">
+                            <span className={final >= 10 ? 'text-[#059669]' : 'text-[#dc2626]'}>{final}/20</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge variant={final >= 10 ? 'success' : 'danger'}>{final >= 10 ? 'Validé' : 'Échoué'}</Badge>
+                          </td>
+                          <td className="px-4 py-3">
+                            <button onClick={() => toggleLock(s.id)}
+                              className={`flex items-center justify-center h-7 w-7 rounded-lg transition-colors ${s.locked ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'bg-[#f3f4f6] text-[#9ca3af] hover:bg-[#e5e7eb]'}`}>
+                              {s.locked ? <Check className="h-4 w-4 stroke-[3]" /> : <Edit3 className="h-4 w-4" />}
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="px-5 py-4 border-t border-[#f3f4f6] bg-[#f9fafb] flex items-center justify-between gap-4">
+                <p className="text-xs text-[#9ca3af]">⚠️ Les notes figées sont immédiatement visibles par les étudiants.</p>
+                <button onClick={handleSaveGrades}
+                  className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors">
+                  <Save className="h-4 w-4" /> Enregistrer la grille
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Grade entry interactive grid */}
-      <Card className="p-0 overflow-hidden shadow-sm bg-white border border-border">
-        <div className="p-5 border-b border-border bg-gray-50/50 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h3 className="font-bold text-gray-900 text-base">
-              {language === 'FR'
-                ? `3. Grille d'évaluation pour ${selectedCourse.code}`
-                : `3. Evaluation sheet for ${selectedCourse.code}`}
-            </h3>
-            <p className="text-xs text-muted mt-0.5">
-              {language === 'FR'
-                ? 'Saisissez directement les notes des étudiants (CC coefficient 0.3 · Examen coefficient 0.7)'
-                : 'Input grades dynamically (CC coeff 0.3 · Exam coeff 0.7)'}
-            </p>
-          </div>
-          <Button variant="outline" className="flex items-center gap-1.5 text-xs bg-white">
-            <Download className="h-4 w-4" />
-            {language === 'FR' ? 'Exporter rapport notes' : 'Export Grade Sheet'}
-          </Button>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b border-border bg-gray-50 text-xs font-bold text-gray-600 uppercase tracking-wider">
-              <tr>
-                <th className="px-6 py-3.5 text-left">Étudiant</th>
-                <th className="px-6 py-3.5 text-left">Matricule</th>
-                <th className="px-6 py-3.5 text-center">Note CC (/20)</th>
-                <th className="px-6 py-3.5 text-center">Note Examen (/20)</th>
-                <th className="px-6 py-3.5 text-center">Moyenne Finale</th>
-                <th className="px-6 py-3.5 text-center">Statut</th>
-                <th className="px-6 py-3.5 text-center">Figer la note</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {studentsList.map((student) => {
-                const finalGrade = parseFloat((student.cc * ccWeight + student.exam * examWeight).toFixed(2))
-                const passed = finalGrade >= 10
-
-                return (
-                  <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar name={student.name} size="sm" />
-                        <div>
-                          <p className="font-semibold text-gray-900">{student.name}</p>
-                          <p className="text-xs text-muted font-mono">{student.id}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-mono text-xs text-gray-500">{student.id}</td>
-
-                    {/* CC input */}
-                    <td className="px-6 py-4 text-center">
-                      <div className="inline-flex items-center gap-1.5">
-                        <input
-                          type="number"
-                          step="0.25"
-                          min="0"
-                          max="20"
-                          disabled={student.val}
-                          value={student.cc}
-                          onChange={(e) => handleGradeChange(student.id, 'cc', parseFloat(e.target.value) || 0)}
-                          className={`w-16 text-center font-mono font-bold text-sm rounded border py-1 px-1.5 outline-none transition-colors ${
-                            student.val ? 'bg-gray-50 border-gray-200 text-gray-500' : 'border-border focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'
-                          }`}
-                        />
-                        <span className="text-xs text-muted">/20</span>
-                      </div>
-                    </td>
-
-                    {/* Exam input */}
-                    <td className="px-6 py-4 text-center">
-                      <div className="inline-flex items-center gap-1.5">
-                        <input
-                          type="number"
-                          step="0.25"
-                          min="0"
-                          max="20"
-                          disabled={student.val}
-                          value={student.exam}
-                          onChange={(e) => handleGradeChange(student.id, 'exam', parseFloat(e.target.value) || 0)}
-                          className={`w-16 text-center font-mono font-bold text-sm rounded border py-1 px-1.5 outline-none transition-colors ${
-                            student.val ? 'bg-gray-50 border-gray-200 text-gray-500' : 'border-border focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'
-                          }`}
-                        />
-                        <span className="text-xs text-muted">/20</span>
-                      </div>
-                    </td>
-
-                    {/* Moyenne Finale computed */}
-                    <td className="px-6 py-4 text-center font-mono font-black text-sm">
-                      <span className={passed ? "text-emerald-600" : "text-red-500"}>
-                        {finalGrade} / 20
-                      </span>
-                    </td>
-
-                    {/* Statut badge */}
-                    <td className="px-6 py-4 text-center">
-                      <Badge variant={passed ? 'success' : 'danger'}>
-                        {passed ? (language === 'FR' ? 'Validé' : 'Passed') : (language === 'FR' ? 'Échoué' : 'Failed')}
-                      </Badge>
-                    </td>
-
-                    {/* Lock checkbox */}
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleToggleValidation(student.id)}
-                        className={`inline-flex items-center justify-center p-1 rounded-md transition-colors ${
-                          student.val ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
-                        }`}
-                        title={student.val ? "Déverrouiller la saisie" : "Figer la note"}
-                      >
-                        {student.val ? <Check className="h-4 w-4 stroke-[3]" /> : <Edit3 className="h-4 w-4" />}
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Validate report actions */}
-        <div className="p-5 border-t border-border bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted">
-            {language === 'FR'
-              ? '⚠️ Les notes figées sont immédiatement consultables par les étudiants dans leur espace personnel.'
-              : '⚠️ Locked grades are immediately viewable by students in their grades panel.'}
-          </p>
-          <Button
-            onClick={() => {
-              const count = studentsList.length
-              const sizeInKB = parseFloat(((200 + count * 50) / 1024).toFixed(2))
-              alert(
-                language === 'FR'
-                  ? `Grille de notes sauvegardée ! \n\n🔒 Éléments figeables validés : ${studentsList.filter(s => s.val).length} / ${count} étudiants.\n🌍 Synchronisé en ligne (Coût : ~${sizeInKB} Ko).`
-                  : `Gradesheet saved successfully! \n\n🔒 Locked items: ${studentsList.filter(s => s.val).length} / ${count} students.\n🌍 Synchronized online (Bandwidth overhead: ~${sizeInKB} KB).`
-              )
-            }}
-            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 shadow-sm flex items-center justify-center gap-1.5"
-          >
-            <Save className="h-4 w-4" />
-            {language === 'FR' ? 'Enregistrer la grille' : 'Commit Grade Sheet'}
-          </Button>
-        </div>
-      </Card>
     </div>
   )
 }

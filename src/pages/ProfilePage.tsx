@@ -1,111 +1,219 @@
 import { useState } from 'react'
-import { Edit, Users, FileText, Star } from 'lucide-react'
-import { Card, CardTitle } from '../components/ui/Card'
-import { Button } from '../components/ui/Button'
+import { Edit, Users, Star, TrendingUp, BookOpen, UserCheck, Camera } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
+import { useUserRole } from '../utils/userRole'
+import { mockUsers } from '../data/mockData'
 
-const tabs = ['Informations', 'Parcours', 'Présences', 'Grades', 'Paramètres', 'Références']
-
-const personalInfo = [
-  { label: 'Nom complet', value: 'Emma Martin' },
-  { label: 'Date de naissance', value: '15 mars 2003' },
-  { label: 'Téléphone', value: '+237 6 12 34 56 78' },
-  { label: 'Email', value: 'emma.martin@uniflow.edu' },
-  { label: 'Adresse', value: 'Yaoundé, Cameroun' },
-]
-
-const academicInfo = [
-  { label: 'Numéro étudiant', value: 'ETU-2022-0847' },
-  { label: 'Filière', value: 'Informatique' },
-  { label: 'Niveau', value: 'Licence 2' },
-  { label: 'Langue', value: 'Français' },
-  { label: 'Établissement', value: 'Université UniFlow' },
-  { label: 'Inscription', value: 'Septembre 2022' },
-]
-
-const stats = [
-  { label: 'Sessions totales', value: 80, icon: Users, color: 'text-emerald-600 bg-emerald-50' },
-  { label: 'Présences', value: 68, icon: FileText, color: 'text-blue-600 bg-blue-50' },
-  { label: 'Points', value: 1200, icon: Star, color: 'text-orange-600 bg-orange-50' },
-]
+const tabs = ['Informations', 'Parcours', 'Présences', 'Grades', 'Paramètres', 'Références'] as const
+type Tab = typeof tabs[number]
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('Informations')
+  const { currentRole } = useUserRole()
+  const [activeTab, setActiveTab] = useState<Tab>('Informations')
+  const [editing, setEditing] = useState(false)
+
+  const user = currentRole === 'teacher' ? mockUsers.teacher : currentRole === 'delegate' ? mockUsers.delegate : mockUsers.student
+
+  const personalFields = [
+    { label: 'Nom complet',     value: user.name },
+    { label: 'Date de naissance', value: user.birthdate },
+    { label: 'Téléphone',       value: user.phone },
+    { label: 'Email',           value: user.email },
+    { label: 'Adresse',         value: user.address },
+  ]
+  const academicFields = [
+    { label: 'Numéro étudiant', value: user.id },
+    { label: 'Filière',         value: user.filiere ?? 'N/A' },
+    { label: 'Niveau',          value: user.niveau ?? 'N/A' },
+    { label: 'Langue',          value: 'Français, Anglais' },
+    { label: 'Établissement',   value: 'Université de Yaoundé I' },
+    { label: 'Inscription',     value: user.inscription },
+  ]
+
+  const stats = [
+    { label: 'Sessions totales', value: 80,   icon: Users,    bg: 'bg-[#d1fae5]', color: 'text-[#059669]' },
+    { label: 'Présences',        value: 68,   icon: UserCheck, bg: 'bg-[#dbeafe]', color: 'text-[#1d4ed8]' },
+    { label: 'Points',           value: 1200, icon: Star,     bg: 'bg-[#fef3c7]', color: 'text-[#d97706]' },
+  ]
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <div className="flex flex-wrap items-center gap-6">
-          <Avatar name="Emma Martin" size="xl" />
-          <div className="flex-1">
+    <div className="space-y-5 animate-fade-in">
+      {/* Profile header card */}
+      <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-start gap-5">
+          <div className="relative">
+            <Avatar name={user.name} size="2xl" />
+            <button className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#1e3a8a] text-white shadow-md hover:bg-[#2d4fa8] transition-colors">
+              <Camera className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">Emma Martin</h1>
+              <h1 className="text-xl font-bold text-[#111827]">{user.name}</h1>
               <Badge variant="success">Actif</Badge>
             </div>
-            <p className="mt-1 text-muted">Étudiante en Licence 2 — Informatique</p>
+            <p className="text-sm text-[#6b7280] mt-0.5">{user.role} en {user.filiere ?? 'Informatique'} — {user.niveau}</p>
+            <p className="text-xs text-[#9ca3af] mt-1">{user.email}</p>
           </div>
-          <Button variant="outline">
-            <Edit className="h-4 w-4" /> Modifier le profil
-          </Button>
+          <button onClick={() => setEditing(!editing)}
+            className="flex items-center gap-2 rounded-lg border border-[#e5e7eb] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
+            <Edit className="h-4 w-4" />
+            {editing ? 'Annuler' : 'Modifier le profil'}
+          </button>
         </div>
-      </Card>
+      </div>
 
-      <div className="flex flex-wrap gap-2 border-b border-border">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-sm font-medium ${
-              activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-muted hover:text-gray-900'
-            }`}
-          >
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-1 border-b border-[#e5e7eb]">
+        {tabs.map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+              activeTab === tab ? 'border-[#1e3a8a] text-[#1e3a8a]' : 'border-transparent text-[#6b7280] hover:text-[#374151]'
+            }`}>
             {tab}
           </button>
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardTitle className="mb-4 text-base">Informations personnelles</CardTitle>
-          <dl className="space-y-3">
-            {personalInfo.map(({ label, value }) => (
-              <div key={label} className="flex justify-between border-b border-border pb-2 text-sm">
-                <dt className="text-muted">{label}</dt>
-                <dd className="font-medium text-gray-900">{value}</dd>
+      {activeTab === 'Informations' && (
+        <>
+          <div className="grid gap-5 lg:grid-cols-2">
+            {/* Personal info */}
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-bold text-[#111827] mb-4">Informations personnelles</h2>
+              <dl className="space-y-3">
+                {personalFields.map(({ label, value }) => (
+                  <div key={label} className="flex items-center justify-between py-2 border-b border-[#f3f4f6] last:border-0">
+                    <dt className="text-sm text-[#6b7280]">{label}</dt>
+                    {editing ? (
+                      <input defaultValue={value}
+                        className="rounded-md border border-[#e5e7eb] px-2.5 py-1 text-sm text-right outline-none focus:border-[#1e3a8a] w-48" />
+                    ) : (
+                      <dd className="text-sm font-medium text-[#111827]">{value}</dd>
+                    )}
+                  </div>
+                ))}
+              </dl>
+              {editing && (
+                <button onClick={() => setEditing(false)}
+                  className="mt-4 w-full rounded-lg bg-[#1e3a8a] py-2 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+                  Enregistrer les modifications
+                </button>
+              )}
+            </div>
+
+            {/* Academic info */}
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-bold text-[#111827] mb-4">Informations académiques</h2>
+              <dl className="space-y-3">
+                {academicFields.map(({ label, value }) => (
+                  <div key={label} className="flex items-center justify-between py-2 border-b border-[#f3f4f6] last:border-0">
+                    <dt className="text-sm text-[#6b7280]">{label}</dt>
+                    <dd className="text-sm font-medium text-[#111827]">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div>
+            <h2 className="text-sm font-bold text-[#111827] mb-3">Mes statistiques</h2>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {stats.map(({ label, value, icon: Icon, bg, color }) => (
+                <div key={label} className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+                  <div className={`mb-3 inline-flex rounded-lg p-2 ${bg}`}>
+                    <Icon className={`h-5 w-5 ${color}`} />
+                  </div>
+                  <p className="text-3xl font-extrabold text-[#111827]">{value}</p>
+                  <p className="text-sm text-[#6b7280] mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeTab === 'Parcours' && (
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+          <h2 className="text-sm font-bold text-[#111827] mb-4">Parcours académique</h2>
+          <div className="space-y-4">
+            {[
+              { year: '2023-2024', level: 'Licence 2', ue: 7, avg: '14.6/20', status: 'En cours' },
+              { year: '2022-2023', level: 'Licence 1', ue: 8, avg: '13.2/20', status: 'Validé' },
+            ].map(p => (
+              <div key={p.year} className="flex items-center justify-between rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb]">
+                <div>
+                  <p className="font-semibold text-[#111827]">{p.year} — {p.level}</p>
+                  <p className="text-xs text-[#6b7280] mt-0.5">{p.ue} UE · Moyenne : {p.avg}</p>
+                </div>
+                <Badge variant={p.status === 'Validé' ? 'success' : 'info'}>{p.status}</Badge>
               </div>
             ))}
-          </dl>
-        </Card>
-
-        <Card>
-          <CardTitle className="mb-4 text-base">Informations académiques</CardTitle>
-          <dl className="space-y-3">
-            {academicInfo.map(({ label, value }) => (
-              <div key={label} className="flex justify-between border-b border-border pb-2 text-sm">
-                <dt className="text-muted">{label}</dt>
-                <dd className="font-medium text-gray-900">{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </Card>
-      </div>
-
-      <div>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Mes statistiques</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {stats.map(({ label, value, icon: Icon, color }) => (
-            <Card key={label}>
-              <div className={`mb-3 inline-flex rounded-lg p-2 ${color}`}>
-                <Icon className="h-5 w-5" />
-              </div>
-              <p className="text-3xl font-bold text-gray-900">{value}</p>
-              <p className="text-sm text-muted">{label}</p>
-            </Card>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {activeTab === 'Présences' && (
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+          <h2 className="text-sm font-bold text-[#111827] mb-4">Historique des présences</h2>
+          <div className="flex items-center gap-6 mb-6">
+            <div className="text-center">
+              <p className="text-3xl font-extrabold text-[#0d9488]">87%</p>
+              <p className="text-xs text-[#6b7280]">Taux global</p>
+            </div>
+            <div className="flex-1 h-3 rounded-full bg-[#f3f4f6] overflow-hidden">
+              <div className="h-full rounded-full bg-[#0d9488]" style={{ width: '87%' }} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            {['Algorithmique','Bases de données','Réseaux','Économie','Anglais'].map((c, i) => {
+              const rates = [90, 85, 80, 95, 88]
+              return (
+                <div key={c} className="flex items-center gap-3 text-sm">
+                  <span className="w-36 text-[#374151] font-medium truncate">{c}</span>
+                  <div className="flex-1 h-2 rounded-full bg-[#f3f4f6] overflow-hidden">
+                    <div className="h-full rounded-full bg-[#1e3a8a]" style={{ width: `${rates[i]}%` }} />
+                  </div>
+                  <span className="w-10 text-right text-xs font-semibold text-[#374151]">{rates[i]}%</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'Grades' && (
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+          <h2 className="text-sm font-bold text-[#111827] mb-4">Bulletins de notes</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { sem: 'Semestre 2 · 2023-2024', avg: '14.6/20', credits: '30/30', status: 'En cours' },
+              { sem: 'Semestre 1 · 2023-2024', avg: '13.8/20', credits: '30/30', status: 'Validé' },
+            ].map(b => (
+              <div key={b.sem} className="rounded-lg border border-[#e5e7eb] p-4">
+                <p className="font-semibold text-[#111827]">{b.sem}</p>
+                <div className="mt-2 flex gap-4 text-sm">
+                  <span className="text-[#6b7280]">Moy. : <strong className="text-[#1e3a8a]">{b.avg}</strong></span>
+                  <span className="text-[#6b7280]">ECTS : <strong className="text-[#0d9488]">{b.credits}</strong></span>
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <Badge variant={b.status === 'Validé' ? 'success' : 'info'}>{b.status}</Badge>
+                  <button className="text-xs font-medium text-[#1e3a8a] hover:underline">Télécharger PDF →</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(activeTab === 'Paramètres' || activeTab === 'Références') && (
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm text-center py-16">
+          <TrendingUp className="mx-auto h-10 w-10 text-[#e5e7eb] mb-3" />
+          <p className="text-sm text-[#9ca3af]">Section {activeTab} — disponible prochainement.</p>
+        </div>
+      )}
     </div>
   )
 }

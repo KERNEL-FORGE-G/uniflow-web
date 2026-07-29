@@ -1,14 +1,15 @@
 import { cn } from '../../utils/cn'
 
-type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'primary'
+type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'primary' | 'purple'
 
 const variants: Record<BadgeVariant, string> = {
-  primary: 'bg-primary/10 text-primary border-2 border-primary/20',
-  success: 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200',
-  warning: 'bg-orange-100 text-orange-700 border-2 border-orange-200',
-  danger: 'bg-red-100 text-red-700 border-2 border-red-200',
-  info: 'bg-blue-100 text-blue-700 border-2 border-blue-200',
-  neutral: 'bg-gray-100 text-gray-700 border-2 border-gray-200',
+  primary: 'bg-[#eff3ff] text-[#1e3a8a] border border-[#dce5fd]',
+  success: 'bg-[#d1fae5] text-[#065f46] border border-[#a7f3d0]',
+  warning: 'bg-[#fef3c7] text-[#92400e] border border-[#fde68a]',
+  danger:  'bg-[#fee2e2] text-[#991b1b] border border-[#fecaca]',
+  info:    'bg-[#dbeafe] text-[#1e40af] border border-[#bfdbfe]',
+  neutral: 'bg-[#f3f4f6] text-[#374151] border border-[#e5e7eb]',
+  purple:  'bg-[#ede9fe] text-[#5b21b6] border border-[#ddd6fe]',
 }
 
 export function Badge({
@@ -21,7 +22,13 @@ export function Badge({
   className?: string
 }) {
   return (
-    <span className={cn('inline-flex items-center rounded-xl px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider', variants[variant], className)}>
+    <span
+      className={cn(
+        'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
+        variants[variant],
+        className,
+      )}
+    >
       {children}
     </span>
   )

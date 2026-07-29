@@ -1,368 +1,274 @@
 import { Link, useNavigate } from 'react-router-dom'
-import {
-  BookOpen,
-  ClipboardList,
-  Clock,
-  TrendingUp,
-  UserCheck,
-  ChevronUp,
-  ChevronDown,
-  Users,
-  MessageSquare,
-  Wifi,
-} from 'lucide-react'
-import { Card, CardTitle } from '../components/ui/Card'
+import { BookOpen, ClipboardList, Clock, TrendingUp, UserCheck, ChevronUp, ChevronDown, Calendar, Bell } from 'lucide-react'
+import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
 import { useUserRole } from '../utils/userRole'
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { mockGrades } from '../data/mockData'
 
-const calendarDays = Array.from({ length: 31 }, (_, i) => i + 1)
+const calDays = ['L','M','M','J','V','S','D']
+// May 2024 starts Wednesday (offset 2)
+const calOffset = 2
+const calTotal = 31
+
+const gradeDistrib = [
+  { name: 'Excellentes', value: 35, color: '#1e3a8a' },
+  { name: 'Bonnes',      value: 30, color: '#0d9488' },
+  { name: 'Moyennes',    value: 25, color: '#f59e0b' },
+  { name: 'Faibles',     value: 10, color: '#ef4444' },
+]
 
 export default function DashboardPage() {
-  const { currentRole, language, isOfflineMode } = useUserRole()
+  const { currentRole, currentUser, language } = useUserRole()
   const navigate = useNavigate()
+  const firstName = currentUser.name.split(' ')[0]
 
-  // ----------------------------------------------------
-  // STUDENT WORKSPACE DATA
-  // ----------------------------------------------------
   const studentStats = [
-    { labelFr: 'Cours inscrits', labelEn: 'Enrolled Courses', value: '12', change: '+8%', up: true, icon: BookOpen, color: 'text-blue-600 bg-blue-50' },
-    { labelFr: 'Devoirs à rendre', labelEn: 'Assignments Due', value: '5', change: '↓1', up: false, icon: ClipboardList, color: 'text-orange-600 bg-orange-50' },
-    { labelFr: 'Prochain cours', labelEn: 'Next Lecture', value: '2h30', change: '+15m', up: true, icon: Clock, color: 'text-teal bg-teal/10' },
-    { labelFr: 'Moyenne générale', labelEn: 'GPA Average', value: '14.6/20', change: '+0.6', up: true, icon: TrendingUp, color: 'text-purple-600 bg-purple-50' },
-    { labelFr: 'Taux de présences', labelEn: 'Attendance Rate', value: '87%', change: '-5%', up: false, icon: UserCheck, color: 'text-emerald-600 bg-emerald-50' },
+    { label: 'Cours inscrits',    value: '12',      change: '+8%',  up: true,  icon: BookOpen,     bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]' },
+    { label: 'Devoirs à rendre',  value: '5',       change: '↓1',   up: false, icon: ClipboardList, bg: 'bg-[#fef3c7]', color: 'text-[#d97706]' },
+    { label: 'Prochain cours',    value: '2h30',    change: '+15m', up: true,  icon: Clock,         bg: 'bg-[#f0fdfa]', color: 'text-[#0d9488]' },
+    { label: 'Moyenne',           value: '14.6/20', change: '+0.6', up: true,  icon: TrendingUp,    bg: 'bg-[#ede9fe]', color: 'text-[#7c3aed]' },
+    { label: 'Présences',         value: '87%',     change: '-5%',  up: false, icon: UserCheck,     bg: 'bg-[#d1fae5]', color: 'text-[#059669]' },
   ]
-
-  const studentActivities = [
-    { textFr: 'Mathématiques : Devoir 1 rendu', textEn: 'Mathematics: Assignment 1 submitted', timeFr: 'Il y a 2h', timeEn: '2h ago' },
-    { textFr: 'Économie : Quiz noté 15/20', textEn: 'Economics: Graded Quiz 15/20', timeFr: 'Il y a 5h', timeEn: '5h ago' },
-    { textFr: 'Anglais : Nouveau cours disponible', textEn: 'Technical English: New lesson available', timeFr: 'Hier', timeEn: 'Yesterday' },
-    { textFr: 'Informatique : TP validé', textEn: 'Computer Science: Lab validated', timeFr: 'Hier', timeEn: 'Yesterday' },
-  ]
-
-  const gradeData = [
-    { name: 'Excellentes', value: 35, color: '#1e3a8a' },
-    { name: 'Bonnes', value: 30, color: '#0d9488' },
-    { name: 'Moyennes', value: 25, color: '#f59e0b' },
-    { name: 'Faibles', value: 10, color: '#ef4444' },
-  ]
-
-  // ----------------------------------------------------
-  // DELEGATE WORKSPACE DATA
-  // ----------------------------------------------------
   const delegateStats = [
-    { labelFr: 'Taux présence cohorte', labelEn: 'Cohort Attendance Rate', value: '89%', change: '+3%', up: true, icon: UserCheck, color: 'text-teal bg-teal/10' },
-    { labelFr: 'Rapports non synchronisés', labelEn: 'Offline Queued Reports', value: isOfflineMode ? '1' : '0', change: 'Offline', up: false, icon: Wifi, color: 'text-red-600 bg-red-50' },
-    { labelFr: 'Justifications en attente', labelEn: 'Pending Excuses', value: '3', change: '↓2', up: true, icon: ClipboardList, color: 'text-orange-600 bg-orange-50' },
-    { labelFr: 'Signalements d\'absence', labelEn: 'Absence alerts sent', value: '4', change: '+1', up: false, icon: MessageSquare, color: 'text-purple-600 bg-purple-50' },
-    { labelFr: 'Étudiants cohorte L2', labelEn: 'L2 Class Cohort Size', value: '5', change: 'Stable', up: true, icon: Users, color: 'text-blue-600 bg-blue-50' },
+    { label: 'Taux présence',     value: '89%',  change: '+3%',  up: true,  icon: UserCheck,     bg: 'bg-[#f0fdfa]', color: 'text-[#0d9488]' },
+    { label: 'En attente synchro',value: '2',    change: 'Offline',up:false, icon: ClipboardList, bg: 'bg-[#fee2e2]', color: 'text-[#dc2626]' },
+    { label: 'Justif. en attente',value: '3',    change: '↓2',   up: true,  icon: Bell,          bg: 'bg-[#fef3c7]', color: 'text-[#d97706]' },
+    { label: 'Cohorte L2 Info',   value: '52',   change: 'Stable',up: true, icon: BookOpen,      bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]' },
+    { label: 'Sessions validées', value: '18',   change: '+1',   up: true,  icon: Calendar,      bg: 'bg-[#d1fae5]', color: 'text-[#059669]' },
   ]
-
-  const delegateActivities = [
-    { textFr: 'Appel validé : Structures de données', textEn: 'Roll Call submitted: Data Structures', timeFr: 'Il y a 1h', timeEn: '1h ago' },
-    { textFr: 'Alerte SMS envoyée à Yasmine Ngo', textEn: 'SMS reminder dispatched to Yasmine Ngo', timeFr: 'Il y a 3h', timeEn: '3h ago' },
-    { textFr: 'Appel local mDNS enregistré', textEn: 'Local campus network mDNS record logged', timeFr: 'Ce matin', timeEn: 'This morning' },
-    { textFr: 'Rapport d\'assiduité exporté', textEn: 'Cohort attendance matrix spreadsheet exported', timeFr: 'Hier', timeEn: 'Yesterday' },
-  ]
-
-  // ----------------------------------------------------
-  // TEACHER WORKSPACE DATA
-  // ----------------------------------------------------
   const teacherStats = [
-    { labelFr: 'Cours assignés', labelEn: 'Assigned Courses', value: '3', change: 'Stable', up: true, icon: BookOpen, color: 'text-indigo-600 bg-indigo-50' },
-    { labelFr: 'Total étudiants inscrits', labelEn: 'Total Enrolled Students', value: '145', change: '+12', up: true, icon: Users, color: 'text-blue-600 bg-blue-50' },
-    { labelFr: 'Taux d\'assiduité moyen', labelEn: 'Average Attendance', value: '89%', change: '+2%', up: true, icon: UserCheck, color: 'text-emerald-600 bg-emerald-50' },
-    { labelFr: 'Ressources partagées', labelEn: 'Syllabus & Uploads', value: '12', change: '+3', up: true, icon: ClipboardList, color: 'text-teal bg-teal/10' },
-    { labelFr: 'Moyenne générale classe', labelEn: 'Class Grade Average', value: '13.6/20', change: '+0.4', up: true, icon: TrendingUp, color: 'text-purple-600 bg-purple-50' },
+    { label: 'Cours assignés',    value: '4',       change: 'Stable',up: true, icon: BookOpen,     bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]' },
+    { label: 'Étudiants totaux',  value: '186',     change: '+12',   up: true, icon: UserCheck,    bg: 'bg-[#f0fdfa]', color: 'text-[#0d9488]' },
+    { label: 'Devoirs à corriger',value: '23',      change: '+5',    up: false,icon: ClipboardList, bg: 'bg-[#fef3c7]', color: 'text-[#d97706]' },
+    { label: 'Notes à saisir',    value: '2',       change: '↓1',    up: true, icon: TrendingUp,   bg: 'bg-[#ede9fe]', color: 'text-[#7c3aed]' },
+    { label: 'Visioconfs semaine',value: '3',       change: '+1',    up: true, icon: Calendar,     bg: 'bg-[#d1fae5]', color: 'text-[#059669]' },
   ]
 
-  const teacherActivities = [
-    { textFr: 'Support de cours "Arbres & Graphes" partagé', textEn: 'Course file "Trees & Graphs" published', timeFr: 'À l\'instant', timeEn: 'Just now' },
-    { textFr: 'Grille de notes figeables INFO201 validée', textEn: 'Locked scores sheet INFO201 approved', timeFr: 'Il y a 2h', timeEn: '2h ago' },
-    { textFr: 'Rapport d\'assiduité examiné', textEn: 'Attendance summary checked', timeFr: 'Hier', timeEn: 'Yesterday' },
-    { textFr: 'Cours en ligne initié via LiveKit local', textEn: 'Virtual lecture started using local LiveKit server', timeFr: 'Hier', timeEn: 'Yesterday' },
+  const stats = currentRole === 'teacher' ? teacherStats : currentRole === 'delegate' ? delegateStats : studentStats
+
+  const activities = currentRole === 'teacher' ? [
+    { text: 'Support "Arbres & Graphes" publié',       time: 'À l\'instant' },
+    { text: 'Grille de notes INFO201 validée',          time: 'Il y a 2h' },
+    { text: 'Rapport d\'assiduité examiné',             time: 'Hier' },
+    { text: 'Cours initié via LiveKit LAN',             time: 'Hier' },
+  ] : currentRole === 'delegate' ? [
+    { text: 'Appel validé : Structures de données',     time: 'Il y a 1h' },
+    { text: 'SMS envoyé à Yasmine Ngo',                 time: 'Il y a 3h' },
+    { text: 'Rapport d\'assiduité exporté',             time: 'Hier' },
+    { text: 'QR Code généré pour INFO201',              time: 'Hier' },
+  ] : [
+    { text: 'Mathématiques : Devoir 1 rendu',           time: 'Il y a 2h' },
+    { text: 'Économie : Quiz noté 15/20',               time: 'Il y a 5h' },
+    { text: 'Anglais : Nouveau cours disponible',       time: 'Hier' },
+    { text: 'Physique : Document ajouté',               time: 'Hier' },
   ]
 
-  // Pick active lists
-  const activeStats = currentRole === 'teacher' ? teacherStats : currentRole === 'delegate' ? delegateStats : studentStats
-  const activeActivities = currentRole === 'teacher' ? teacherActivities : currentRole === 'delegate' ? delegateActivities : studentActivities
+  const avg = (mockGrades.reduce((s, g) => s + g.grade, 0) / mockGrades.length).toFixed(1)
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Welcome Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl border border-border shadow-sm">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight">
-            {language === 'FR' ? 'Tableau de bord' : 'Dashboard'}
+          <h1 className="text-xl font-bold text-[#111827]">
+            Bonjour, {firstName} 👋
           </h1>
-          <p className="text-sm text-muted mt-1">
-            {language === 'FR'
-              ? `Ravi de vous revoir, ${currentRole === 'teacher' ? 'Pr. Kamga' : currentRole === 'delegate' ? 'Lucas' : 'Emma'} — Lundi 13 mai 2024`
-              : `Welcome back, ${currentRole === 'teacher' ? 'Pr. Kamga' : currentRole === 'delegate' ? 'Lucas' : 'Emma'} — Monday 13 May 2024`}
+          <p className="text-sm text-[#6b7280] mt-0.5">
+            {language === 'FR' ? 'Lundi 13 mai 2024' : 'Monday, May 13, 2024'}
           </p>
         </div>
-
         <div className="flex items-center gap-2">
           {currentRole === 'student' && (
-            <Link to="/app/accueil-compact" className="inline-flex items-center text-xs font-bold text-primary hover:underline bg-primary/5 px-3 py-2 rounded-lg">
-              {language === 'FR' ? 'Vue compacte →' : 'Compact View →'}
+            <Link to="/app/accueil-compact"
+              className="rounded-lg border border-[#e5e7eb] px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
+              Vue liste →
             </Link>
           )}
-
-          <span className="text-xs bg-slate-100 border border-border px-3 py-2 rounded-lg font-bold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
-            🛡️ {language === 'FR' ? `Rôle: ${currentRole}` : `Workspace: ${currentRole}`}
+          <span className="rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] px-3 py-1.5 text-xs font-semibold text-[#374151] uppercase tracking-wide">
+            {currentRole === 'teacher' ? '👨‍🏫 Enseignant' : currentRole === 'delegate' ? '📢 Délégué' : '🎓 Étudiant'}
           </span>
         </div>
       </div>
 
-      {/* Synchronized vs Local banner alert */}
-      {isOfflineMode && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-800 text-xs flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-red-500 animate-ping shrink-0" />
-            <p className="font-semibold">
-              {language === 'FR'
-                ? 'Mode de simulation déconnecté (Hors-ligne). Les actions sauvegardées sont mises en attente locale.'
-                : 'Offline simulation mode active. Any changes saved will be stored in your local queue.'}
-            </p>
-          </div>
-          <span className="font-mono text-[10px] bg-red-100 text-red-800 font-bold px-2 py-1 rounded">
-            LOCAL SQLite
-          </span>
-        </div>
-      )}
-
-      {/* Stat Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {activeStats.map((stat, idx) => {
-          const Icon = stat.icon
-          const label = language === 'FR' ? stat.labelFr : stat.labelEn
+      {/* Stats */}
+      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {stats.map((s, i) => {
+          const Icon = s.icon
           return (
-            <Card key={idx} className="!p-4 bg-white border border-border hover:shadow-md transition-shadow">
+            <div key={i} className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
-                <div className={`rounded-lg p-2 ${stat.color}`}>
-                  <Icon className="h-5 w-5" />
+                <div className={`rounded-lg p-2 ${s.bg}`}>
+                  <Icon className={`h-4 w-4 ${s.color}`} />
                 </div>
-                <span className={`flex items-center text-xs font-bold ${stat.up ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {stat.up ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                  {stat.change}
+                <span className={`flex items-center gap-0.5 text-xs font-semibold ${s.up ? 'text-[#059669]' : 'text-[#dc2626]'}`}>
+                  {s.up ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  {s.change}
                 </span>
               </div>
-              <p className="mt-3 text-2xl font-black text-gray-900 tracking-tight">{stat.value}</p>
-              <p className="text-xs font-semibold text-muted mt-1 uppercase tracking-wider">{label}</p>
-            </Card>
+              <p className="mt-2.5 text-2xl font-extrabold text-[#111827] tracking-tight">{s.value}</p>
+              <p className="text-xs text-[#6b7280] mt-0.5 font-medium">{s.label}</p>
+            </div>
           )
         })}
       </div>
 
-      {/* Main split grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column (Activities & customized Workspace Tools) */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Recent activities based on role */}
-          <Card className="bg-white border border-border">
-            <CardTitle className="mb-4 text-base font-bold text-gray-900">
-              {language === 'FR' ? 'Activité récente' : 'Recent Activity Log'}
-            </CardTitle>
-            <ul className="divide-y divide-border">
-              {activeActivities.map((a, idx) => (
-                <li key={idx} className="flex items-center justify-between py-3.5 text-sm">
-                  <span className="text-gray-700 font-medium">{language === 'FR' ? a.textFr : a.textEn}</span>
-                  <span className="text-xs text-muted font-mono">{language === 'FR' ? a.timeFr : a.timeEn}</span>
+      {/* Main grid */}
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* Left col */}
+        <div className="space-y-5 lg:col-span-2">
+          {/* Recent activity */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-bold text-[#111827] mb-1">Activité récente</h2>
+            <div className="flex gap-4 border-b border-[#e5e7eb] mb-4 text-sm">
+              {['Aujourd\'hui', 'Cette semaine', 'Ce mois'].map((t, i) => (
+                <button key={t} className={`pb-2 text-xs font-medium border-b-2 transition-colors ${i === 0 ? 'border-[#1e3a8a] text-[#1e3a8a]' : 'border-transparent text-[#9ca3af] hover:text-[#374151]'}`}>{t}</button>
+              ))}
+            </div>
+            <ul className="divide-y divide-[#f3f4f6]">
+              {activities.map((a, i) => (
+                <li key={i} className="flex items-center justify-between py-3 text-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-[#1e3a8a] shrink-0" />
+                    <span className="text-[#374151] font-medium">{a.text}</span>
+                  </div>
+                  <span className="text-xs text-[#9ca3af] font-mono shrink-0 ml-4">{a.time}</span>
                 </li>
               ))}
             </ul>
-          </Card>
+          </div>
 
-          {/* Dynamic Interactive Role Tool Widget */}
+          {/* Role-specific CTA */}
           {currentRole === 'student' && (
-            <Card className="bg-gradient-to-br from-teal-50 to-white border border-teal-100 flex flex-col sm:flex-row justify-between items-center p-6 rounded-xl gap-4">
-              <div className="space-y-2 text-center sm:text-left">
-                <Badge variant="success">Filière: Informatique</Badge>
-                <h3 className="font-extrabold text-teal-900 text-lg">
-                  {language === 'FR' ? 'Pointage rapide d\'assiduité par QR Code' : 'Scan Live QR Code to Register'}
-                </h3>
-                <p className="text-xs text-teal-800 max-w-md">
-                  {language === 'FR'
-                    ? 'Un cours est en cours d\'appel ? Flashez le QR Code affiché par votre délégué pour enregistrer votre présence.'
-                    : 'Class is active? Scan the QR code projected by your class delegate to check-in.'}
-                </p>
+            <div className="rounded-xl border border-[#ccfbf1] bg-gradient-to-r from-[#f0fdfa] to-white p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+              <div>
+                <Badge variant="success" className="mb-2">Filière : Informatique</Badge>
+                <h3 className="font-bold text-[#0a7167] text-base">Pointage rapide par QR Code</h3>
+                <p className="text-xs text-[#374151] mt-1 max-w-sm">Un cours est en cours ? Scannez le QR Code de votre délégué pour enregistrer votre présence instantanément.</p>
               </div>
-              <Button onClick={() => navigate('/app/presences')} className="bg-teal text-white font-bold shrink-0 shadow-sm flex items-center gap-1">
-                <UserCheck className="h-4 w-4" />
-                {language === 'FR' ? 'Scanner / Pointer' : 'Scan / Check-in'}
-              </Button>
-            </Card>
-          )}
-
-          {currentRole === 'delegate' && (
-            <Card className="bg-gradient-to-br from-teal-900 to-emerald-950 text-white border-0 p-6 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-md">
-              <div className="space-y-1 text-center sm:text-left">
-                <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-black tracking-wider uppercase">Délégué L2</span>
-                <h3 className="font-extrabold text-white text-lg">
-                  {language === 'FR' ? 'Faire l\'appel de présence' : 'Trigger Cohort Roll Call'}
-                </h3>
-                <p className="text-xs text-teal-100 max-w-md">
-                  {language === 'FR'
-                    ? 'Prenez les présences des étudiants pour le cours en cours. Fonctionne en réseau local autonome même sans électricité ni Internet.'
-                    : 'Check-in your cohort peers. Guaranteed to function on local battery-powered LAN systems with offline outbox queuing.'}
-                </p>
-              </div>
-              <Button onClick={() => navigate('/app/gestion-presences')} className="bg-white text-emerald-900 font-bold hover:bg-slate-50 shrink-0 shadow flex items-center gap-1.5">
-                <UserCheck className="h-4 w-4" />
-                {language === 'FR' ? 'Ouvrir l\'appel' : 'Open Roll Call'}
-              </Button>
-            </Card>
-          )}
-
-          {currentRole === 'teacher' && (
-            <Card className="bg-gradient-to-br from-indigo-900 to-indigo-950 text-white border-0 p-6 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-md">
-              <div className="space-y-1 text-center sm:text-left">
-                <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-black tracking-wider uppercase">Enseignant</span>
-                <h3 className="font-extrabold text-white text-lg">
-                  {language === 'FR' ? 'Espace de Saisie des Notes académiques' : 'Class Score Evaluation Entry'}
-                </h3>
-                <p className="text-xs text-indigo-100 max-w-md">
-                  {language === 'FR'
-                    ? 'Saisissez les notes de contrôle continu (CC) et d\'examen. Le système calcule automatiquement la moyenne pondérée.'
-                    : 'Directly record and validate student assessment scores (CC 30%, Exam 70%). Final grade is computed instantly.'}
-                </p>
-              </div>
-              <Button onClick={() => navigate('/app/mes-cours-enseignant')} className="bg-teal text-white font-bold hover:bg-teal-light shrink-0 shadow flex items-center gap-1.5">
-                <TrendingUp className="h-4 w-4" />
-                {language === 'FR' ? 'Saisir les Notes' : 'Enter Grades'}
-              </Button>
-            </Card>
-          )}
-
-          {/* Global statistics block */}
-          <Card className="bg-white border border-border">
-            <CardTitle className="mb-3 text-base font-bold text-gray-900">
-              {language === 'FR' ? 'Progression académique' : 'Course Completion Rates'}
-            </CardTitle>
-            <div className="flex items-center gap-4">
-              <div className="h-3.5 flex-1 overflow-hidden rounded-full bg-gray-100 border border-border">
-                <div className="h-full rounded-full bg-teal transition-all duration-500" style={{ width: '72%' }} />
-              </div>
-              <span className="text-sm font-bold text-teal">72%</span>
+              <button onClick={() => navigate('/app/presences')}
+                className="shrink-0 rounded-lg bg-[#0d9488] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#0a7167] transition-colors shadow-sm flex items-center gap-2">
+                <UserCheck className="h-4 w-4" /> Scanner / Pointer
+              </button>
             </div>
-            <p className="text-xs text-muted mt-2">
-              {language === 'FR'
-                ? 'Semestre 2 en cours. 14 chapitres validés sur 20 prévus.'
-                : 'Semester 2 in progress. 14 chapters completed out of 20 planned.'}
-            </p>
-          </Card>
+          )}
+          {currentRole === 'delegate' && (
+            <div className="rounded-xl bg-[#1e3a8a] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
+              <div>
+                <span className="text-[10px] font-bold text-blue-200 uppercase tracking-wider">Délégué L2 Info</span>
+                <h3 className="font-bold text-white text-base mt-1">Faire l'appel de présence</h3>
+                <p className="text-xs text-blue-200 mt-1 max-w-sm">Prenez les présences. Fonctionne en réseau local sans Internet ni électricité continue.</p>
+              </div>
+              <button onClick={() => navigate('/app/gestion-presences')}
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-bold text-[#1e3a8a] hover:bg-[#f0f4ff] transition-colors shadow-sm flex items-center gap-2">
+                <UserCheck className="h-4 w-4" /> Ouvrir l'appel
+              </button>
+            </div>
+          )}
+          {currentRole === 'teacher' && (
+            <div className="rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#1e3a8a] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
+              <div>
+                <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Enseignant</span>
+                <h3 className="font-bold text-white text-base mt-1">Espace de saisie des notes</h3>
+                <p className="text-xs text-indigo-200 mt-1 max-w-sm">Saisissez les notes CC (30%) et examen (70%). Calcul automatique de la moyenne pondérée.</p>
+              </div>
+              <button onClick={() => navigate('/app/mes-cours-enseignant')}
+                className="shrink-0 rounded-lg bg-[#0d9488] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0a7167] transition-colors shadow-sm flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" /> Saisir les notes
+              </button>
+            </div>
+          )}
+
+          {/* Progress bar */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-bold text-[#111827]">Progression globale</h2>
+              <span className="text-sm font-bold text-[#0d9488]">72%</span>
+            </div>
+            <div className="h-2.5 w-full rounded-full bg-[#f3f4f6] overflow-hidden">
+              <div className="h-full rounded-full bg-[#0d9488] transition-all duration-700" style={{ width: '72%' }} />
+            </div>
+            <p className="text-xs text-[#9ca3af] mt-2">↑ 3% ce mois · Semestre 2 en cours</p>
+          </div>
         </div>
 
-        {/* Right Column (Calendars, charts, schedules) */}
-        <div className="space-y-6">
-          {/* Quick Calendar widget */}
-          <Card className="bg-white border border-border shadow-sm">
-            <CardTitle className="mb-4 text-base font-bold text-gray-900">
-              {language === 'FR' ? 'Calendrier — Mai 2024' : 'Academic Calendar — May 2024'}
-            </CardTitle>
-            <div className="grid grid-cols-7 gap-1 text-center text-xs">
-              {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d) => (
-                <div key={d} className="py-1 font-bold text-muted uppercase text-[10px] tracking-wider">{d}</div>
-              ))}
-              {calendarDays.map((day) => (
-                <button
-                  key={day}
-                  type="button"
-                  className={`rounded py-1.5 font-semibold text-xs ${day === 13 ? 'bg-primary text-white font-bold shadow-sm' : 'hover:bg-slate-50 text-gray-700'}`}
-                >
+        {/* Right col */}
+        <div className="space-y-5">
+          {/* Mini calendar */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-[#111827]">Mai 2024</h2>
+              <div className="flex gap-1">
+                <button className="rounded p-1 hover:bg-[#f3f4f6]"><ChevronDown className="h-3.5 w-3.5 rotate-90 text-[#6b7280]" /></button>
+                <button className="rounded p-1 hover:bg-[#f3f4f6]"><ChevronUp className="h-3.5 w-3.5 rotate-90 text-[#6b7280]" /></button>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 gap-0.5 text-center text-[10px]">
+              {calDays.map(d => <div key={d} className="py-1 font-bold text-[#9ca3af]">{d}</div>)}
+              {Array.from({ length: calOffset }).map((_, i) => <div key={`e${i}`} />)}
+              {Array.from({ length: calTotal }, (_, i) => i + 1).map(day => (
+                <button key={day}
+                  className={`rounded py-1.5 text-xs font-medium transition-colors ${day === 13 ? 'bg-[#1e3a8a] text-white font-bold' : day === 16 || day === 18 ? 'bg-[#f0fdfa] text-[#0d9488] font-semibold' : 'hover:bg-[#f3f4f6] text-[#374151]'}`}>
                   {day}
                 </button>
               ))}
             </div>
-          </Card>
+          </div>
 
-          {/* Grades Distribution for Student / Attendance rate for others */}
+          {/* Grade distribution (student) or metrics */}
           {currentRole === 'student' ? (
-            <Card className="bg-white border border-border shadow-sm">
-              <CardTitle className="mb-4 text-base font-bold text-gray-900">
-                {language === 'FR' ? 'Répartition des notes' : 'Grades Distribution'}
-              </CardTitle>
-              <ResponsiveContainer width="100%" height={160}>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-bold text-[#111827] mb-3">Répartition des notes</h2>
+              <ResponsiveContainer width="100%" height={150}>
                 <PieChart>
-                  <Pie data={gradeData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} dataKey="value" paddingAngle={2}>
-                    {gradeData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.color} />
-                    ))}
+                  <Pie data={gradeDistrib} cx="50%" cy="50%" innerRadius={42} outerRadius={65} dataKey="value" paddingAngle={2}>
+                    {gradeDistrib.map((e, i) => <Cell key={i} fill={e.color} />)}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(v: any) => [`${v}%`, '']} />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-[10px] font-semibold text-gray-700 uppercase tracking-wider">
-                {gradeData.map((g) => (
-                  <div key={g.name} className="flex items-center gap-1.5 bg-slate-50 border border-border p-1 rounded">
+              <div className="mt-2 grid grid-cols-2 gap-1.5">
+                {gradeDistrib.map(g => (
+                  <div key={g.name} className="flex items-center gap-1.5 text-[10px] font-medium text-[#374151]">
                     <span className="h-2 w-2 rounded-full shrink-0" style={{ background: g.color }} />
-                    {g.name}
+                    {g.name} ({g.value}%)
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
           ) : (
-            <Card className="bg-white border border-border shadow-sm">
-              <CardTitle className="mb-4 text-base font-bold text-gray-900">
-                {language === 'FR' ? 'Engagement Global de la Cohorte' : 'Cohort Performance Metrics'}
-              </CardTitle>
-              <div className="space-y-4">
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between font-medium">
-                    <span>{language === 'FR' ? 'Assiduité' : 'Attendance Rate'}</span>
-                    <span className="font-bold text-emerald-600">89%</span>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-bold text-[#111827] mb-4">Métriques cohorte</h2>
+              <div className="space-y-3">
+                {[
+                  { label: 'Assiduité', value: 89, color: 'bg-[#10b981]' },
+                  { label: 'Rapports complétés', value: 95, color: 'bg-[#1e3a8a]' },
+                  { label: 'Notes validées', value: 80, color: 'bg-[#f59e0b]' },
+                ].map(m => (
+                  <div key={m.label} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-medium text-[#374151]">{m.label}</span>
+                      <span className="font-bold text-[#111827]">{m.value}%</span>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-[#f3f4f6] overflow-hidden">
+                      <div className={`h-full rounded-full ${m.color}`} style={{ width: `${m.value}%` }} />
+                    </div>
                   </div>
-                  <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500" style={{ width: '89%' }} />
-                  </div>
-                </div>
-
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between font-medium">
-                    <span>{language === 'FR' ? 'Rapports complétés' : 'Class Reports Completed'}</span>
-                    <span className="font-bold text-indigo-600">95%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-600" style={{ width: '95%' }} />
-                  </div>
-                </div>
-
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between font-medium">
-                    <span>{language === 'FR' ? 'Notes validées' : 'Grades Submitted'}</span>
-                    <span className="font-bold text-amber-600">80%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-amber-500" style={{ width: '80%' }} />
-                  </div>
-                </div>
+                ))}
               </div>
-            </Card>
+            </div>
           )}
 
-          {/* Next event block */}
-          <Card className="border-l-4 border-l-primary bg-white shadow-sm">
-            <CardTitle className="mb-2 text-base font-bold text-gray-900">
-              {language === 'FR' ? 'Prochain événement' : 'Upcoming Academic Event'}
-            </CardTitle>
-            <p className="font-extrabold text-gray-900 text-sm">
-              {language === 'FR' ? 'Examen structures de données' : 'Data Structures final evaluation'}
-            </p>
-            <p className="text-xs text-muted mt-1">
-              {language === 'FR' ? 'Demain · 09h00 · Amphi 250' : 'Tomorrow · 09h00 · Amphi 250'}
-            </p>
-            <Badge variant="warning" className="mt-3">
-              {language === 'FR' ? 'Demain' : 'Tomorrow'}
-            </Badge>
-          </Card>
+          {/* Next event */}
+          <div className="rounded-xl border-l-4 border-l-[#1e3a8a] border border-[#e5e7eb] bg-white p-5 shadow-sm">
+            <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-2">Prochain événement</h2>
+            <p className="font-bold text-[#111827] text-sm">Examen Maths</p>
+            <p className="text-xs text-[#6b7280] mt-1">Demain · 09h00 · Salle A204</p>
+            <Badge variant="warning" className="mt-3">Dans 1 jour</Badge>
+            <button className="mt-3 w-full rounded-lg border border-[#e5e7eb] py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
+              Voir le détail
+            </button>
+          </div>
         </div>
       </div>
     </div>

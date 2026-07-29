@@ -1,36 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-ecto-green: #58cc02;
-  --color-lingot-lime: #a5ed6e;
-  --color-eel-light: #d7ffb8;
-  --color-macaw-blue: #1cb0f6;
-  --color-eel-dark-blue: #042c60;
-  --color-midnight: #000437;
-  --color-graphite: #3c3c3c;
-  --color-ash: #777777;
-  --color-charcoal: #4b4b4b;
-  --color-paper: #ffffff;
-  --color-ink: #000000;
+  /* ─── UniFlow Brand Colors ─── */
+  --color-primary: #1e3a8a;
+  --color-primary-light: #2d4fa8;
+  --color-primary-dark: #152a66;
+  --color-primary-50: #eff3ff;
+  --color-primary-100: #dce5fd;
 
-  /* Primary Theme Override */
-  --color-primary: #58cc02;
-  --color-primary-light: #a5ed6e;
-  --color-teal: #1cb0f6;
-  --color-teal-light: #7dd3fc;
-  --color-bg: #ffffff;
-  --color-text: #3c3c3c;
-  --color-muted: #777777;
+  --color-teal: #0d9488;
+  --color-teal-light: #14b8a8;
+  --color-teal-dark: #0a7167;
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+
+  /* ─── Neutrals ─── */
+  --color-bg: #f3f4f6;
+  --color-surface: #ffffff;
   --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-muted: #6b7280;
 
-  /* Typography */
-  --font-sans: "din-round", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-feather: "feather", ui-sans-serif, system-ui, sans-serif;
+  /* ─── Status Colors ─── */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* ─── Typography ─── */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -39,4 +45,39 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ─── Animations ─── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.animate-fade-in   { animation: fade-in 0.25s ease both; }
+.animate-slide-in  { animation: slide-in 0.2s ease both; }
+.animate-pulse-dot { animation: pulse-dot 1.4s ease infinite; }

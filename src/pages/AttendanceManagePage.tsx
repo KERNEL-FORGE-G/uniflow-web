@@ -1,464 +1,276 @@
 import { useState } from 'react'
-import { QrCode, Download, UserCheck, RefreshCw, AlertTriangle, Wifi, FileSpreadsheet, Check, Clock, X, HelpCircle } from 'lucide-react'
-import { Card, CardTitle } from '../components/ui/Card'
-import { Button } from '../components/ui/Button'
+import { QrCode, Download, UserCheck, RefreshCw, AlertTriangle, Wifi, FileSpreadsheet, Check, Clock, X, HelpCircle, Megaphone } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
 import { cn } from '../utils/cn'
-
-const initialStudents = [
-  { name: 'Emma Martin', id: 'ETU-0847', email: 'emma.martin@uniflow.edu', status: 'Présent' },
-  { name: 'Sarah Kamga', id: 'ETU-0849', email: 'sarah.kamga@uniflow.edu', status: 'Présent' },
-  { name: 'Yasmine Ngo', id: 'ETU-0850', email: 'yasmine.ngo@uniflow.edu', status: 'Absent' },
-  { name: 'Thomas Mbarga', id: 'ETU-0851', email: 'thomas.mbarga@uniflow.edu', status: 'Présent' },
-  { name: 'Lucas Dubois', id: 'ETU-0848', email: 'lucas.dubois@uniflow.edu', status: 'Late' },
-]
+import { mockRollStudents, type RollStatus } from '../data/mockData'
 
 const courses = [
-  { code: 'INFO201', name: 'Structures de données', teacher: 'Dr. Kamga', time: '14h00 - 16h00', room: 'Amphi 250' },
-  { code: 'INFO101', name: 'Algorithmique', teacher: 'Pr. Martin', time: '08h00 - 10h00', room: 'Salle A101' },
-  { code: 'MATH201', name: 'Analyse numérique', teacher: 'Dr. Dupont', time: '10h15 - 12h15', room: 'Salle B204' },
+  { code: 'INFO101', name: 'Algorithmique',       teacher: 'Pr. Martin',   time: '08h00–10h00', room: 'Salle A204' },
+  { code: 'INFO201', name: 'Bases de données',    teacher: 'Dr. Benkacem', time: '14h00–16h00', room: 'Salle B101' },
+  { code: 'INFO301', name: 'Réseaux informatiques',teacher: 'Dr. Dubois',  time: '10h15–12h15', room: 'Labo C205' },
+]
+
+const announcements = [
+  { id: 1, title: 'Réunion délégués', desc: 'Vendredi 17 mai à 13h — Salle C102.', time: 'il y a 1h', type: 'info' },
+  { id: 2, title: 'Changement de salle INFO201', desc: 'Le cours de demain aura lieu en Amphi B au lieu de la salle B101.', time: 'il y a 3h', type: 'warning' },
 ]
 
 export default function AttendanceManagePage() {
-  const { isOfflineMode, language } = useUserRole()
-  const [selectedCourseCode, setSelectedCourseCode] = useState('INFO201')
-  const [studentsList, setStudentsList] = useState(initialStudents)
-  const [showQRModal, setShowQRModal] = useState(false)
-  const [pendingSyncCount, setPendingSyncCount] = useState(isOfflineMode ? 1 : 0)
-  const [syncStatusMsg, setSyncStatusMsg] = useState('')
-  const [estimatedData, setEstimatedData] = useState<number | null>(null)
+  const { isOfflineMode } = useUserRole()
+  const [selectedCode, setSelectedCode] = useState('INFO101')
+  const [students, setStudents] = useState(mockRollStudents)
+  const [showQR, setShowQR] = useState(false)
+  const [pending, setPending] = useState(isOfflineMode ? 2 : 0)
+  const [saved, setSaved] = useState(false)
+  const [activeTab, setActiveTab] = useState<'appel'|'annonces'>('appel')
 
-  const selectedCourse = courses.find(c => c.code === selectedCourseCode) || courses[0]
+  const course = courses.find(c => c.code === selectedCode)!
+  const present  = students.filter(s => s.status === 'Présent').length
+  const absent   = students.filter(s => s.status === 'Absent').length
+  const late     = students.filter(s => s.status === 'Late').length
+  const excused  = students.filter(s => s.status === 'Excusé').length
+  const rate     = Math.round((present / students.length) * 100)
 
-  // Calculate totals
-  const totalStudents = studentsList.length
-  const presentsCount = studentsList.filter(s => s.status === 'Présent').length
-  const absentsCount = studentsList.filter(s => s.status === 'Absent').length
-  const latesCount = studentsList.filter(s => s.status === 'Late').length
-  const excusedCount = studentsList.filter(s => s.status === 'Excusé').length
-  const attendanceRate = Math.round((presentsCount / totalStudents) * 100)
-
-  const handleStatusChange = (studentId: string, newStatus: string) => {
-    setStudentsList(prev => prev.map(s => s.id === studentId ? { ...s, status: newStatus } : s))
-    if (isOfflineMode) {
-      setPendingSyncCount(prev => prev + 1)
-    }
+  const setStatus = (id: string, status: RollStatus) => {
+    setStudents(prev => prev.map(s => s.id === id ? { ...s, status } : s))
+    if (isOfflineMode) setPending(p => p + 1)
   }
 
   const handleSave = () => {
-    if (isOfflineMode) {
-      setSyncStatusMsg(language === 'FR'
-        ? '⚠️ Mode Offline : Rapport enregistré localement dans l\'Outbox SQLite.'
-        : '⚠️ Offline Mode: Report saved locally in SQLite Outbox queue.'
-      )
-      setPendingSyncCount(prev => prev + 1)
-      setTimeout(() => setSyncStatusMsg(''), 5000)
-    } else {
-      // Calculate fake bandwidth usage
-      const sizeInBytes = 250 + (studentsList.length * 60)
-      const sizeInKB = parseFloat((sizeInBytes / 1024).toFixed(2))
-      setEstimatedData(sizeInKB)
-      setSyncStatusMsg(language === 'FR'
-        ? `🟢 Rapport synchronisé avec succès aux serveurs centraux UniFlow !`
-        : `🟢 Report successfully synchronized with UniFlow central servers!`
-      )
-      setPendingSyncCount(0)
-      setTimeout(() => {
-        setSyncStatusMsg('')
-        setEstimatedData(null)
-      }, 5000)
-    }
+    setSaved(true)
+    if (!isOfflineMode) setPending(0)
+    setTimeout(() => setSaved(false), 3500)
   }
 
-  const handleSyncManual = () => {
-    const sizeInBytes = pendingSyncCount * 450
-    const sizeInKB = parseFloat((sizeInBytes / 1024).toFixed(2))
-    setEstimatedData(sizeInKB)
-    setSyncStatusMsg(language === 'FR'
-      ? `🔄 Synchronisation delta-sync terminée. Toutes les listes locales de présence sont à jour !`
-      : `🔄 Delta-sync completed. All local attendance records are up to date!`
-    )
-    setPendingSyncCount(0)
-    setTimeout(() => {
-      setSyncStatusMsg('')
-      setEstimatedData(null)
-    }, 6000)
-  }
+  const iconBtn = (status: RollStatus, current: RollStatus, icon: React.ReactNode, active: string, inactive: string) => (
+    <label className="inline-flex cursor-pointer">
+      <input type="radio" className="sr-only" checked={current === status} onChange={() => {}} />
+      <span onClick={() => {}} className={cn('flex h-7 w-7 items-center justify-center rounded-full border text-xs font-bold transition-all cursor-pointer', current === status ? active : inactive)}>
+        {icon}
+      </span>
+    </label>
+  )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-6 rounded-xl border border-border shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-5 shadow-sm">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal/10 px-2.5 py-1 text-xs font-semibold text-teal-800 mb-2">
-            📢 {language === 'FR' ? 'ESPACE DÉLÉGUÉ' : 'DELEGATE WORKSPACE'}
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#f0fdfa] border border-[#ccfbf1] px-2.5 py-1 text-xs font-semibold text-[#0d9488] mb-2">
+            📢 ESPACE DÉLÉGUÉ
           </span>
-          <h1 className="text-2xl font-bold text-gray-900">
-            {language === 'FR' ? 'Gestion des présences de la cohorte' : 'Cohort Attendance Tracking'}
-          </h1>
-          <p className="text-sm text-muted">
-            {language === 'FR' ? 'Enregistrez les présences pour votre filière (L2 Info - Informatique)' : 'Record and manage attendance for L2 Info - Computer Science'}
-          </p>
+          <h1 className="text-xl font-bold text-[#111827]">Gestion des présences — Cohorte L2 Info</h1>
+          <p className="text-sm text-[#6b7280] mt-0.5">Lucas Dubois · Délégué · Lundi 13 mai 2024</p>
         </div>
-
-        <div className="flex flex-wrap gap-2">
-          {/* Quick PDF/Excel Export */}
-          <Button variant="outline" className="flex items-center gap-1.5 text-xs">
-            <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
-            {language === 'FR' ? 'Exporter Excel' : 'Export Excel'}
-          </Button>
-
-          <Button onClick={() => setShowQRModal(true)} className="flex items-center gap-1.5 text-xs bg-teal hover:bg-teal-light">
-            <QrCode className="h-4 w-4" />
-            {language === 'FR' ? 'Générer QR' : 'Generate QR'}
-          </Button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowQR(true)}
+            className="flex items-center gap-1.5 rounded-lg bg-[#0d9488] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0a7167] transition-colors">
+            <QrCode className="h-4 w-4" /> Générer QR
+          </button>
+          <button className="flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">
+            <FileSpreadsheet className="h-4 w-4 text-emerald-600" /> Exporter
+          </button>
         </div>
       </div>
 
-      {/* Offline vs Online Alert Banner */}
+      {/* Offline / Online banner */}
       {isOfflineMode ? (
-        <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 text-sm">
-          <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 animate-bounce" />
+        <div className="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-200 p-4 text-amber-800">
+          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5 animate-bounce" />
           <div className="flex-1">
-            <span className="font-bold">{language === 'FR' ? 'Réseau Local Universitaire Actif' : 'University Local LAN active'}</span>
-            <p className="text-xs text-amber-700 mt-0.5">
-              {language === 'FR'
-                ? 'Aucune connexion Internet détectée. Mode Offline-First activé : les présences sont stockées en base SQLite locale et synchronisées en tâche de fond.'
-                : 'No Internet connection. Offline-First active: Attendance records are stored in local SQLite database and will sync in the background.'}
-            </p>
+            <p className="font-semibold text-sm">Réseau Local Universitaire Actif</p>
+            <p className="text-xs mt-0.5">Mode Offline-First : les présences sont stockées en SQLite local et synchronisées au retour de connexion.</p>
           </div>
-          {pendingSyncCount > 0 && (
-            <button
-              onClick={handleSyncManual}
-              className="flex items-center gap-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
-            >
-              <RefreshCw className="h-3 w-3 animate-spin" />
-              {language === 'FR' ? `Forcer Synchro (${pendingSyncCount})` : `Force Sync (${pendingSyncCount})`}
+          {pending > 0 && (
+            <button onClick={() => setPending(0)}
+              className="flex items-center gap-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 px-3 py-1.5 text-xs font-bold text-amber-900 shrink-0">
+              <RefreshCw className="h-3.5 w-3.5" /> Sync ({pending})
             </button>
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-between gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-emerald-800 text-sm">
-          <div className="flex items-center gap-3">
-            <Wifi className="h-5 w-5 text-emerald-600 shrink-0" />
-            <div>
-              <span className="font-bold">{language === 'FR' ? 'Mode Connecté (Internet)' : 'Connected Mode (Internet)'}</span>
-              <p className="text-xs text-emerald-700 mt-0.5">
-                {language === 'FR'
-                  ? 'Synchronisation delta-sync active. Vos rapports sont envoyés instantanément avec compression pour préserver vos données mobiles.'
-                  : 'Delta-sync active. Your reports are sent immediately using compression to save your mobile data.'}
-              </p>
-            </div>
-          </div>
-          {pendingSyncCount > 0 && (
-            <button
-              onClick={handleSyncManual}
-              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs transition-all shadow-sm"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              {language === 'FR' ? `Synchroniser (${pendingSyncCount} en attente)` : `Synchronize (${pendingSyncCount} pending)`}
-            </button>
-          )}
+        <div className="flex items-center gap-3 rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-800">
+          <Wifi className="h-5 w-5 text-emerald-500 shrink-0" />
+          <p className="text-sm font-medium">Mode Connecté — Synchronisation delta-sync active (~1.2 Ko/sync)</p>
         </div>
       )}
 
-      {/* Sync feedback Toast/Banner */}
-      {syncStatusMsg && (
-        <div className="bg-slate-900 text-white px-4 py-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-2 shadow-lg transition-all animate-fade-in text-sm">
-          <p className="font-medium text-center sm:text-left">{syncStatusMsg}</p>
-          {estimatedData !== null && (
-            <span className="bg-teal text-white font-mono text-xs px-2.5 py-1 rounded-full font-semibold shrink-0">
-              ⚡ {language === 'FR' ? 'Données mobiles estimées' : 'Estimated data used'} : ~{estimatedData} Ko
-            </span>
-          )}
+      {/* Saved toast */}
+      {saved && (
+        <div className="rounded-xl bg-slate-900 text-white px-4 py-3 text-sm font-medium flex items-center gap-2 animate-fade-in">
+          <Check className="h-4 w-4 text-[#0d9488]" />
+          {isOfflineMode ? '⚠️ Rapport enregistré localement (Outbox SQLite).' : '🟢 Rapport synchronisé avec les serveurs UniFlow !'}
         </div>
       )}
 
-      {/* Select Course & Quick KPIs */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Course selection */}
-        <Card className="lg:col-span-1 flex flex-col justify-between">
-          <div>
-            <CardTitle className="mb-4 text-base">
-              {language === 'FR' ? '1. Sélection du cours' : '1. Select Course/UE'}
-            </CardTitle>
+      {/* Tabs */}
+      <div className="flex gap-1 border-b border-[#e5e7eb]">
+        {[{id:'appel',label:'Appel de présence'},{id:'annonces',label:'Annonces cohorte'}].map(t => (
+          <button key={t.id} onClick={() => setActiveTab(t.id as any)}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${activeTab === t.id ? 'border-[#1e3a8a] text-[#1e3a8a]' : 'border-transparent text-[#6b7280] hover:text-[#374151]'}`}>
+            {t.label}
+          </button>
+        ))}
+      </div>
 
-            <div className="space-y-3">
-              {courses.map((course) => (
-                <button
-                  key={course.code}
-                  onClick={() => setSelectedCourseCode(course.code)}
-                  className={cn(
-                    "w-full text-left p-3.5 rounded-xl border text-sm transition-all flex flex-col gap-1.5",
-                    selectedCourseCode === course.code
-                      ? "border-primary bg-primary/5 shadow-sm"
-                      : "border-border bg-white hover:bg-gray-50"
-                  )}
-                >
-                  <div className="flex justify-between items-center w-full">
-                    <span className="font-bold text-gray-900">{course.code}</span>
-                    <Badge variant={selectedCourseCode === course.code ? 'primary' : 'neutral'}>
-                      {course.room}
-                    </Badge>
+      {activeTab === 'appel' && (
+        <div className="grid gap-5 lg:grid-cols-3">
+          {/* Course selector */}
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-bold text-[#111827] mb-3">1. Sélection du cours</h2>
+            <div className="space-y-2">
+              {courses.map(c => (
+                <button key={c.code} onClick={() => setSelectedCode(c.code)}
+                  className={cn('w-full text-left rounded-xl border p-3.5 text-sm transition-all', selectedCode === c.code ? 'border-[#1e3a8a] bg-[#f0f4ff]' : 'border-[#e5e7eb] hover:bg-[#f9fafb]')}>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-[#111827]">{c.code}</span>
+                    <Badge variant="neutral">{c.room}</Badge>
                   </div>
-                  <p className="font-semibold text-gray-800 truncate">{course.name}</p>
-                  <p className="text-xs text-muted flex justify-between">
-                    <span>👤 {course.teacher}</span>
-                    <span className="font-semibold text-primary">🕒 {course.time}</span>
-                  </p>
+                  <p className="font-medium text-[#374151] mt-0.5 truncate">{c.name}</p>
+                  <div className="flex justify-between text-xs text-[#9ca3af] mt-1">
+                    <span>👤 {c.teacher}</span>
+                    <span className="font-semibold text-[#1e3a8a]">🕒 {c.time}</span>
+                  </div>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="mt-6 border-t border-border pt-4 text-xs text-muted space-y-1">
-            <p className="flex justify-between">
-              <span>{language === 'FR' ? 'Date de session' : 'Session Date'} :</span>
-              <span className="font-semibold text-gray-800">Lundi 13 mai 2024</span>
-            </p>
-            <p className="flex justify-between">
-              <span>{language === 'FR' ? 'Estimé consommation' : 'Estimated Data Overhead'} :</span>
-              <span className="font-semibold text-gray-800 font-mono">~1.2 KB / sync</span>
-            </p>
-          </div>
-        </Card>
-
-        {/* Live Attendance KPIs */}
-        <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
-          <Card className="flex flex-col justify-between bg-gradient-to-br from-teal-50 to-white border-teal-100">
-            <div>
-              <p className="text-xs font-semibold text-teal-800 uppercase tracking-wider">
-                {language === 'FR' ? 'Taux de présence cohorte' : 'Cohort Attendance Rate'}
-              </p>
-              <h2 className="text-4xl font-extrabold text-teal mt-2">{attendanceRate}%</h2>
-            </div>
-            <div className="mt-4">
-              <div className="h-2 w-full overflow-hidden rounded-full bg-teal/10">
-                <div className="h-full rounded-full bg-teal transition-all duration-300" style={{ width: `${attendanceRate}%` }} />
-              </div>
-              <p className="text-xs text-muted mt-2">
-                {language === 'FR'
-                  ? `Satisferait à l'exigence de présence minimale de 75%`
-                  : `Meets the minimum academic requirements of 75% attendance`}
-              </p>
-            </div>
-          </Card>
-
-          <Card className="flex flex-col justify-between bg-slate-50">
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                {language === 'FR' ? 'Répartition actuelle' : 'Current Status Breakdowns'}
-              </p>
-
-              <div className="grid grid-cols-2 gap-3 mt-4">
-                <div className="bg-white p-2.5 rounded-lg border border-border text-center">
-                  <span className="block text-xl font-bold text-emerald-600">{presentsCount}</span>
-                  <span className="text-[10px] text-muted uppercase tracking-wider font-semibold">Présents</span>
+          {/* KPIs + table */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* KPIs */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: 'Présents',  val: present, color: 'text-[#059669]', bg: 'bg-[#d1fae5]' },
+                { label: 'Absents',   val: absent,  color: 'text-[#dc2626]', bg: 'bg-[#fee2e2]' },
+                { label: 'Retards',   val: late,    color: 'text-[#d97706]', bg: 'bg-[#fef3c7]' },
+                { label: 'Excusés',   val: excused, color: 'text-[#7c3aed]', bg: 'bg-[#ede9fe]' },
+              ].map(k => (
+                <div key={k.label} className={`rounded-xl p-3 ${k.bg} border border-transparent`}>
+                  <p className={`text-2xl font-extrabold ${k.color}`}>{k.val}</p>
+                  <p className="text-xs font-medium text-[#374151] mt-0.5">{k.label}</p>
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-border text-center">
-                  <span className="block text-xl font-bold text-red-500">{absentsCount}</span>
-                  <span className="text-[10px] text-muted uppercase tracking-wider font-semibold">Absents</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-lg border border-border text-center">
-                  <span className="block text-xl font-bold text-amber-500">{latesCount}</span>
-                  <span className="text-[10px] text-muted uppercase tracking-wider font-semibold">Retards</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-lg border border-border text-center">
-                  <span className="block text-xl font-bold text-purple-600">{excusedCount}</span>
-                  <span className="text-[10px] text-muted uppercase tracking-wider font-semibold">Excusés</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-
-      {/* Main Student Attendance List */}
-      <Card className="p-0 overflow-hidden shadow-sm">
-        <div className="p-5 border-b border-border bg-gray-50/50 flex flex-wrap justify-between items-center gap-4">
-          <h3 className="font-bold text-gray-900 text-base">
-            {language === 'FR'
-              ? `2. Liste d'appel pour ${selectedCourse.code}`
-              : `2. Call List for ${selectedCourse.code}`}
-          </h3>
-          <span className="text-xs font-semibold text-muted bg-white border border-border px-3 py-1.5 rounded-lg">
-            Cohort: L2 Info · {totalStudents} {language === 'FR' ? 'Étudiants' : 'Students'}
-          </span>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b border-border bg-gray-50 text-xs font-bold text-gray-600 uppercase tracking-wider">
-              <tr>
-                <th className="px-6 py-3.5 text-left">Étudiant</th>
-                <th className="px-6 py-3.5 text-left">Matricule</th>
-                <th className="px-6 py-3.5 text-center">Présent</th>
-                <th className="px-6 py-3.5 text-center">Absent</th>
-                <th className="px-6 py-3.5 text-center">En retard</th>
-                <th className="px-6 py-3.5 text-center">Excusé</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {studentsList.map((student) => (
-                <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={student.name} size="sm" />
-                      <div>
-                        <p className="font-semibold text-gray-900">{student.name}</p>
-                        <p className="text-xs text-muted font-mono">{student.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 font-mono text-xs font-semibold text-gray-700">{student.id}</td>
-
-                  {/* Radio toggles */}
-                  <td className="px-6 py-4 text-center">
-                    <label className="inline-flex items-center justify-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`status-${student.id}`}
-                        checked={student.status === 'Présent'}
-                        onChange={() => handleStatusChange(student.id, 'Présent')}
-                        className="sr-only"
-                      />
-                      <span className={cn(
-                        "h-6.5 w-6.5 rounded-full border flex items-center justify-center transition-all",
-                        student.status === 'Présent'
-                          ? "bg-emerald-500 border-emerald-600 text-white shadow-sm"
-                          : "border-border bg-white hover:bg-slate-50 text-slate-400"
-                      )}>
-                        <Check className="h-4 w-4 stroke-[3]" />
-                      </span>
-                    </label>
-                  </td>
-
-                  <td className="px-6 py-4 text-center">
-                    <label className="inline-flex items-center justify-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`status-${student.id}`}
-                        checked={student.status === 'Absent'}
-                        onChange={() => handleStatusChange(student.id, 'Absent')}
-                        className="sr-only"
-                      />
-                      <span className={cn(
-                        "h-6.5 w-6.5 rounded-full border flex items-center justify-center transition-all",
-                        student.status === 'Absent'
-                          ? "bg-red-500 border-red-600 text-white shadow-sm"
-                          : "border-border bg-white hover:bg-slate-50 text-slate-400"
-                      )}>
-                        <X className="h-4 w-4 stroke-[3]" />
-                      </span>
-                    </label>
-                  </td>
-
-                  <td className="px-6 py-4 text-center">
-                    <label className="inline-flex items-center justify-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`status-${student.id}`}
-                        checked={student.status === 'Late'}
-                        onChange={() => handleStatusChange(student.id, 'Late')}
-                        className="sr-only"
-                      />
-                      <span className={cn(
-                        "h-6.5 w-6.5 rounded-full border flex items-center justify-center transition-all",
-                        student.status === 'Late'
-                          ? "bg-amber-500 border-amber-600 text-white shadow-sm"
-                          : "border-border bg-white hover:bg-slate-50 text-slate-400"
-                      )}>
-                        <Clock className="h-4 w-4 stroke-[3]" />
-                      </span>
-                    </label>
-                  </td>
-
-                  <td className="px-6 py-4 text-center">
-                    <label className="inline-flex items-center justify-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`status-${student.id}`}
-                        checked={student.status === 'Excusé'}
-                        onChange={() => handleStatusChange(student.id, 'Excusé')}
-                        className="sr-only"
-                      />
-                      <span className={cn(
-                        "h-6.5 w-6.5 rounded-full border flex items-center justify-center text-xs font-bold transition-all",
-                        student.status === 'Excusé'
-                          ? "bg-purple-600 border-purple-700 text-white shadow-sm"
-                          : "border-border bg-white hover:bg-slate-50 text-slate-400"
-                      )}>
-                        E
-                      </span>
-                    </label>
-                  </td>
-                </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+            {/* Rate bar */}
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-[#111827]">Taux de présence</span>
+                <span className="text-2xl font-extrabold text-[#0d9488]">{rate}%</span>
+              </div>
+              <div className="h-2.5 rounded-full bg-[#f3f4f6] overflow-hidden">
+                <div className="h-full rounded-full bg-[#0d9488] transition-all" style={{ width: `${rate}%` }} />
+              </div>
+              <p className="text-xs text-[#9ca3af] mt-1.5">Seuil requis : ≥75% · {students.length} étudiants</p>
+            </div>
 
-        {/* Footer actions */}
-        <div className="p-5 border-t border-border bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs text-muted">
-            <HelpCircle className="h-4 w-4" />
-            <span>
-              {language === 'FR'
-                ? 'Les étudiants absents recevront automatiquement une notification push/SMS de rappel.'
-                : 'Absent students will automatically receive a push notification/SMS reminder.'}
-            </span>
-          </div>
-
-          <Button onClick={handleSave} className="w-full sm:w-auto bg-primary text-white font-bold px-6 shadow-sm flex items-center gap-2">
-            <UserCheck className="h-4 w-4" />
-            {language === 'FR' ? 'Valider et Sauvegarder' : 'Validate & Save Attendance'}
-          </Button>
-        </div>
-      </Card>
-
-      {/* QR Code Generating Modal */}
-      {showQRModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm p-4 animate-fade-in">
-          <Card className="w-full max-w-md text-center p-6 bg-white rounded-2xl relative shadow-2xl">
-            <button
-              onClick={() => setShowQRModal(false)}
-              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <span className="inline-block bg-teal/10 text-teal px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
-              QR Code d'appel
-            </span>
-            <h3 className="text-xl font-bold text-gray-900">{selectedCourse.name}</h3>
-            <p className="text-xs text-muted mt-1">{selectedCourse.code} · {selectedCourse.room} · {selectedCourse.teacher}</p>
-
-            {/* Simulated interactive QR Code */}
-            <div className="my-6 mx-auto flex h-48 w-48 flex-col items-center justify-center rounded-xl border border-dashed border-primary/40 bg-gradient-to-tr from-slate-50 to-white shadow-inner p-4 relative">
-              <QrCode className="h-40 w-40 text-primary" />
-              <div className="absolute inset-0 flex items-center justify-center bg-white/5 opacity-0 hover:opacity-100 transition-opacity backdrop-blur-[1px]">
-                <span className="bg-primary text-white text-xs py-1 px-2.5 rounded-full font-bold shadow-md">Scannable</span>
+            {/* Roll call table */}
+            <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-hidden">
+              <div className="px-5 py-3 border-b border-[#f3f4f6] bg-[#f9fafb] flex items-center justify-between">
+                <h3 className="text-sm font-bold text-[#111827]">2. Liste d'appel — {course.code}</h3>
+                <span className="text-xs text-[#9ca3af]">L2 Info · {students.length} étudiants</span>
+              </div>
+              <table className="w-full text-sm">
+                <thead className="border-b border-[#f3f4f6]">
+                  <tr>
+                    {['Étudiant','Matricule','Présent','Absent','Retard','Excusé'].map(h => (
+                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#f9fafb]">
+                  {students.map(s => (
+                    <tr key={s.id} className="hover:bg-[#f9fafb]">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <Avatar name={s.name} size="sm" />
+                          <div>
+                            <p className="font-semibold text-[#111827]">{s.name}</p>
+                            <p className="text-xs text-[#9ca3af] font-mono">{s.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 font-mono text-xs text-[#6b7280]">{s.id}</td>
+                      {(['Présent','Absent','Late','Excusé'] as RollStatus[]).map(st => (
+                        <td key={st} className="px-4 py-3 text-center">
+                          <button onClick={() => setStatus(s.id, st)}
+                            className={cn('flex h-7 w-7 items-center justify-center rounded-full border mx-auto transition-all',
+                              s.status === st
+                                ? st === 'Présent' ? 'bg-emerald-500 border-emerald-600 text-white'
+                                  : st === 'Absent' ? 'bg-red-500 border-red-600 text-white'
+                                  : st === 'Late' ? 'bg-amber-500 border-amber-600 text-white'
+                                  : 'bg-purple-600 border-purple-700 text-white'
+                                : 'border-[#e5e7eb] bg-white hover:bg-[#f3f4f6] text-[#d1d5db]'
+                            )}>
+                            {st === 'Présent' ? <Check className="h-3.5 w-3.5 stroke-[3]" />
+                              : st === 'Absent' ? <X className="h-3.5 w-3.5 stroke-[3]" />
+                              : st === 'Late' ? <Clock className="h-3.5 w-3.5 stroke-[3]" />
+                              : <span className="text-[10px] font-bold">E</span>}
+                          </button>
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="px-5 py-4 border-t border-[#f3f4f6] bg-[#f9fafb] flex items-center justify-between gap-4">
+                <p className="text-xs text-[#9ca3af] flex items-center gap-1.5">
+                  <HelpCircle className="h-4 w-4" /> Les absents recevront une notification push/SMS.
+                </p>
+                <button onClick={handleSave}
+                  className="flex items-center gap-2 rounded-lg bg-[#1e3a8a] px-5 py-2 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+                  <UserCheck className="h-4 w-4" /> Valider et sauvegarder
+                </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
 
-            <p className="text-xs font-medium text-amber-600 animate-pulse bg-amber-50 rounded-lg p-2.5 border border-amber-100">
-              🕒 {language === 'FR'
-                ? 'Expire dans 04:59 (Le code change automatiquement pour empêcher la fraude)'
-                : 'Expires in 04:59 (Rotates automatically to prevent proximity fraud)'}
-            </p>
-
-            <div className="mt-6 flex gap-2">
-              <Button onClick={() => setShowQRModal(false)} variant="outline" className="flex-1">
-                {language === 'FR' ? 'Fermer' : 'Close'}
-              </Button>
-              <Button className="flex-1 bg-primary text-white flex items-center justify-center gap-1">
-                <Download className="h-4 w-4" />
-                {language === 'FR' ? 'Télécharger' : 'Download'}
-              </Button>
+      {activeTab === 'annonces' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-sm font-bold text-[#111827]">Annonces de la cohorte L2 Info</h2>
+            <button className="flex items-center gap-1.5 rounded-lg bg-[#1e3a8a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d4fa8]">
+              <Megaphone className="h-4 w-4" /> Nouvelle annonce
+            </button>
+          </div>
+          {announcements.map(a => (
+            <div key={a.id} className={`rounded-xl border p-4 ${a.type === 'warning' ? 'border-amber-200 bg-amber-50' : 'border-[#e5e7eb] bg-white'} shadow-sm`}>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <h3 className="font-semibold text-[#111827]">{a.title}</h3>
+                <span className="text-xs text-[#9ca3af]">{a.time}</span>
+              </div>
+              <p className="text-sm text-[#374151]">{a.desc}</p>
             </div>
-          </Card>
+          ))}
+        </div>
+      )}
+
+      {/* QR Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl text-center">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-bold text-[#111827]">QR Code d'appel</span>
+              <button onClick={() => setShowQR(false)} className="rounded-lg p-1.5 hover:bg-[#f3f4f6] text-[#9ca3af]"><X className="h-5 w-5" /></button>
+            </div>
+            <p className="text-xs text-[#6b7280] mb-4">{course.code} · {course.room} · {course.teacher}</p>
+            <div className="mx-auto flex h-52 w-52 items-center justify-center rounded-xl border border-[#e5e7eb] bg-[#f9fafb]">
+              <QrCode className="h-44 w-44 text-[#1e3a8a]" />
+            </div>
+            <p className="mt-4 rounded-lg bg-[#fef3c7] border border-[#fde68a] px-3 py-2 text-xs font-semibold text-[#92400e] animate-pulse">
+              🕒 Expire dans 04:59 — Rotation automatique anti-fraude
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button onClick={() => setShowQR(false)} className="rounded-lg border border-[#e5e7eb] py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">Fermer</button>
+              <button className="rounded-lg bg-[#1e3a8a] py-2 text-sm font-semibold text-white hover:bg-[#2d4fa8] flex items-center justify-center gap-1.5">
+                <Download className="h-4 w-4" /> Télécharger
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
