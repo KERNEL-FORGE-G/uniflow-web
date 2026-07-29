@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { QrCode, Download, UserCheck, CheckCircle, XCircle, Clock, Calendar, TrendingUp } from 'lucide-react'
+import { QrCode, Download, CheckCircle, XCircle, Clock, Calendar, TrendingUp } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from 'recharts'
-import { useUserRole } from '../utils/userRole'
 
 // Données mockées pour les présences de l'étudiant connecté par matière
 const myAttendanceByCourse = [
@@ -85,9 +84,7 @@ const weeklyAttendance = [
 ]
 
 export default function AttendancePage() {
-  const { role } = useUserRole()
   const [showQR, setShowQR] = useState(false)
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
 
   // Calculer les stats globales de l'étudiant
   const totalPresent = myAttendanceByCourse.reduce((s, c) => s + c.present, 0)
@@ -220,7 +217,7 @@ export default function AttendancePage() {
                 </div>
               </div>
 
-              <button onClick={() => setSelectedCourse(course.code)}
+              <button
                 className="w-full rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
                 Voir l'historique complet
               </button>

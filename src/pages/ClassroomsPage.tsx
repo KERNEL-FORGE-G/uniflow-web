@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Filter, MapPin, Users, Monitor, Wifi, Calendar, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import { Search, MapPin, Users, Monitor, Wifi, Calendar, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 
 type RoomStatus = 'available' | 'occupied' | 'reserved'

@@ -1,4 +1,4 @@
-import { Monitor, Smartphone, Download, Wifi, Globe } from 'lucide-react'
+import { Monitor, Smartphone, Download, Globe } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -27,9 +27,6 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <img src="/logos/logo-principal.png" alt="UniFlow" className="h-8 w-auto object-contain" />
-              <span className="text-lg font-bold text-[#111827]">
-                Uni<span className="text-[#0d9488]">Flow</span>
-              </span>
             </div>
             <p className="text-xs text-[#6b7280] leading-relaxed">
               La plateforme universitaire intelligente pour la gestion académique complète.

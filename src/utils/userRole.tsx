@@ -1,6 +1,6 @@
 import { useState, createContext, useContext } from 'react'
 
-export type Role = 'student' | 'delegate' | 'teacher'
+export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
 
 export interface UserProfile {
   name: string
@@ -30,6 +30,12 @@ export const usersByRole: Record<Role, UserProfile> = {
     name: 'Pr. Kamga',
     roleLabel: 'Enseignant - Informatique',
     email: 'kamga@uniflow.edu',
+    status: 'En ligne',
+  },
+  admin: {
+    name: 'Administrateur',
+    roleLabel: 'Super Admin',
+    email: 'admin@uniflow.edu',
     status: 'En ligne',
   },
 }
