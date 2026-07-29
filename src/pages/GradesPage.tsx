@@ -1,19 +1,105 @@
 import { useState } from 'react'
-import { Download, Eye } from 'lucide-react'
+import { Download, Eye, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
-import { mockGrades, mockGradesEvolution, mockRadarData } from '../data/mockData'
 import {
-  RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer,
-  LineChart, Line, XAxis, YAxis, Tooltip, Legend,
+  LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, 
+  BarChart, Bar
 } from 'recharts'
 
-export default function GradesPage() {
-  const [sem, setSem] = useState('Semestre 2')
-  const [year, setYear] = useState('2023-2024')
+// Notes par UE spécifiques de l'étudiant
+const myUEGrades = [
+  { 
+    ue: 'Communication',
+    code: 'UE01',
+    average: 14.5,
+    credits: 6,
+    validated: true,
+    trend: 'up',
+    color: 'from-blue-600 to-indigo-600',
+    courses: [
+      { name: 'Expression écrite', grade: 15, coef: 2, type: 'CC+Exam' },
+      { name: 'Communication orale', grade: 14, coef: 2, type: 'CC+Exam' },
+      { name: 'Anglais technique', grade: 14.5, coef: 2, type: 'CC+Exam' },
+    ]
+  },
+  { 
+    ue: 'Programmation',
+    code: 'UE02',
+    average: 15.2,
+    credits: 8,
+    validated: true,
+    trend: 'up',
+    color: 'from-teal-600 to-emerald-600',
+    courses: [
+      { name: 'Algorithmique', grade: 16, coef: 3, type: 'CC+Exam' },
+      { name: 'Programmation Web', grade: 15, coef: 3, type: 'TP+Projet' },
+      { name: 'Base de Données', grade: 14.5, coef: 2, type: 'CC+Exam' },
+    ]
+  },
+  { 
+    ue: 'Conception',
+    code: 'UE03',
+    average: 14.8,
+    credits: 6,
+    validated: true,
+    trend: 'stable',
+    color: 'from-purple-600 to-pink-600',
+    courses: [
+      { name: 'UML & Modélisation', grade: 15, coef: 2, type: 'CC+Projet' },
+      { name: 'Architecture logicielle', grade: 14.5, coef: 2, type: 'CC+Exam' },
+      { name: 'Design Patterns', grade: 15, coef: 2, type: 'TP+Projet' },
+    ]
+  },
+  { 
+    ue: 'Analyse',
+    code: 'UE04',
+    average: 13.9,
+    credits: 6,
+    validated: true,
+    trend: 'down',
+    color: 'from-amber-600 to-orange-600',
+    courses: [
+      { name: 'Mathématiques discrètes', grade: 13, coef: 2, type: 'CC+Exam' },
+      { name: 'Statistiques', grade: 14.5, coef: 2, type: 'CC+Exam' },
+      { name: 'Complexité algorithmique', grade: 14.2, coef: 2, type: 'CC+Exam' },
+    ]
+  },
+  { 
+    ue: 'Travail Équipe',
+    code: 'UE05',
+    average: 15.1,
+    credits: 4,
+    validated: true,
+    trend: 'up',
+    color: 'from-rose-600 to-red-600',
+    courses: [
+      { name: 'Projet collaboratif', grade: 16, coef: 3, type: 'Projet' },
+      { name: 'Gestion de projet', grade: 14, coef: 2, type: 'CC+Présentation' },
+    ]
+  },
+]
 
-  const avg = (mockGrades.reduce((s, g) => s + g.grade * g.coef, 0) / mockGrades.reduce((s, g) => s + g.coef, 0)).toFixed(2)
-  const totalCredits = 45
-  const maxCredits = 60
+const semesterEvolution = [
+  { sem: 'S1', moyenne: 13.8 },
+  { sem: 'S2', moyenne: 14.2 },
+  { sem: 'S3', moyenne: 14.7 },
+  { sem: 'S4', moyenne: 14.71 },
+]
+
+export default function GradesPage() {
+  const [sem, setSem] = useState('Semestre 4')
+  const [year, setYear] = useState('2023-2024')
+  const [selectedUE, setSelectedUE] = useState<typeof myUEGrades[0] | null>(null)
+
+  const totalCredits = myUEGrades.reduce((s, ue) => s + ue.credits, 0)
+  const globalAverage = (myUEGrades.reduce((s, ue) => s + ue.average * ue.credits, 0) / totalCredits).toFixed(2)
+  const validated = myUEGrades.filter(ue => ue.validated).length
+
+  const getTrendIcon = (trend: string) => {
+    if (trend === 'up') return <TrendingUp className="h-4 w-4 text-emerald-600" />
+    if (trend === 'down') return <TrendingDown className="h-4 w-4 text-red-600" />
+    return <Minus className="h-4 w-4 text-[#6b7280]" />
+  }
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -39,118 +125,218 @@ export default function GradesPage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        {/* Avg + radar */}
-        <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-          <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-1">Résumé académique</h2>
-          <p className="text-3xl font-extrabold text-[#1e3a8a]">{avg}/20</p>
-          <p className="text-xs text-[#6b7280]">Moyenne générale</p>
-          <ResponsiveContainer width="100%" height={160} className="mt-2">
-            <RadarChart data={mockRadarData} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
-              <PolarGrid stroke="#f3f4f6" />
-              <PolarAngleAxis dataKey="skill" tick={{ fontSize: 9, fill: '#9ca3af' }} />
-              <Radar dataKey="value" stroke="#1e3a8a" fill="#1e3a8a" fillOpacity={0.25} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* ECTS */}
-        <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-          <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-1">Crédits ECTS</h2>
-          <p className="text-3xl font-extrabold text-[#0d9488]">{totalCredits}/{maxCredits}</p>
-          <p className="text-xs text-[#6b7280] mt-0.5">Crédits validés</p>
-          <div className="mt-4 h-2.5 rounded-full bg-[#f3f4f6] overflow-hidden">
-            <div className="h-full rounded-full bg-[#0d9488]" style={{ width: `${(totalCredits/maxCredits)*100}%` }} />
-          </div>
-          <p className="text-xs text-[#9ca3af] mt-2">{Math.round((totalCredits/maxCredits)*100)}% du semestre validé</p>
-          <div className="mt-4 space-y-1.5">
-            {[
-              { label: 'Excellentes (≥16)', pct: 18, color: 'bg-[#1e3a8a]' },
-              { label: 'Bonnes (12-16)',    pct: 62, color: 'bg-[#0d9488]' },
-              { label: 'Moyennes (10-12)',  pct: 12, color: 'bg-[#f59e0b]' },
-              { label: 'Faibles (<10)',     pct: 8,  color: 'bg-[#ef4444]' },
-            ].map(g => (
-              <div key={g.label} className="flex items-center gap-2 text-[10px] text-[#374151]">
-                <span className={`h-2 w-2 rounded-full shrink-0 ${g.color}`} />
-                <span className="flex-1">{g.label}</span>
-                <span className="font-semibold">{g.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bulletin download */}
-        <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm flex flex-col items-center justify-between">
-          <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-3 self-start">Bulletin du semestre</h2>
-          <div className="flex-1 flex items-center justify-center w-full">
-            <div className="flex h-36 w-28 flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#e5e7eb] bg-[#f9fafb] text-xs text-[#9ca3af] gap-2">
-              <Download className="h-6 w-6 opacity-40" />
-              <span>Bulletin S2</span>
-              <span>2023-2024</span>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#eff3ff]">
+              <TrendingUp className="h-6 w-6 text-[#1e3a8a]" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold text-[#1e3a8a]">{globalAverage}/20</p>
+              <p className="text-xs text-[#6b7280]">Moyenne générale</p>
             </div>
           </div>
-          <button className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg bg-[#1e3a8a] py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
-            <Download className="h-4 w-4" /> Télécharger PDF
+        </div>
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-50">
+              <Badge variant="success" className="text-lg font-bold">{validated}</Badge>
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold text-emerald-600">{validated}/{myUEGrades.length}</p>
+              <p className="text-xs text-[#6b7280]">UE validées</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#f0fdfa]">
+              <span className="text-xl font-extrabold text-[#0d9488]">{totalCredits}</span>
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold text-[#0d9488]">{totalCredits} ECTS</p>
+              <p className="text-xs text-[#6b7280]">Crédits obtenus</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+          <button className="w-full flex flex-col items-center justify-center gap-2 h-full hover:bg-[#f9fafb] transition-colors rounded-lg">
+            <Download className="h-8 w-8 text-[#1e3a8a]" />
+            <span className="text-xs font-semibold text-[#374151]">Bulletin {sem}</span>
+            <span className="text-xs text-[#6b7280]">{year}</span>
           </button>
-          <p className="mt-2 text-xs text-[#9ca3af]">Aperçu disponible</p>
         </div>
       </div>
 
-      {/* Grades table */}
-      <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-[#f3f4f6]">
-          <h2 className="text-sm font-bold text-[#111827]">Notes par UE</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b border-[#f3f4f6] bg-[#f9fafb]">
-              <tr>
-                {['Intitulé','UE','Type','Coef.','Note',`Moy. classe`,'Rang','Détails'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f9fafb]">
-              {mockGrades.map(g => (
-                <tr key={g.ue} className="hover:bg-[#f9fafb] transition-colors">
-                  <td className="px-4 py-3 font-medium text-[#111827]">{g.title}</td>
-                  <td className="px-4 py-3"><Badge variant="primary">{g.ue}</Badge></td>
-                  <td className="px-4 py-3 text-[#6b7280]">{g.type}</td>
-                  <td className="px-4 py-3 text-[#374151]">{g.coef}</td>
-                  <td className="px-4 py-3">
-                    <span className={`font-bold ${g.grade >= 14 ? 'text-[#059669]' : g.grade >= 10 ? 'text-[#d97706]' : 'text-[#dc2626]'}`}>
-                      {g.grade}/20
+      {/* UE Cards */}
+      <div>
+        <h2 className="text-lg font-bold text-[#111827] mb-4">Mes Unités d'Enseignement (UE)</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {myUEGrades.map(ue => (
+            <div 
+              key={ue.code}
+              onClick={() => setSelectedUE(ue)}
+              className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden">
+              {/* Header with gradient */}
+              <div className={`bg-gradient-to-r ${ue.color} p-4 text-white`}>
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <span className="inline-block rounded-md bg-white/20 px-2 py-0.5 text-xs font-bold backdrop-blur-sm mb-1">
+                      {ue.code}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-[#6b7280]">{g.classAvg}</td>
-                  <td className="px-4 py-3 text-[#374151]">
-                    <span className="font-semibold">{g.rank}</span>
-                    <span className="text-[#9ca3af]">/{g.maxRank}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button className="rounded p-1 hover:bg-[#f3f4f6] text-[#1e3a8a]"><Eye className="h-4 w-4" /></button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <h3 className="text-lg font-bold">{ue.ue}</h3>
+                    <p className="text-xs opacity-90 mt-0.5">{ue.credits} crédits ECTS</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-extrabold">{ue.average}</div>
+                    <p className="text-xs opacity-80">/20</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {ue.validated && <Badge variant="success" className="text-xs">Validée</Badge>}
+                  <div className="flex items-center gap-1 text-xs">
+                    {getTrendIcon(ue.trend)}
+                    <span className="opacity-90">
+                      {ue.trend === 'up' ? 'En progression' : ue.trend === 'down' ? 'En baisse' : 'Stable'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Body */}
+              <div className="p-4">
+                <h4 className="text-xs font-bold text-[#6b7280] uppercase mb-2">Matières de l'UE</h4>
+                <div className="space-y-2">
+                  {ue.courses.map((course, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-[#f9fafb] hover:bg-[#f3f4f6] transition-colors">
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-[#111827]">{course.name}</p>
+                        <p className="text-xs text-[#6b7280]">{course.type} • Coef. {course.coef}</p>
+                      </div>
+                      <span className={`text-sm font-bold ${
+                        course.grade >= 14 ? 'text-emerald-600' : 
+                        course.grade >= 10 ? 'text-amber-600' : 
+                        'text-red-600'
+                      }`}>
+                        {course.grade}/20
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setSelectedUE(ue); }}
+                  className="mt-3 w-full rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors flex items-center justify-center gap-1.5">
+                  <Eye className="h-3.5 w-3.5" /> Voir le détail
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Evolution chart */}
       <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-        <h2 className="text-sm font-bold text-[#111827] mb-4">Évolution des moyennes par semestre</h2>
+        <h2 className="text-sm font-bold text-[#111827] mb-4 flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-[#1e3a8a]" />
+          Évolution de ma moyenne générale
+        </h2>
         <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={mockGradesEvolution} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+          <LineChart data={semesterEvolution} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
             <XAxis dataKey="sem" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis domain={[10, 16]} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(v: any) => [`${v}/20`]} />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Line type="monotone" dataKey="personal" name="Moyenne personnelle" stroke="#1e3a8a" strokeWidth={2.5} dot={{ r: 4, fill: '#1e3a8a' }} />
-            <Line type="monotone" dataKey="classAvg" name="Moyenne classe" stroke="#0d9488" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 3, fill: '#0d9488' }} />
+            <YAxis domain={[12, 16]} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+            <Tooltip formatter={(v: any) => [`${v}/20`, 'Moyenne']} />
+            <Line type="monotone" dataKey="moyenne" name="Ma moyenne" stroke="#1e3a8a" strokeWidth={3} dot={{ r: 5, fill: '#1e3a8a' }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+      {/* UE Detail Modal */}
+      {selectedUE && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in"
+          onClick={() => setSelectedUE(null)}>
+          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className={`bg-gradient-to-r ${selectedUE.color} p-6 text-white`}>
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <span className="inline-block rounded-md bg-white/20 px-2 py-0.5 text-xs font-bold backdrop-blur-sm mb-2">
+                    {selectedUE.code}
+                  </span>
+                  <h2 className="text-2xl font-extrabold mb-1">{selectedUE.ue}</h2>
+                  <p className="text-sm opacity-90">{selectedUE.credits} crédits ECTS • {selectedUE.courses.length} matières</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-4xl font-extrabold">{selectedUE.average}</div>
+                  <p className="text-sm opacity-80">/20</p>
+                </div>
+              </div>
+              {selectedUE.validated && <Badge variant="success">✓ Validée</Badge>}
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5">
+              <div>
+                <h3 className="text-sm font-bold text-[#111827] mb-3">Détail des notes par matière</h3>
+                <div className="space-y-2">
+                  {selectedUE.courses.map((course, idx) => (
+                    <div key={idx} className="rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-[#111827]">{course.name}</h4>
+                          <p className="text-xs text-[#6b7280] mt-0.5">{course.type} • Coefficient {course.coef}</p>
+                        </div>
+                        <div className="text-right">
+                          <span className={`text-2xl font-extrabold ${
+                            course.grade >= 14 ? 'text-emerald-600' : 
+                            course.grade >= 10 ? 'text-amber-600' : 
+                            'text-red-600'
+                          }`}>
+                            {course.grade}
+                          </span>
+                          <span className="text-sm text-[#6b7280]">/20</span>
+                        </div>
+                      </div>
+                      <div className="h-2 rounded-full bg-[#f3f4f6] overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${
+                            course.grade >= 14 ? 'bg-emerald-500' : 
+                            course.grade >= 10 ? 'bg-amber-500' : 
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${(course.grade / 20) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stats bar chart */}
+              <div>
+                <h3 className="text-sm font-bold text-[#111827] mb-3">Répartition des notes</h3>
+                <ResponsiveContainer width="100%" height={150}>
+                  <BarChart data={selectedUE.courses.map(c => ({ name: c.name.split(' ')[0], note: c.grade }))}>
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                    <YAxis domain={[0, 20]} tick={{ fontSize: 10 }} />
+                    <Tooltip formatter={(v: any) => [`${v}/20`]} />
+                    <Bar dataKey="note" fill="#1e3a8a" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t border-[#e5e7eb]">
+                <button onClick={() => setSelectedUE(null)}
+                  className="flex-1 rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
+                  Fermer
+                </button>
+                <button className="flex-1 rounded-lg bg-[#1e3a8a] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors flex items-center justify-center gap-2">
+                  <Download className="h-4 w-4" /> Télécharger relevé
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { Search, Bell, LogOut, Wifi, WifiOff, Globe, ChevronDown } from 'lucide-
 import { useUserRole } from '../../utils/userRole'
 import { navItems } from '../../data/navigation'
 import { Avatar } from '../ui/Avatar'
+import { Footer } from './Footer'
 import { cn } from '../../utils/cn'
 import { useState } from 'react'
 import { mockNotifications } from '../../data/mockData'
@@ -12,13 +13,10 @@ export function Sidebar() {
   const filteredNav = navItems.filter(item => item.roles && item.roles.includes(currentRole))
 
   return (
-    <aside className="flex h-screen w-[220px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white">
+    <aside className="flex min-h-screen w-[220px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white sticky top-0 self-start">
       {/* Logo */}
       <div className="flex items-center gap-2.5 border-b border-[#e5e7eb] px-5 py-4">
         <img src="/logos/logo-principal.png" alt="UniFlow" className="h-8 w-auto object-contain" />
-        <span className="text-[17px] font-bold tracking-tight text-[#111827]">
-          Uni<span className="text-[#0d9488]">Flow</span>
-        </span>
       </div>
 
       {/* User card */}
@@ -96,11 +94,19 @@ export function Sidebar() {
   )
 }
 
+const roleConfig = {
+  student: { badge: '🎓 Étudiant', bgColor: 'bg-[#eff3ff]', textColor: 'text-[#1e3a8a]', borderColor: 'border-[#1e3a8a]/20' },
+  delegate: { badge: '📢 Délégué', bgColor: 'bg-purple-50', textColor: 'text-purple-700', borderColor: 'border-purple-200' },
+  teacher: { badge: '👨‍🏫 Enseignant', bgColor: 'bg-[#f0fdfa]', textColor: 'text-[#0d9488]', borderColor: 'border-[#0d9488]/20' },
+  admin: { badge: '⚙️ Admin', bgColor: 'bg-amber-50', textColor: 'text-amber-700', borderColor: 'border-amber-200' },
+}
+
 export function TopBar() {
   const navigate = useNavigate()
-  const { language, currentUser } = useUserRole()
+  const { language, currentUser, currentRole } = useUserRole()
   const [, setShowNotifDropdown] = useState(false)
   const unreadCount = mockNotifications.filter(n => n.unread).length
+  const roleInfo = roleConfig[currentRole]
 
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center gap-4 border-b border-[#e5e7eb] bg-white px-6 shadow-sm">
@@ -113,7 +119,17 @@ export function TopBar() {
         />
       </div>
 
-      <div className="flex items-center gap-2 ml-auto">
+      <div className="flex items-center gap-3 ml-auto">
+        {/* Role Badge */}
+        <div className={cn(
+          'hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold',
+          roleInfo.bgColor,
+          roleInfo.textColor,
+          roleInfo.borderColor
+        )}>
+          <span>{roleInfo.badge}</span>
+        </div>
+
         {/* Notif bell */}
         <div className="relative">
           <button onClick={() => { setShowNotifDropdown(v => !v); navigate('/app/notifications') }}
@@ -153,6 +169,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar />
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <Footer />
       </div>
     </div>
   )

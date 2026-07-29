@@ -126,10 +126,10 @@ export default function CoursesPage() {
                       <div className="h-full rounded-full bg-[#0d9488] transition-all" style={{ width: `${course.progress}%` }} />
                     </div>
                   </div>
-                  <button onClick={() => navigate('/app/visio')}
+                  <button onClick={() => navigate(`/app/cours/${course.id}`)}
                     className="mt-4 w-full rounded-lg bg-[#1e3a8a] py-2 text-xs font-semibold text-white hover:bg-[#2d4fa8] transition-colors flex items-center justify-center gap-1.5">
-                    <Laptop className="h-3.5 w-3.5" />
-                    Continuer
+                    Voir le cours
+                    <ChevronRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </div>

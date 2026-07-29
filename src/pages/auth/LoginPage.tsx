@@ -7,6 +7,7 @@ const demoAccounts = [
   { role: 'student' as const,  label: 'Étudiant',   email: 'emma.martin@uniflow.edu',  color: 'bg-[#1e3a8a]' },
   { role: 'delegate' as const, label: 'Délégué',    email: 'lucas.dubois@uniflow.edu', color: 'bg-[#0d9488]' },
   { role: 'teacher' as const,  label: 'Enseignant', email: 'dr.martin@uniflow.edu',    color: 'bg-[#7c3aed]' },
+  { role: 'admin' as const,    label: 'Admin',      email: 'admin@uniflow.edu',        color: 'bg-[#d97706]' },
 ]
 
 export default function LoginPage() {
@@ -26,10 +27,14 @@ export default function LoginPage() {
     setLoading(false)
     if (!email || !password) { setError('Veuillez remplir tous les champs.'); return }
     // Detect role from email
-    if (email.includes('lucas')) setCurrentRole('delegate')
+    if (email.includes('admin')) setCurrentRole('admin')
+    else if (email.includes('lucas')) setCurrentRole('delegate')
     else if (email.includes('dr.martin') || email.includes('kamga') || email.includes('prof')) setCurrentRole('teacher')
     else setCurrentRole('student')
-    navigate('/app')
+    
+    // Redirect admin to admin panel
+    if (email.includes('admin')) navigate('/admin')
+    else navigate('/app')
   }
 
   const handleDemo = (role: typeof demoAccounts[0]['role'], demoEmail: string) => {
@@ -39,27 +44,38 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f3f4f6]">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-[#1e3a8a] p-12">
-        <div className="max-w-md text-center text-white">
-          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center">
-            <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain drop-shadow-2xl" />
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-gradient-to-br from-[#1e3a8a] via-[#2d4fa8] to-[#0d9488] p-12 relative overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute top-10 left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 h-40 w-40 rounded-full bg-white/5 blur-3xl"></div>
+        <div className="absolute top-1/2 right-1/4 h-24 w-24 rounded-full bg-white/5 blur-3xl"></div>
+        
+        <div className="max-w-md text-center text-white relative z-10">
+          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-16 mb-8 object-contain brightness-0 invert" />
+          <p className="text-blue-100 text-xl leading-relaxed mb-10">La plateforme universitaire intelligente</p>
+          <div className="space-y-3 text-sm text-blue-100 mb-10">
+            <p className="flex items-center justify-center gap-2.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span className="text-base">Disponible sur Mobile, Web & Desktop</span>
+            </p>
+            <p className="flex items-center justify-center gap-2.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span className="text-base">Mode hors ligne avec synchronisation</span>
+            </p>
           </div>
-          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-10 mb-2 object-contain brightness-0 invert" />
-          <h1 className="text-3xl font-extrabold">UniFlow</h1>
-          <p className="mt-3 text-blue-200 text-lg">La plateforme universitaire intelligente</p>
-          <div className="mt-10 space-y-4 text-left">
+          <div className="space-y-5 text-left">
             {[
               { icon: '🎓', title: 'Gestion académique complète', desc: 'Cours, devoirs, notes et emploi du temps centralisés.' },
               { icon: '📡', title: 'Offline First', desc: 'Fonctionne même sans connexion Internet.' },
               { icon: '🔐', title: 'Sécurisé & Multi-rôles', desc: 'JWT + RBAC pour chaque type d\'utilisateur.' },
             ].map(item => (
-              <div key={item.title} className="flex gap-3 rounded-xl bg-white/10 p-4">
-                <span className="text-2xl">{item.icon}</span>
+              <div key={item.title} className="flex gap-4 rounded-xl bg-white/10 backdrop-blur-sm p-5 hover:bg-white/15 transition-colors">
+                <span className="text-3xl">{item.icon}</span>
                 <div>
-                  <p className="font-semibold text-white text-sm">{item.title}</p>
-                  <p className="text-blue-200 text-xs mt-0.5">{item.desc}</p>
+                  <p className="font-semibold text-white text-base">{item.title}</p>
+                  <p className="text-blue-100 text-sm mt-1">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -68,21 +84,15 @@ export default function LoginPage() {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-sm">
-          {/* Mobile logo */}
-          <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-9 w-auto object-contain" />
-            <span className="text-xl font-bold text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
-          </div>
-
+      <div className="flex flex-1 items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
           <h2 className="text-2xl font-extrabold text-[#111827]">Connexion</h2>
           <p className="mt-1 text-sm text-[#6b7280]">Accédez à votre espace de travail.</p>
 
           {/* Quick demo buttons */}
           <div className="mt-6 space-y-2">
             <p className="text-xs font-semibold text-[#9ca3af] uppercase tracking-wider">Connexion rapide (démo)</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {demoAccounts.map(acc => (
                 <button key={acc.role} type="button" onClick={() => handleDemo(acc.role, acc.email)}
                   className={`rounded-lg px-3 py-2 text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-95 ${acc.color}`}>

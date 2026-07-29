@@ -118,19 +118,37 @@ export default function MessagingPage() {
             </div>
             <div>
               <p className="font-semibold text-[#111827]">{active.name}</p>
-              <p className="text-xs text-[#0d9488]">{active.online ? 'En ligne' : 'Hors ligne'}</p>
+              <div className="flex items-center gap-1.5">
+                {isTyping ? (
+                  <span className="text-xs text-[#0d9488] font-medium flex items-center gap-1">
+                    <span className="flex gap-0.5">
+                      <span className="h-1 w-1 rounded-full bg-[#0d9488] animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="h-1 w-1 rounded-full bg-[#0d9488] animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="h-1 w-1 rounded-full bg-[#0d9488] animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </span>
+                    est en train d'écrire...
+                  </span>
+                ) : active.online ? (
+                  <span className="flex items-center gap-1 text-xs text-[#10b981]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#10b981]" />
+                    En ligne
+                  </span>
+                ) : (
+                  <span className="text-xs text-[#9ca3af]">Hors ligne</span>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <button className="rounded-lg p-2 hover:bg-[#f3f4f6] text-[#6b7280] transition-colors">
+            <button type="button" className="rounded-lg p-2 text-[#9ca3af] hover:bg-[#f3f4f6] hover:text-[#374151] transition-colors">
               <Phone className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate('/app/visioconference')}
-              className="rounded-lg p-2 hover:bg-[#f3f4f6] text-[#6b7280] transition-colors">
+            <button type="button" onClick={() => navigate('/app/visio')}
+              className="rounded-lg p-2 text-[#9ca3af] hover:bg-[#f3f4f6] hover:text-[#374151] transition-colors">
               <Video className="h-5 w-5" />
             </button>
-            <button onClick={() => setShowInfo(v => !v)}
-              className="rounded-lg p-2 hover:bg-[#f3f4f6] text-[#6b7280] transition-colors">
+            <button type="button" onClick={() => setShowInfo(v => !v)}
+              className="rounded-lg p-2 text-[#9ca3af] hover:bg-[#f3f4f6] hover:text-[#374151] transition-colors">
               <MoreHorizontal className="h-5 w-5" />
             </button>
           </div>

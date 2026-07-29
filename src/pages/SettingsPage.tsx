@@ -15,7 +15,7 @@ export default function SettingsPage() {
   const { currentRole, language, setLanguage } = useUserRole()
   const user = currentRole === 'teacher' ? mockUsers.teacher : mockUsers.student
   const [section, setSection] = useState('Profil')
-  const [toggles, setToggles] = useState({ push: true, email: true, sms: false, newsletter: false })
+  const [toggles, setToggles] = useState({ push: true, email: true, sms: false, newsletter: false, darkMode: false, autoSync: true, offlineMode: false })
   const [saved, setSaved] = useState(false)
 
   const toggle = (k: keyof typeof toggles) => setToggles(t => ({ ...t, [k]: !t[k] }))
@@ -147,7 +147,76 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {!['Profil','Notifications','Langue','Sécurité'].includes(section) && (
+          {section === 'Thème' && (
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+              <h2 className="text-sm font-bold text-[#111827] mb-5">Apparence</h2>
+              <div className="space-y-5">
+                <div className="flex items-center justify-between py-3 border-b border-[#f9fafb]">
+                  <div>
+                    <p className="text-sm font-medium text-[#111827]">Mode sombre</p>
+                    <p className="text-xs text-[#9ca3af] mt-0.5">Réduire la fatigue visuelle en basse lumière</p>
+                  </div>
+                  <button onClick={() => toggle('darkMode')}
+                    className={`relative h-6 w-11 rounded-full transition-colors ${toggles.darkMode ? 'bg-[#0d9488]' : 'bg-[#e5e7eb]'}`}>
+                    <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${toggles.darkMode ? 'left-5' : 'left-0.5'}`} />
+                  </button>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-[#374151] mb-3 uppercase tracking-wider">Densité d'affichage</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {['Compact', 'Normal', 'Confortable'].map((d, i) => (
+                      <button key={d}
+                        className={`rounded-lg border p-3 text-center text-xs font-medium transition-all ${i === 1 ? 'border-[#1e3a8a] bg-[#eff3ff] text-[#1e3a8a]' : 'border-[#e5e7eb] text-[#374151] hover:bg-[#f9fafb]'}`}>
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {section === 'Données' && (
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+              <h2 className="text-sm font-bold text-[#111827] mb-5 flex items-center gap-2"><Database className="h-4 w-4 text-[#1e3a8a]" /> Gestion des données</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-3 border-b border-[#f9fafb]">
+                  <div>
+                    <p className="text-sm font-medium text-[#111827]">Synchronisation automatique</p>
+                    <p className="text-xs text-[#9ca3af] mt-0.5">Sync en arrière-plan quand en ligne</p>
+                  </div>
+                  <button onClick={() => toggle('autoSync')}
+                    className={`relative h-6 w-11 rounded-full transition-colors ${toggles.autoSync ? 'bg-[#0d9488]' : 'bg-[#e5e7eb]'}`}>
+                    <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${toggles.autoSync ? 'left-5' : 'left-0.5'}`} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between py-3 border-b border-[#f9fafb]">
+                  <div>
+                    <p className="text-sm font-medium text-[#111827]">Mode hors ligne</p>
+                    <p className="text-xs text-[#9ca3af] mt-0.5">Conserver données localement pour accès sans Internet</p>
+                  </div>
+                  <button onClick={() => toggle('offlineMode')}
+                    className={`relative h-6 w-11 rounded-full transition-colors ${toggles.offlineMode ? 'bg-[#0d9488]' : 'bg-[#e5e7eb]'}`}>
+                    <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${toggles.offlineMode ? 'left-5' : 'left-0.5'}`} />
+                  </button>
+                </div>
+                <div className="rounded-lg bg-[#eff3ff] border border-[#dce5fd] p-4 mt-5">
+                  <p className="text-xs font-semibold text-[#1e3a8a] mb-1">Espace utilisé</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-2 rounded-full bg-white overflow-hidden">
+                      <div className="h-full bg-[#1e3a8a] rounded-full" style={{ width: '34%' }} />
+                    </div>
+                    <span className="text-xs font-bold text-[#1e3a8a]">340 Mo / 1 Go</span>
+                  </div>
+                </div>
+                <button className="text-sm font-medium text-red-600 hover:underline">
+                  Effacer le cache local
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!['Profil','Notifications','Langue','Sécurité','Thème','Données'].includes(section) && (
             <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm text-center py-16">
               <Database className="mx-auto h-10 w-10 text-[#e5e7eb] mb-3" />
               <p className="text-sm text-[#9ca3af]">Section {section} — disponible prochainement.</p>

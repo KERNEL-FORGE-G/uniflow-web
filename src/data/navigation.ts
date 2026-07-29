@@ -13,6 +13,7 @@ import {
   ClipboardList,
   HelpCircle,
   Video,
+  MapPin,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -53,6 +54,7 @@ export const navItems: NavItem[] = [
   { to: '/app/visio', icon: Video, labelFr: 'Visioconférence', labelEn: 'Video Conference', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/messages', icon: MessageSquare, labelFr: 'Messages', labelEn: 'Messages', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/bibliotheque', icon: BookMarked, labelFr: 'Bibliothèque', labelEn: 'Library', roles: ['student', 'delegate'] },
+  { to: '/app/salles', icon: MapPin, labelFr: 'Salles', labelEn: 'Classrooms', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/parametres', icon: Settings, labelFr: 'Paramètres', labelEn: 'Settings', roles: ['student', 'delegate', 'teacher', 'admin'] },
   { to: '/app/aide', icon: HelpCircle, labelFr: 'Aide & FAQ', labelEn: 'Help & FAQ', roles: ['student', 'delegate', 'teacher'] },
 ]

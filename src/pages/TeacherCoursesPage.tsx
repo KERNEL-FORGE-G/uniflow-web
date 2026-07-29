@@ -1,12 +1,25 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check } from 'lucide-react'
+import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check, Code2, Database, Network, Brain, GraduationCap } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
 import { mockTeacherCourses, mockTeacherStudents, mockResources, type TeacherStudent, type TeacherResource } from '../data/mockData'
+import type { LucideIcon } from 'lucide-react'
 
 const CC_W = 0.3, EXAM_W = 0.7
+
+// Map course codes to icons (same as CoursesPage)
+const courseIconMap: Record<string, LucideIcon> = {
+  'INFO101': Code2,       // Algorithmique
+  'INFO201': Database,    // Bases de données
+  'INFO301': Network,     // Réseaux
+  'INFO401': Brain,       // IA
+}
+
+const getCourseIcon = (code: string): LucideIcon => {
+  return courseIconMap[code] || GraduationCap // Default icon
+}
 
 export default function TeacherCoursesPage() {
   const {} = useUserRole()
@@ -22,6 +35,7 @@ export default function TeacherCoursesPage() {
   const [activeTab, setActiveTab] = useState<'contenu'|'participants'|'devoirs'|'notes'>('contenu')
 
   const course = mockTeacherCourses.find(c => c.id === selCode)!
+  const CourseIcon = getCourseIcon(course.code)
 
   const avg = parseFloat((students.reduce((s, st) => s + (st.cc * CC_W + st.exam * EXAM_W), 0) / students.length).toFixed(2))
   const passRate = Math.round(students.filter(st => (st.cc * CC_W + st.exam * EXAM_W) >= 10).length / students.length * 100)
@@ -71,12 +85,16 @@ export default function TeacherCoursesPage() {
           <p className="text-sm text-[#6b7280] mt-0.5">Gérez vos syllabus, ressources et notes · CC 30% + Examen 70%</p>
         </div>
         <div className="flex gap-2">
-          {mockTeacherCourses.map(c => (
-            <button key={c.id} onClick={() => { setSelCode(c.id); setResources(mockResources.filter(r => r.courseId === c.id)) }}
-              className={`rounded-lg px-4 py-2 text-xs font-bold border transition-all ${selCode === c.id ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-[#374151] border-[#e5e7eb] hover:bg-[#f9fafb]'}`}>
-              {c.code}
-            </button>
-          ))}
+          {mockTeacherCourses.map(c => {
+            const Icon = getCourseIcon(c.code)
+            return (
+              <button key={c.id} onClick={() => { setSelCode(c.id); setResources(mockResources.filter(r => r.courseId === c.id)) }}
+                className={`rounded-lg px-3 py-2 text-xs font-bold border transition-all flex items-center gap-2 ${selCode === c.id ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-[#374151] border-[#e5e7eb] hover:bg-[#f9fafb]'}`}>
+                <Icon className="h-4 w-4" strokeWidth={2} />
+                {c.code}
+              </button>
+            )
+          })}
         </div>
       </div>
 

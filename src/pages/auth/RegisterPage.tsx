@@ -27,25 +27,36 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f3f4f6]">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-[#0d9488] p-12">
-        <div className="max-w-md text-center text-white">
-          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center">
-            <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain drop-shadow-2xl" />
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-gradient-to-br from-[#0d9488] via-[#14b8a8] to-[#0a7167] p-12 relative overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute top-10 left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 h-40 w-40 rounded-full bg-white/5 blur-3xl"></div>
+        <div className="absolute top-1/3 right-1/3 h-24 w-24 rounded-full bg-white/5 blur-3xl"></div>
+        
+        <div className="max-w-md text-center text-white relative z-10">
+          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-16 mb-8 object-contain brightness-0 invert" />
+          <p className="text-teal-50 text-xl leading-relaxed mb-10">Créez votre espace en quelques minutes</p>
+          <div className="space-y-3 text-sm text-teal-50 mb-10">
+            <p className="flex items-center justify-center gap-2.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
+              <span className="text-base">Gestion complète de votre parcours académique</span>
+            </p>
+            <p className="flex items-center justify-center gap-2.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
+              <span className="text-base">Synchronisation multi-appareils</span>
+            </p>
           </div>
-          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-10 mb-2 object-contain brightness-0 invert" />
-          <h1 className="text-3xl font-extrabold">Rejoignez UniFlow</h1>
-          <p className="mt-3 text-teal-100 text-base">Créez votre espace en quelques minutes.</p>
-          <div className="mt-8 space-y-3 text-left">
+          <div className="space-y-5 text-left">
             {[
               'Accès à tous vos cours et emplois du temps',
               'Suivi des présences et devoirs en temps réel',
               'Messagerie et visioconférence intégrées',
               'Fonctionne même sans connexion Internet',
             ].map(t => (
-              <div key={t} className="flex items-center gap-2.5 text-sm text-teal-100">
-                <CheckCircle className="h-4 w-4 text-white shrink-0" />
+              <div key={t} className="flex items-center gap-3.5 text-base text-teal-50 rounded-xl bg-white/10 backdrop-blur-sm p-4 hover:bg-white/15 transition-colors">
+                <CheckCircle className="h-6 w-6 text-white shrink-0" />
                 <span>{t}</span>
               </div>
             ))}
@@ -54,13 +65,8 @@ export default function RegisterPage() {
       </div>
 
       {/* Right panel */}
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-9 w-auto object-contain" />
-            <span className="text-xl font-bold text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
-          </div>
-
+      <div className="flex flex-1 items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
           <h2 className="text-2xl font-extrabold text-[#111827]">Créer un compte</h2>
           <p className="mt-1 text-sm text-[#6b7280]">Étape {step} sur 2</p>
 

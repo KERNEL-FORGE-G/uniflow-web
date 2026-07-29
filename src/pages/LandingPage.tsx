@@ -21,9 +21,8 @@ export default function LandingPage() {
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
-          <div className="flex items-center gap-2">
-            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-8 w-auto object-contain" />
-            <span className="text-lg font-bold text-[#111827]">Uni<span className="text-[#0d9488]">Flow</span></span>
+          <div className="flex items-center">
+            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-10 w-auto object-contain" />
           </div>
           <div className="hidden items-center gap-8 md:flex">
             {['Fonctionnalités', 'À propos', 'Tarifs', 'Contact'].map(label => (
@@ -64,12 +63,13 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 rounded-lg bg-[#1e3a8a] px-6 py-3 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors shadow-sm">
                 Commencer gratuitement <ArrowRight className="h-4 w-4" />
               </Link>
-              <button className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#1e3a8a] transition-colors">
+              <Link to="/presentation"
+                className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#1e3a8a] transition-colors">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f4f6] border border-[#e5e7eb]">
                   <Play className="h-3 w-3 ml-0.5 text-[#1e3a8a]" />
                 </span>
-                Voir la démo
-              </button>
+                Voir la présentation
+              </Link>
             </div>
             <p className="mt-4 text-sm text-[#9ca3af]">
               Déjà utilisateur ?{' '}
@@ -88,7 +88,7 @@ export default function LandingPage() {
                   <div className="h-3 w-3 rounded-full bg-[#10b981]" />
                 </div>
                 <div className="flex-1 mx-4 rounded bg-white border border-[#e5e7eb] px-3 py-1 text-xs text-[#9ca3af]">
-                  https://www.uniflow.education
+                  https://uniflow.kernelforge.codes
                 </div>
               </div>
               {/* Hero illustration area with mascotte */}
@@ -181,11 +181,112 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── UniFlow Sentinelle Extension ── */}
+      <section className="py-20 bg-gradient-to-br from-[#1e3a8a] via-[#2d4fa8] to-[#0d9488]">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white mb-4 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0d9488]" /> Extension IoT & IA
+            </span>
+            <h2 className="text-3xl font-extrabold text-white">UniFlow Sentinelle</h2>
+            <p className="mt-3 text-blue-100 max-w-2xl mx-auto">
+              Extension physique du campus avec matériel bas coût et robuste (Raspberry Pi), 
+              connectant la plateforme à la couche physique.
+            </p>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2 mb-8">
+            {/* Module Santé */}
+            <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm p-6 hover:bg-white/15 transition-colors">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 shrink-0">
+                  <span className="text-2xl">🏥</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Module Santé</h3>
+                  <p className="text-sm text-blue-100 mt-1">Kiosque de pré-diagnostic intelligent</p>
+                </div>
+              </div>
+              <p className="text-sm text-blue-100 leading-relaxed mb-4">
+                Kiosque à l'infirmerie avec capteurs médicaux connectés (oxymètre, tensiomètre, thermomètre) 
+                et IA de triage qui classe l'urgence en temps réel.
+              </p>
+              <div className="flex gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-semibold text-emerald-100">
+                  🟢 Vert: Normal
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2 py-1 text-xs font-semibold text-amber-100">
+                  🟠 Orange: Surveillance
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-red-500/20 px-2 py-1 text-xs font-semibold text-red-100">
+                  🔴 Rouge: Urgence
+                </span>
+              </div>
+            </div>
+
+            {/* Module Vigie */}
+            <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm p-6 hover:bg-white/15 transition-colors">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/20 shrink-0">
+                  <span className="text-2xl">👁️</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Module Vigie</h3>
+                  <p className="text-sm text-blue-100 mt-1">Détection d'anomalie par IA edge</p>
+                </div>
+              </div>
+              <p className="text-sm text-blue-100 leading-relaxed mb-4">
+                Détection de chute et d'anomalie par IA en périphérie (edge computing), 
+                fonctionnelle même hors connexion sur les points sensibles du campus 
+                (labos, bibliothèque de nuit, résidences, parkings).
+              </p>
+              <div className="flex flex-wrap gap-2 text-xs text-blue-100">
+                <span className="rounded-full bg-white/10 px-2 py-1">📚 Bibliothèque</span>
+                <span className="rounded-full bg-white/10 px-2 py-1">🔬 Laboratoires</span>
+                <span className="rounded-full bg-white/10 px-2 py-1">🏠 Résidences</span>
+                <span className="rounded-full bg-white/10 px-2 py-1">🅿️ Parkings</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Synergie */}
+          <div className="rounded-2xl border-2 border-[#0d9488] bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm p-8">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#0d9488] shrink-0">
+                <span className="text-3xl">⚡</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-extrabold text-white mb-2">La synergie inter-modules</h3>
+                <p className="text-blue-100 leading-relaxed">
+                  <strong className="text-white">Le point différenciant du projet :</strong> une chute détectée 
+                  par <strong className="text-purple-200">Vigie</strong> déclenche automatiquement le protocole 
+                  d'urgence de <strong className="text-emerald-200">Santé</strong>, sans qu'un témoin ait besoin 
+                  d'atteindre un kiosque. Ce déclenchement croisé distingue Sentinelle d'un simple assemblage de gadgets IoT.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle className="h-5 w-5 text-[#0d9488]" />
+                <span>Déclenchement automatique croisé</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle className="h-5 w-5 text-[#0d9488]" />
+                <span>Fonctionnement hors ligne (edge AI)</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle className="h-5 w-5 text-[#0d9488]" />
+                <span>Matériel bas coût (Raspberry Pi)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Footer ── */}
       <footer className="border-t border-[#e5e7eb] py-8 text-center text-sm text-[#9ca3af]">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <img src="/logos/logo-principal.png" alt="UniFlow" className="h-6 w-auto object-contain" />
-          <span className="font-semibold text-[#374151]">UniFlow</span>
+          <img src="/logos/logo-principal.png" alt="UniFlow" className="h-8 w-auto object-contain" />
         </div>
         <p>© 2024 UniFlow — KERNEL FORGE · Université de Yaoundé I · Licence MIT</p>
       </footer>

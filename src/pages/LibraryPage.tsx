@@ -1,9 +1,31 @@
 import { useState } from 'react'
-import { Search, Filter, BookOpen, Download, Eye, Heart, Star } from 'lucide-react'
+import { Search, Filter, BookOpen, Download, Eye, Heart, Star, FileText, Video, FileCode, File } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
+import type { LucideIcon } from 'lucide-react'
 
 const categories = ['Tous', 'Informatique', 'Mathématiques', 'Économie', 'Langues', 'Sciences']
 const filters = ['Populaires', 'Récents', 'Favoris', 'Téléchargés']
+
+// Map format to icons
+const formatIconMap: Record<string, LucideIcon> = {
+  'PDF': FileText,
+  'VIDEO': Video,
+  'CODE': FileCode,
+  'EPUB': BookOpen,
+}
+
+const getFormatIcon = (format: string): LucideIcon => {
+  return formatIconMap[format.toUpperCase()] || File
+}
+
+// Category colors
+const categoryColors: Record<string, { bg: string; text: string; border: string }> = {
+  'Informatique': { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  'Mathématiques': { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
+  'Économie': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  'Langues': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'Sciences': { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' },
+}
 
 const books = [
   { id: 1, title: 'Algorithmique et Structures de Données', author: 'Thomas Cormen', category: 'Informatique', pages: 450, downloads: 1240, rating: 4.8, cover: '📘', format: 'PDF', size: '12.4 Mo' },
@@ -89,11 +111,17 @@ export default function LibraryPage() {
             <p className="text-sm">Aucun ouvrage trouvé.</p>
           </div>
         )}
-        {filtered.map(book => (
+        {filtered.map(book => {
+          const FormatIcon = getFormatIcon(book.format)
+          const catColors = categoryColors[book.category] || { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200' }
+          return (
           <div key={book.id} className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm hover:shadow-md transition-all overflow-hidden group">
             <div className="flex gap-4 p-4">
-              <div className="flex h-32 w-24 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 text-6xl">
+              <div className="relative flex h-32 w-24 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 text-6xl">
                 {book.cover}
+                <div className={`absolute top-1 right-1 rounded p-1 ${catColors.bg} backdrop-blur-sm`}>
+                  <FormatIcon className={`h-3.5 w-3.5 ${catColors.text}`} />
+                </div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
@@ -104,7 +132,9 @@ export default function LibraryPage() {
                   </button>
                 </div>
                 <p className="text-xs text-[#6b7280] mb-1">{book.author}</p>
-                <Badge variant="primary" className="text-[9px] mb-2">{book.category}</Badge>
+                <div className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-semibold mb-2 ${catColors.bg} ${catColors.text} ${catColors.border}`}>
+                  {book.category}
+                </div>
                 <div className="flex items-center gap-2 text-[10px] text-[#9ca3af] mb-2">
                   <span>{book.pages} pages</span>
                   <span>·</span>
@@ -131,7 +161,8 @@ export default function LibraryPage() {
               </button>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

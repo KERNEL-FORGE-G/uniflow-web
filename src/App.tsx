@@ -27,7 +27,10 @@ import StudentsPage from './pages/admin/StudentsPage'
 import TeachersPage from './pages/admin/TeachersPage'
 import AcademicStructurePage from './pages/admin/AcademicStructurePage'
 import UEPage from './pages/admin/UEPage'
-import ClassroomsPage from './pages/admin/ClassroomsPage'
+import AdminClassroomsPage from './pages/admin/ClassroomsPage'
+import ClassroomsPage from './pages/ClassroomsPage'
+import CourseDetailPage from './pages/CourseDetailPage'
+import PresentationPage from './pages/PresentationPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 
@@ -40,6 +43,7 @@ export default function App() {
     <RoleProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/presentation" element={<PresentationPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
@@ -49,6 +53,7 @@ export default function App() {
 
         {/* Partie 2 — Cours, Profil, Emploi du temps */}
         <Route path="/app/cours" element={<StudentApp><CoursesPage /></StudentApp>} />
+        <Route path="/app/cours/:courseId" element={<StudentApp><CourseDetailPage /></StudentApp>} />
         <Route path="/app/profil" element={<StudentApp><ProfilePage /></StudentApp>} />
         <Route path="/app/emploi-du-temps" element={<StudentApp><SchedulePage /></StudentApp>} />
 
@@ -69,9 +74,10 @@ export default function App() {
         {/* Partie 8 — Enseignant Spécifique */}
         <Route path="/app/mes-cours-enseignant" element={<StudentApp><TeacherCoursesPage /></StudentApp>} />
 
-        {/* Partie 6 — Paramètres, Bibliothèque, Aide */}
+        {/* Partie 6 — Paramètres, Bibliothèque, Aide, Salles */}
         <Route path="/app/parametres" element={<StudentApp><SettingsPage /></StudentApp>} />
         <Route path="/app/bibliotheque" element={<StudentApp><LibraryPage /></StudentApp>} />
+        <Route path="/app/salles" element={<StudentApp><ClassroomsPage /></StudentApp>} />
         <Route path="/app/aide" element={<StudentApp><HelpPage /></StudentApp>} />
 
         {/* Partie 5 — Administration */}
@@ -83,7 +89,7 @@ export default function App() {
           <Route path="structure" element={<AcademicStructurePage />} />
           <Route path="cours" element={<AdminCoursesPage />} />
           <Route path="ue" element={<UEPage />} />
-          <Route path="salles" element={<ClassroomsPage />} />
+          <Route path="salles" element={<AdminClassroomsPage />} />
           <Route path="*" element={<AdminDashboardPage />} />
         </Route>
 
