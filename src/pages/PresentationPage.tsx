@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Play, Download, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Play, ExternalLink } from 'lucide-react'
 
 export default function PresentationPage() {
   return (

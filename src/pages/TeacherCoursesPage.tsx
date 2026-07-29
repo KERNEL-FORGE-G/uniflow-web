@@ -35,7 +35,6 @@ export default function TeacherCoursesPage() {
   const [activeTab, setActiveTab] = useState<'contenu'|'participants'|'devoirs'|'notes'>('contenu')
 
   const course = mockTeacherCourses.find(c => c.id === selCode)!
-  const CourseIcon = getCourseIcon(course.code)
 
   const avg = parseFloat((students.reduce((s, st) => s + (st.cc * CC_W + st.exam * EXAM_W), 0) / students.length).toFixed(2))
   const passRate = Math.round(students.filter(st => (st.cc * CC_W + st.exam * EXAM_W) >= 10).length / students.length * 100)

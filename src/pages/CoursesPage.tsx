@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Filter, LayoutGrid, List, BookOpen, Clock, Users, ChevronRight, Code2, Database, Network, Brain, DollarSign, BookMarked, Laptop, GraduationCap } from 'lucide-react'
+import { Filter, LayoutGrid, List, BookOpen, Clock, Users, ChevronRight, Code2, Database, Network, Brain, DollarSign, BookMarked, GraduationCap } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { useNavigate } from 'react-router-dom'
 import { mockCourses } from '../data/mockData'

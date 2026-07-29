@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Search, Filter, BookOpen, Download, Eye, Heart, Star, FileText, Video, FileCode, File } from 'lucide-react'
-import { Badge } from '../components/ui/Badge'
+// import { Badge } from '../components/ui/Badge'
 import type { LucideIcon } from 'lucide-react'
 
 const categories = ['Tous', 'Informatique', 'Mathématiques', 'Économie', 'Langues', 'Sciences']

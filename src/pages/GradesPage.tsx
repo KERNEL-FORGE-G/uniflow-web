@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Download, Eye, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, 
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   BarChart, Bar
 } from 'recharts'
 

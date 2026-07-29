@@ -28,14 +28,6 @@ const mockSyllabus = [
   { week: 4, title: 'Structures de données II', topics: ['Arbres binaires', 'Arbres de recherche', 'AVL'], completed: false },
   { week: 5, title: 'Algorithmes de tri', topics: ['Tri par insertion', 'Tri fusion', 'Tri rapide'], completed: false },
 ]
-
-const mockStudents = [
-  { id: 1, name: 'Emma Martin', avatar: 'EM', progress: 85 },
-  { id: 2, name: 'Lucas Bernard', avatar: 'LB', progress: 78 },
-  { id: 3, name: 'Chloé Dubois', avatar: 'CD', progress: 92 },
-  { id: 4, name: 'Hugo Leroy', avatar: 'HL', progress: 65 },
-]
-
 export default function CourseDetailPage() {
   const navigate = useNavigate()
   const { courseId } = useParams()
