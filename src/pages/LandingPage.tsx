@@ -1,123 +1,181 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, GraduationCap, Users, Wifi, Shield, CheckCircle, Play } from 'lucide-react'
+import { ArrowRight, GraduationCap, Users, Wifi, Shield, CheckCircle, Play, Sparkles, Zap, TrendingUp } from 'lucide-react'
 
 const features = [
-  { icon: GraduationCap, title: 'Tout-en-un', desc: 'Cours, emplois du temps, devoirs, notes et plus encore dans une seule interface intuitive.' },
-  { icon: Users,         title: 'Collaboratif', desc: 'Enseignants et étudiants dans un même espace partagé en temps réel.' },
-  { icon: Wifi,          title: 'Accessible', desc: 'Fonctionne hors-ligne, adapté aux zones à faible connexion.' },
-  { icon: Shield,        title: 'Sécurisé', desc: 'Données protégées et authentification multi-rôle par JWT + RBAC.' },
+  { icon: GraduationCap, title: 'Tout-en-un', desc: 'Cours, emplois du temps, devoirs, notes et plus encore dans une seule interface intuitive.', color: 'from-blue-500 to-indigo-600' },
+  { icon: Users,         title: 'Collaboratif', desc: 'Enseignants et étudiants dans un même espace partagé en temps réel.', color: 'from-teal-500 to-emerald-600' },
+  { icon: Wifi,          title: 'Accessible', desc: 'Fonctionne hors-ligne, adapté aux zones à faible connexion.', color: 'from-purple-500 to-pink-600' },
+  { icon: Shield,        title: 'Sécurisé', desc: 'Données protégées et authentification multi-rôle par JWT + RBAC.', color: 'from-orange-500 to-red-600' },
 ]
 
 const stats = [
-  { value: '12 000+', label: 'Étudiants actifs' },
-  { value: '480+',    label: 'Enseignants' },
-  { value: '98%',     label: 'Satisfaction' },
-  { value: 'Offline', label: 'First par design' },
+  { value: '12 000+', label: 'Étudiants actifs', trend: '+15%' },
+  { value: '480+',    label: 'Enseignants', trend: '+8%' },
+  { value: '98%',     label: 'Satisfaction', trend: '+3%' },
+  { value: 'Offline', label: 'First design', trend: '100%' },
 ]
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/30 font-sans overflow-x-hidden">
+      {/* Animated background orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="glow-orb w-96 h-96 bg-blue-400 top-0 -left-48" />
+        <div className="glow-orb w-[500px] h-[500px] bg-teal-400 bottom-0 -right-64" />
+        <div className="glow-orb w-80 h-80 bg-indigo-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      </div>
+
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
-          <div className="flex items-center">
-            <img src="/logos/logo-principal.png" alt="UniFlow" className="h-10 w-auto object-contain" />
+      <nav className="sticky top-0 z-50 border-b border-white/20 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3 animate-fade-in-left">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-teal-500 rounded-xl blur opacity-30 animate-pulse-glow" />
+              <img src="/logos/logo-principal.png" alt="UniFlow" className="relative h-11 w-auto object-contain rounded-xl" />
+            </div>
           </div>
-          <div className="hidden items-center gap-8 md:flex">
-            <a href="#fonctionnalites" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">Fonctionnalités</a>
-            <Link to="/about" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">À propos</Link>
-            <Link to="/pricing" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">Tarifs</Link>
-            <Link to="/contact" className="text-sm font-medium text-[#6b7280] hover:text-[#1e3a8a] transition-colors">Contact</Link>
+          <div className="hidden items-center gap-8 md:flex animate-fade-in-down">
+            <a href="#fonctionnalites" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-all duration-300 hover:scale-105">Fonctionnalités</a>
+            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-all duration-300 hover:scale-105">À propos</Link>
+            <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-all duration-300 hover:scale-105">Tarifs</Link>
+            <Link to="/contact" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-all duration-300 hover:scale-105">Contact</Link>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 animate-fade-in-right">
             <Link to="/login"
-              className="rounded-lg border border-[#e5e7eb] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
+              className="rounded-xl border-2 border-slate-200 px-5 py-2.5 text-sm font-bold text-slate-700 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
               Se connecter
             </Link>
             <Link to="/app"
-              className="rounded-lg bg-[#1e3a8a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
-              Commencer gratuitement
+              className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg hover:shadow-xl hover:shadow-blue-600/30 transition-all duration-300 hover:-translate-y-0.5 btn-ripple">
+              <span className="relative z-10 flex items-center gap-2">
+                Commencer gratuitement <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </span>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* ── Hero ── */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:py-24">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="animate-fade-in">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eff3ff] px-3 py-1 text-xs font-semibold text-[#1e3a8a] mb-4">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0d9488]" /> Plateforme universitaire moderne
-            </span>
-            <h1 className="text-4xl font-extrabold leading-tight text-[#111827] lg:text-5xl">
+      <section className="relative mx-auto max-w-7xl px-6 py-20 lg:py-28">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
+          <div className="animate-fade-in-up space-y-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-100/80 to-teal-100/80 px-4 py-2 text-xs font-bold text-blue-700 border border-blue-200 shadow-md backdrop-blur-sm hover:scale-105 transition-transform cursor-default">
+              <Sparkles className="h-3.5 w-3.5 text-teal-500 animate-pulse" />
+              Plateforme universitaire nouvelle génération
+            </div>
+            
+            <h1 className="text-5xl font-black leading-tight text-slate-900 lg:text-6xl xl:text-7xl">
               Simplifiez<br />l'éducation,<br />
-              <span className="text-[#1e3a8a]">libérez le potentiel</span>
+              <span className="gradient-text block mt-2">libérez le potentiel</span>
             </h1>
-            <p className="mt-6 text-lg text-[#6b7280] leading-relaxed">
+            
+            <p className="text-lg text-slate-600 leading-relaxed max-w-xl">
               UniFlow centralise vos cours, communications, planifications et bien plus encore,
-              dans une interface intuitive et moderne.
+              dans une interface <strong className="text-blue-600 font-bold">intuitive</strong> et <strong className="text-teal-600 font-bold">moderne</strong>.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link to="/app"
-                className="inline-flex items-center gap-2 rounded-lg bg-[#1e3a8a] px-6 py-3 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors shadow-sm">
-                Commencer gratuitement <ArrowRight className="h-4 w-4" />
+                className="group inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-4 text-base font-bold text-white shadow-xl hover:shadow-2xl hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 hover:scale-105 btn-ripple">
+                Commencer gratuitement 
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link to="/presentation"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#1e3a8a] transition-colors">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f4f6] border border-[#e5e7eb]">
-                  <Play className="h-3 w-3 ml-0.5 text-[#1e3a8a]" />
+                className="group inline-flex items-center gap-2.5 text-base font-bold text-slate-700 hover:text-blue-600 transition-all duration-300 hover:scale-105">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white border-2 border-slate-200 shadow-md group-hover:border-blue-500 group-hover:shadow-lg transition-all">
+                  <Play className="h-4 w-4 ml-0.5 text-blue-600" />
                 </span>
                 Voir la présentation
               </Link>
             </div>
-            <p className="mt-4 text-sm text-[#9ca3af]">
-              Déjà utilisateur ?{' '}
-              <Link to="/login" className="font-medium text-[#1e3a8a] hover:underline">Se connecter</Link>
-            </p>
+            
+            <div className="flex items-center gap-6 pt-4">
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-5 w-5 text-teal-500" />
+                <span className="font-medium text-slate-600">Gratuit</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-5 w-5 text-teal-500" />
+                <span className="font-medium text-slate-600">Open Source</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-5 w-5 text-teal-500" />
+                <span className="font-medium text-slate-600">Offline First</span>
+              </div>
+            </div>
           </div>
 
           {/* Dashboard preview mockup */}
-          <div className="relative animate-fade-in">
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl overflow-hidden">
-              {/* Browser bar */}
-              <div className="flex items-center gap-2 border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-2.5">
-                <div className="flex gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-[#ef4444]" />
-                  <div className="h-3 w-3 rounded-full bg-[#f59e0b]" />
-                  <div className="h-3 w-3 rounded-full bg-[#10b981]" />
-                </div>
-                <div className="flex-1 mx-4 rounded bg-white border border-[#e5e7eb] px-3 py-1 text-xs text-[#9ca3af]">
-                  https://uniflow.kernelforge.codes
-                </div>
-              </div>
-              {/* Hero illustration area with mascotte */}
-              <div className="bg-gradient-to-br from-[#eff3ff] via-white to-[#f0fdfa] p-8 min-h-[280px] flex items-center justify-center">
-                <div className="text-center">
-                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl overflow-hidden">
-                    <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain" />
+          <div className="relative animate-fade-in-up lg:animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
+            <div className="relative">
+              {/* Glow effect behind */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 rounded-3xl blur-3xl opacity-20 animate-pulse-glow scale-110" />
+              
+              {/* Main card */}
+              <div className="relative rounded-3xl border border-white/40 bg-white/90 backdrop-blur-xl shadow-2xl overflow-hidden hover:shadow-premium-xl transition-all duration-500 hover:-translate-y-2">
+                {/* Browser bar */}
+                <div className="flex items-center gap-2 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 px-5 py-3">
+                  <div className="flex gap-2">
+                    <div className="h-3.5 w-3.5 rounded-full bg-gradient-to-r from-red-400 to-red-500 shadow-sm" />
+                    <div className="h-3.5 w-3.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 shadow-sm" />
+                    <div className="h-3.5 w-3.5 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-sm" />
                   </div>
-                  <p className="text-lg font-bold text-[#1e3a8a]">UniFlow Dashboard</p>
-                  <p className="text-sm text-[#6b7280] mt-1">Interfaces Web Responsive</p>
-                  <div className="mt-4 grid grid-cols-2 gap-2">
-                    {[
-                      { label: 'Cours inscrits', val: '12', color: 'bg-[#eff3ff] text-[#1e3a8a]' },
-                      { label: 'Moyenne', val: '14.6/20', color: 'bg-[#f0fdfa] text-[#0d9488]' },
-                      { label: 'Présences', val: '87%', color: 'bg-[#f0fdf4] text-[#059669]' },
-                      { label: 'Devoirs', val: '5', color: 'bg-[#fef3c7] text-[#d97706]' },
-                    ].map(s => (
-                      <div key={s.label} className={`rounded-lg p-3 text-left ${s.color}`}>
-                        <p className="text-lg font-bold">{s.val}</p>
-                        <p className="text-xs opacity-80">{s.label}</p>
+                  <div className="flex-1 mx-4 rounded-lg bg-white border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-400 shadow-sm">
+                    https://uniflow.kernelforge.codes
+                  </div>
+                </div>
+                
+                {/* Hero illustration area with mascotte */}
+                <div className="bg-gradient-to-br from-blue-50 via-white to-teal-50 p-8 min-h-[320px]">
+                  <div className="text-center space-y-6">
+                    <div className="relative inline-block">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-teal-400 rounded-2xl blur-xl opacity-40 animate-float" />
+                      <div className="relative mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+                        <img src="/logos/mascotte.png" alt="UniFlow Mascotte" className="h-full w-full object-contain animate-float" />
                       </div>
-                    ))}
+                    </div>
+                    
+                    <div>
+                      <p className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">UniFlow Dashboard</p>
+                      <p className="text-sm text-slate-500 font-medium mt-1">Interfaces Web Responsive</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+                      {[
+                        { label: 'Cours inscrits', val: '12', gradient: 'from-blue-500 to-indigo-600' },
+                        { label: 'Moyenne', val: '14.6/20', gradient: 'from-teal-500 to-emerald-600' },
+                        { label: 'Présences', val: '87%', gradient: 'from-emerald-500 to-green-600' },
+                        { label: 'Devoirs', val: '5', gradient: 'from-amber-500 to-orange-600' },
+                      ].map(s => (
+                        <div key={s.label} className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${s.gradient} p-4 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300`}>
+                          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <p className="relative text-2xl font-black">{s.val}</p>
+                          <p className="relative text-xs font-medium opacity-90">{s.label}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* Floating badge */}
-            <div className="absolute -bottom-4 -right-4 rounded-xl bg-[#0d9488] px-4 py-2 text-white shadow-lg text-xs font-semibold">
-              ✓ Offline First
+              
+              {/* Floating badge */}
+              <div className="absolute -bottom-6 -right-6 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-600 px-5 py-3 text-white shadow-xl text-sm font-bold animate-float flex items-center gap-2">
+                <Zap className="h-4 w-4" />
+                Offline First
+              </div>
+              
+              {/* Stats floating card */}
+              <div className="absolute -top-6 -left-6 rounded-2xl bg-white/95 backdrop-blur-xl px-5 py-4 shadow-xl border border-white/50 animate-float-horizontal">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-slate-500">Croissance</p>
+                    <p className="text-lg font-black text-slate-900">+127%</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
