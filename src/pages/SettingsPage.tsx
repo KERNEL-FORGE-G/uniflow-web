@@ -217,9 +217,103 @@ export default function SettingsPage() {
           )}
 
           {!['Profil','Notifications','Langue','Sécurité','Thème','Données'].includes(section) && (
-            <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm text-center py-16">
-              <Database className="mx-auto h-10 w-10 text-[#e5e7eb] mb-3" />
-              <p className="text-sm text-[#9ca3af]">Section {section} — disponible prochainement.</p>
+            <div className="space-y-5">
+              {section === 'Accessibilité' && (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+                  <h2 className="text-sm font-bold text-[#111827] mb-5">Accessibilité</h2>
+                  <div className="space-y-4">
+                    {[
+                      { label: 'Taille du texte', desc: 'Augmenter la lisibilité' },
+                      { label: 'Contraste élevé', desc: 'Meilleure visibilité' },
+                      { label: 'Réduire les animations', desc: 'Pour les troubles vestibulaires' },
+                    ].map((a, i) => (
+                      <div key={a.label} className="flex items-center justify-between py-3 border-b border-[#f9fafb] last:border-0">
+                        <div>
+                          <p className="text-sm font-medium text-[#111827]">{a.label}</p>
+                          <p className="text-xs text-[#9ca3af] mt-0.5">{a.desc}</p>
+                        </div>
+                        <button className={`relative h-6 w-11 rounded-full transition-colors ${i === 0 ? 'bg-[#0d9488]' : 'bg-[#e5e7eb]'}`}>
+                          <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${i === 0 ? 'left-5' : 'left-0.5'}`} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {section === 'Confidentialité' && (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+                  <h2 className="text-sm font-bold text-[#111827] mb-5">Confidentialité</h2>
+                  <div className="space-y-4">
+                    {[
+                      { label: 'Visibilité du profil', desc: 'Visible aux autres étudiants', on: true },
+                      { label: 'Partage des statistiques', desc: 'Contribuer aux analytics anonymes', on: false },
+                      { label: 'Historique des connexions', desc: 'Conserver l\'historique des sessions', on: true },
+                    ].map(c => (
+                      <div key={c.label} className="flex items-center justify-between py-3 border-b border-[#f9fafb] last:border-0">
+                        <div>
+                          <p className="text-sm font-medium text-[#111827]">{c.label}</p>
+                          <p className="text-xs text-[#9ca3af] mt-0.5">{c.desc}</p>
+                        </div>
+                        <button className={`relative h-6 w-11 rounded-full transition-colors ${c.on ? 'bg-[#0d9488]' : 'bg-[#e5e7eb]'}`}>
+                          <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${c.on ? 'left-5' : 'left-0.5'}`} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {section === 'Aide' && (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+                  <h2 className="text-sm font-bold text-[#111827] mb-5">Aide & Documentation</h2>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {[
+                      { title: 'Guide de démarrage', desc: 'Découvrez les bases en 5 min', icon: '📖' },
+                      { title: 'Tutoriels vidéo', desc: '12 vidéos disponibles', icon: '🎥' },
+                      { title: 'FAQ', desc: 'Questions fréquentes', icon: '❓' },
+                      { title: 'Contact support', desc: 'support@uniflow.edu', icon: '📧' },
+                    ].map(h => (
+                      <div key={h.title} className="flex items-start gap-3 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] cursor-pointer transition-colors">
+                        <span className="text-2xl">{h.icon}</span>
+                        <div>
+                          <p className="font-semibold text-[#111827] text-sm">{h.title}</p>
+                          <p className="text-xs text-[#6b7280] mt-0.5">{h.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {section === 'Contact' && (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+                  <h2 className="text-sm font-bold text-[#111827] mb-5">Contacter le support</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#374151] mb-1.5 uppercase tracking-wider">Sujet</label>
+                      <select className="w-full rounded-lg border border-[#e5e7eb] px-4 py-2.5 text-sm outline-none focus:border-[#1e3a8a]">
+                        <option>Question technique</option>
+                        <option>Bug / Problème</option>
+                        <option>Suggestion</option>
+                        <option>Autre</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#374151] mb-1.5 uppercase tracking-wider">Message</label>
+                      <textarea rows={5} placeholder="Décrivez votre problème..."
+                        className="w-full rounded-lg border border-[#e5e7eb] px-4 py-2.5 text-sm outline-none focus:border-[#1e3a8a] resize-none" />
+                    </div>
+                    <button onClick={handleSave}
+                      className="flex items-center gap-2 rounded-lg bg-[#1e3a8a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+                      <Save className="h-4 w-4" /> Envoyer
+                    </button>
+                  </div>
+                </div>
+              )}
+              {!['Accessibilité','Confidentialité','Aide','Contact'].includes(section) && (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm text-center py-16">
+                  <Database className="mx-auto h-10 w-10 text-[#e5e7eb] mb-3" />
+                  <p className="text-sm text-[#9ca3af]">Section {section} — disponible prochainement.</p>
+                </div>
+              )}
             </div>
           )}
         </div>

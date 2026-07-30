@@ -155,7 +155,18 @@ export default function MessagingPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+        <div className="relative flex-1 overflow-y-auto px-5 py-4 space-y-3">
+          {/* Mascot wallpaper — fond décor discret */}
+          {active.messages.length === 0 && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
+              <img src="/logos/mascotte.png" alt="" className="h-28 w-28 object-contain opacity-10" />
+              <p className="text-xs text-[#9ca3af] mt-2 opacity-50">Commencez la conversation…</p>
+            </div>
+          )}
+          {/* Mascot watermark — toujours présente en fond, très discrète */}
+          <div className="pointer-events-none select-none absolute bottom-4 right-4 opacity-[0.04]">
+            <img src="/logos/mascotte.png" alt="" className="h-40 w-40 object-contain" />
+          </div>
           {active.messages.map(m => (
             <div key={m.id} className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
               {m.from === 'them' && <Avatar name={active.name} size="sm" className="mr-2 mt-1 shrink-0" />}
@@ -189,7 +200,7 @@ export default function MessagingPage() {
             </div>
           )}
           <div ref={bottomRef} />
-        </div>
+        </div>  {/* end messages list */}
 
         {/* Input */}
         <div className="border-t border-[#e5e7eb] px-4 py-3.5">

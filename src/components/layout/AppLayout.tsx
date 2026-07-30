@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { mockNotifications } from '../../data/mockData'
 
 export function Sidebar() {
-  const { currentRole, currentUser, isOfflineMode, setIsOfflineMode, language, setLanguage } = useUserRole()
+  const { currentRole, setCurrentRole, currentUser, isOfflineMode, setIsOfflineMode, language, setLanguage } = useUserRole()
   const filteredNav = navItems.filter(item => item.roles && item.roles.includes(currentRole))
 
   return (
@@ -34,8 +34,23 @@ export function Sidebar() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Role switcher - REMOVED */}
+      {/* Role switcher */}
+      <div className="border-b border-[#e5e7eb] px-3 py-2">
+        <div className="flex gap-1">
+          {(['student','delegate','teacher'] as const).map(r => {
+            const labels: Record<string,string> = { student:'Étudiant', delegate:'Délégué', teacher:'Enseignant' }
+            return (
+              <button key={r}
+                onClick={() => setCurrentRole(r)}
+                className={cn(
+                  'flex-1 rounded-md py-1 text-[10px] font-bold transition-colors',
+                  currentRole === r ? 'bg-[#1e3a8a] text-white' : 'text-[#6b7280] hover:bg-[#f9fafb]'
+                )}>{labels[r]}</button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Nav */}
@@ -64,7 +79,15 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-[#e5e7eb] p-3 space-y-2">
+      <div className="border-t border-[#e5e7eb] p-3 space-y-3">
+        {/* Mascot brand */}
+        <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gradient-to-r from-[#eff3ff] to-[#f0fdfa]">
+          <img src="/logos/mascotte.png" alt="UniFlow" className="h-8 w-8 object-contain shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-[#1e3a8a] leading-none">UniFlow</p>
+            <p className="text-[9px] text-[#6b7280] leading-none mt-0.5">v1.0 · KERNEL FORGE</p>
+          </div>
+        </div>
         <div className="flex items-center justify-between text-xs">
           <span className="flex items-center gap-1 text-[#6b7280]">
             <Globe className="h-3.5 w-3.5" /> Langue

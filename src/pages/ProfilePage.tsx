@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Edit, Users, Star, TrendingUp, UserCheck, Camera } from 'lucide-react'
+import { Edit, Users, Star, UserCheck, Camera } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
@@ -208,10 +208,99 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {(activeTab === 'Paramètres' || activeTab === 'Références') && (
-        <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm text-center py-16">
-          <TrendingUp className="mx-auto h-10 w-10 text-[#e5e7eb] mb-3" />
-          <p className="text-sm text-[#9ca3af]">Section {activeTab} — disponible prochainement.</p>
+      {activeTab === 'Paramètres' && (
+        <div className="space-y-5">
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-[#111827] mb-5">Préférences du profil</h2>
+            <div className="space-y-4">
+              {[
+                { label: 'Notifications email', desc: 'Recevoir les alertes par email', on: true },
+                { label: 'Notifications push', desc: 'Alertes dans l\'application', on: true },
+                { label: 'Visibilité du profil', desc: 'Rendre mon profil visible aux autres étudiants', on: false },
+                { label: 'Mode hors ligne', desc: 'Synchroniser automatiquement les données offline', on: true },
+              ].map(s => (
+                <div key={s.label} className="flex items-center justify-between py-3 border-b border-[#f3f4f6] last:border-0">
+                  <div>
+                    <p className="text-sm font-medium text-[#111827]">{s.label}</p>
+                    <p className="text-xs text-[#9ca3af] mt-0.5">{s.desc}</p>
+                  </div>
+                  <button className={`relative h-6 w-11 rounded-full transition-colors ${s.on ? 'bg-[#0d9488]' : 'bg-[#e5e7eb]'}`}>
+                    <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${s.on ? 'left-5' : 'left-0.5'}`} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-[#111827] mb-4">Changer le mot de passe</h2>
+            <div className="space-y-3 max-w-sm">
+              {['Mot de passe actuel', 'Nouveau mot de passe', 'Confirmer'].map(f => (
+                <div key={f}>
+                  <label className="block text-xs font-medium text-[#6b7280] mb-1">{f}</label>
+                  <input type="password" placeholder="••••••••"
+                    className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]" />
+                </div>
+              ))}
+              <button className="rounded-lg bg-[#1e3a8a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+                Mettre à jour
+              </button>
+            </div>
+          </div>
+          <div className="rounded-xl border border-red-100 bg-red-50 p-5">
+            <h3 className="text-sm font-bold text-red-700 mb-1">Zone dangereuse</h3>
+            <p className="text-xs text-red-600 mb-3">La suppression de votre compte est irréversible.</p>
+            <button className="rounded-lg border border-red-300 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 transition-colors">
+              Supprimer mon compte
+            </button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'Références' && (
+        <div className="space-y-5">
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-[#111827] mb-4">Lettres de recommandation</h2>
+            <div className="space-y-3">
+              {[
+                { from: 'Pr. Martin', course: 'Algorithmique', date: 'Juin 2024', status: 'Disponible' },
+                { from: 'Dr. Benkacem', course: 'Bases de données', date: 'Mai 2024', status: 'En attente' },
+              ].map(r => (
+                <div key={r.from} className="flex items-center justify-between rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb]">
+                  <div>
+                    <p className="font-semibold text-[#111827] text-sm">{r.from}</p>
+                    <p className="text-xs text-[#6b7280] mt-0.5">{r.course} · {r.date}</p>
+                  </div>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${r.status === 'Disponible' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                    {r.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <button className="mt-4 rounded-lg bg-[#1e3a8a] px-4 py-2 text-xs font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+              Demander une référence
+            </button>
+          </div>
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-[#111827] mb-4">Portfolio académique</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { title: 'Projet IA — Détection d\'anomalies', course: 'Intelligence Artificielle', note: '17/20', type: '🔬' },
+                { title: 'Application Web — UniFlow prototype', course: 'Programmation Web', note: '18/20', type: '💻' },
+                { title: 'Rapport — Réseaux LAN', course: 'Réseaux', note: '15/20', type: '📡' },
+              ].map(p => (
+                <div key={p.title} className="rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb]">
+                  <div className="flex items-start gap-2 mb-1">
+                    <span className="text-xl">{p.type}</span>
+                    <div>
+                      <p className="font-semibold text-[#111827] text-xs leading-tight">{p.title}</p>
+                      <p className="text-[10px] text-[#6b7280] mt-0.5">{p.course}</p>
+                    </div>
+                  </div>
+                  <span className="inline-block rounded-md bg-[#eff3ff] px-2 py-0.5 text-xs font-bold text-[#1e3a8a]">{p.note}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
