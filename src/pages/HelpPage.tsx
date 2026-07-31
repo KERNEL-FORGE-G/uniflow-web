@@ -69,7 +69,7 @@ export default function HelpPage() {
 
       {/* Guides */}
       <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-        <h2 className="text-sm font-bold text-[#111827] mb-4">📚 Guides & Tutoriels</h2>
+        <h2 className="text-sm font-bold text-[#111827] mb-4 flex items-center gap-1.5"><BookOpen className="h-4 w-4 text-[#1e3a8a]" /> Guides & Tutoriels</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {guides.map(g => (
             <button key={g.title} className="flex items-center gap-3 rounded-lg border border-[#e5e7eb] p-3 hover:bg-[#f9fafb] transition-colors text-left">
@@ -89,7 +89,7 @@ export default function HelpPage() {
       {/* FAQ */}
       <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-[#111827]">❓ Questions fréquentes</h2>
+          <h2 className="text-sm font-bold text-[#111827] flex items-center gap-1.5"><HelpCircle className="h-4 w-4 text-[#1e3a8a]" /> Questions fréquentes</h2>
           <div className="flex gap-1">
             {cats.map(c => (
               <button key={c} onClick={() => setCategory(c)}

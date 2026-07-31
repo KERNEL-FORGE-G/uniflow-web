@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Camera, Bell, Globe, Shield, Database, Save } from 'lucide-react'
+import { Camera, Bell, Globe, Shield, Database, Save, BookOpen, Video, HelpCircle, Mail } from 'lucide-react'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
 import { mockUsers } from '../data/mockData'
@@ -120,7 +120,7 @@ export default function SettingsPage() {
                 {(['FR','EN'] as const).map(l => (
                   <button key={l} onClick={() => setLanguage(l)}
                     className={`rounded-xl border p-4 text-center font-bold transition-all ${language === l ? 'border-[#1e3a8a] bg-[#eff3ff] text-[#1e3a8a]' : 'border-[#e5e7eb] text-[#374151] hover:bg-[#f9fafb]'}`}>
-                    <p className="text-2xl">{l === 'FR' ? '🇫🇷' : '🇬🇧'}</p>
+                    <p className="text-2xl">{l === 'FR' ? 'FR' : 'EN'}</p>
                     <p className="text-sm mt-1">{l === 'FR' ? 'Français' : 'English'}</p>
                   </button>
                 ))}
@@ -266,20 +266,25 @@ export default function SettingsPage() {
                 <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
                   <h2 className="text-sm font-bold text-[#111827] mb-5">Aide & Documentation</h2>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      { title: 'Guide de démarrage', desc: 'Découvrez les bases en 5 min', icon: '📖' },
-                      { title: 'Tutoriels vidéo', desc: '12 vidéos disponibles', icon: '🎥' },
-                      { title: 'FAQ', desc: 'Questions fréquentes', icon: '❓' },
-                      { title: 'Contact support', desc: 'support@uniflow.edu', icon: '📧' },
-                    ].map(h => (
-                      <div key={h.title} className="flex items-start gap-3 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] cursor-pointer transition-colors">
-                        <span className="text-2xl">{h.icon}</span>
-                        <div>
-                          <p className="font-semibold text-[#111827] text-sm">{h.title}</p>
-                          <p className="text-xs text-[#6b7280] mt-0.5">{h.desc}</p>
+                  {[
+                      { title: 'Guide de démarrage', desc: 'Découvrez les bases en 5 min', icon: BookOpen },
+                      { title: 'Tutoriels vidéo', desc: '12 vidéos disponibles', icon: Video },
+                      { title: 'FAQ', desc: 'Questions fréquentes', icon: HelpCircle },
+                      { title: 'Contact support', desc: 'support@uniflow.edu', icon: Mail },
+                    ].map(h => {
+                      const HelpIcon = h.icon
+                      return (
+                        <div key={h.title} className="flex items-start gap-3 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] cursor-pointer transition-colors">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#eff3ff] text-[#1e3a8a]">
+                            <HelpIcon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-[#111827] text-sm">{h.title}</p>
+                            <p className="text-xs text-[#6b7280] mt-0.5">{h.desc}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
               )}

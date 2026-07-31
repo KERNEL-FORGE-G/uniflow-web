@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Search, Bell, LogOut, Wifi, WifiOff, Globe, ChevronDown } from 'lucide-react'
+import { Search, Bell, LogOut, Wifi, WifiOff, Globe, ChevronDown, GraduationCap, Megaphone, UserCheck, Settings } from 'lucide-react'
 import { useUserRole } from '../../utils/userRole'
 import { navItems } from '../../data/navigation'
 import { Avatar } from '../ui/Avatar'
@@ -24,89 +24,81 @@ export function Sidebar() {
         <div className="flex items-center gap-3 rounded-lg bg-[#f9fafb] px-3 py-2.5">
           <Avatar name={currentUser.name} size="md" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-[#111827]">{currentUser.name}</p>
-            <p className="truncate text-xs text-[#6b7280]">{currentUser.roleLabel}</p>
-            <div className="mt-1 flex items-center gap-1.5">
-              <span className={cn('h-1.5 w-1.5 rounded-full', isOfflineMode ? 'bg-red-500' : 'bg-emerald-500')} />
-              <span className={cn('text-[10px] font-medium', isOfflineMode ? 'text-red-600' : 'text-emerald-600')}>
-                {isOfflineMode ? 'Mode Local' : 'En ligne'}
-              </span>
-            </div>
+            <p className="truncate text-xs font-semibold text-[#111827]">{currentUser.name}</p>
+            <p className="truncate text-[11px] text-[#6b7280]">{currentUser.roleLabel}</p>
           </div>
         </div>
-      </div>
 
-      {/* Role switcher */}
-      <div className="border-b border-[#e5e7eb] px-3 py-2">
-        <div className="flex gap-1">
-          {(['student','delegate','teacher'] as const).map(r => {
-            const labels: Record<string,string> = { student:'Étudiant', delegate:'Délégué', teacher:'Enseignant' }
-            return (
-              <button key={r}
-                onClick={() => setCurrentRole(r)}
-                className={cn(
-                  'flex-1 rounded-md py-1 text-[10px] font-bold transition-colors',
-                  currentRole === r ? 'bg-[#1e3a8a] text-white' : 'text-[#6b7280] hover:bg-[#f9fafb]'
-                )}>{labels[r]}</button>
-            )
-          })}
+        {/* Role Selector dropdown */}
+        <div className="mt-2.5">
+          <label className="block text-[10px] font-bold text-[#9ca3af] uppercase tracking-wider mb-1 px-1">Rôle de démonstration</label>
+          <select
+            value={currentRole}
+            onChange={e => setCurrentRole(e.target.value as any)}
+            className="w-full rounded-md border border-[#e5e7eb] bg-white px-2 py-1 text-xs text-[#374151] font-medium outline-none focus:border-[#1e3a8a]"
+          >
+            <option value="student">Étudiant</option>
+            <option value="delegate">Délégué</option>
+            <option value="teacher">Enseignant</option>
+            <option value="admin">Administrateur</option>
+          </select>
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-2 py-3">
-        <ul className="space-y-0.5">
-          {filteredNav.map(({ to, icon: Icon, labelFr, labelEn, end }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-[#eff3ff] text-[#1e3a8a] font-semibold'
-                      : 'text-[#374151] hover:bg-[#f9fafb] hover:text-[#111827]',
-                  )
-                }
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{language === 'FR' ? labelFr : labelEn}</span>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 p-3">
+        <p className="px-2 pb-1 text-[10px] font-bold text-[#9ca3af] uppercase tracking-wider">Navigation</p>
+        {filteredNav.map(item => {
+          const Icon = item.icon
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/app'}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all',
+                  isActive
+                    ? 'bg-[#1e3a8a] text-white shadow-sm'
+                    : 'text-[#6b7280] hover:bg-[#f9fafb] hover:text-[#111827]'
+                )
+              }
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              <span>{language === 'FR' ? item.labelFr : item.labelEn}</span>
+            </NavLink>
+          )
+        })}
       </nav>
 
-      {/* Footer */}
-      <div className="border-t border-[#e5e7eb] p-3 space-y-3">
-        {/* Mascot brand */}
-        <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gradient-to-r from-[#eff3ff] to-[#f0fdfa]">
-          <img src="/logos/mascotte.png" alt="UniFlow" className="h-8 w-8 object-contain shrink-0" />
-          <div className="min-w-0">
-            <p className="text-[10px] font-bold text-[#1e3a8a] leading-none">UniFlow</p>
-            <p className="text-[9px] text-[#6b7280] leading-none mt-0.5">v1.0 · KERNEL FORGE</p>
+      {/* Offline toggle */}
+      <div className="border-t border-[#e5e7eb] p-3 space-y-2">
+        <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-[#f9fafb]">
+          <div className="flex items-center gap-1.5 text-xs text-[#374151]">
+            <Globe className="h-3.5 w-3.5 text-[#6b7280]" />
+            <span>Langue</span>
           </div>
+          <button
+            onClick={() => setLanguage(language === 'FR' ? 'EN' : 'FR')}
+            className="text-xs font-bold text-[#1e3a8a] hover:underline"
+          >
+            {language}
+          </button>
         </div>
-        <div className="flex items-center justify-between text-xs">
-          <span className="flex items-center gap-1 text-[#6b7280]">
-            <Globe className="h-3.5 w-3.5" /> Langue
-          </span>
-          <div className="flex rounded-md border border-[#e5e7eb] overflow-hidden">
-            {(['FR', 'EN'] as const).map(l => (
-              <button key={l} onClick={() => setLanguage(l)}
-                className={cn('px-2 py-0.5 text-[10px] font-bold transition-colors',
-                  language === l ? 'bg-[#1e3a8a] text-white' : 'text-[#6b7280] hover:bg-[#f9fafb]'
-                )}>{l}</button>
-            ))}
+
+        <div className="flex items-center justify-between px-2 py-1">
+          <div className="flex items-center gap-1.5 text-xs text-[#374151]">
+            {isOfflineMode ? (
+              <WifiOff className="h-3.5 w-3.5 text-red-500" />
+            ) : (
+              <Wifi className="h-3.5 w-3.5 text-emerald-600" />
+            )}
+            <span className={isOfflineMode ? 'font-bold text-red-600' : 'text-[#374151]'}>
+              {isOfflineMode ? 'Hors ligne' : 'En ligne'}
+            </span>
           </div>
-        </div>
-        <div className="flex items-center justify-between text-xs">
-          <span className="flex items-center gap-1 text-[#6b7280]">
-            {isOfflineMode ? <WifiOff className="h-3.5 w-3.5 text-red-500" /> : <Wifi className="h-3.5 w-3.5 text-[#0d9488]" />}
-            Offline
-          </span>
-          <button onClick={() => setIsOfflineMode(!isOfflineMode)}
+          <button
+            onClick={() => setIsOfflineMode(!isOfflineMode)}
             className={cn('relative h-5 w-9 rounded-full transition-colors', isOfflineMode ? 'bg-red-500' : 'bg-[#0d9488]')}
           >
             <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform', isOfflineMode ? 'left-[18px]' : 'left-0.5')} />
@@ -118,10 +110,10 @@ export function Sidebar() {
 }
 
 const roleConfig = {
-  student: { badge: '🎓 Étudiant', bgColor: 'bg-[#eff3ff]', textColor: 'text-[#1e3a8a]', borderColor: 'border-[#1e3a8a]/20' },
-  delegate: { badge: '📢 Délégué', bgColor: 'bg-purple-50', textColor: 'text-purple-700', borderColor: 'border-purple-200' },
-  teacher: { badge: '👨‍🏫 Enseignant', bgColor: 'bg-[#f0fdfa]', textColor: 'text-[#0d9488]', borderColor: 'border-[#0d9488]/20' },
-  admin: { badge: '⚙️ Admin', bgColor: 'bg-amber-50', textColor: 'text-amber-700', borderColor: 'border-amber-200' },
+  student: { badge: 'Étudiant', icon: GraduationCap, bgColor: 'bg-[#eff3ff]', textColor: 'text-[#1e3a8a]', borderColor: 'border-[#1e3a8a]/20' },
+  delegate: { badge: 'Délégué', icon: Megaphone, bgColor: 'bg-purple-50', textColor: 'text-purple-700', borderColor: 'border-purple-200' },
+  teacher: { badge: 'Enseignant', icon: UserCheck, bgColor: 'bg-[#f0fdfa]', textColor: 'text-[#0d9488]', borderColor: 'border-[#0d9488]/20' },
+  admin: { badge: 'Admin', icon: Settings, bgColor: 'bg-amber-50', textColor: 'text-amber-700', borderColor: 'border-amber-200' },
 }
 
 export function TopBar() {
@@ -130,6 +122,7 @@ export function TopBar() {
   const [, setShowNotifDropdown] = useState(false)
   const unreadCount = mockNotifications.filter(n => n.unread).length
   const roleInfo = roleConfig[currentRole]
+  const RoleIcon = roleInfo.icon
 
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center gap-4 border-b border-[#e5e7eb] bg-white px-6 shadow-sm">
@@ -150,6 +143,7 @@ export function TopBar() {
           roleInfo.textColor,
           roleInfo.borderColor
         )}>
+          <RoleIcon className="h-3.5 w-3.5" />
           <span>{roleInfo.badge}</span>
         </div>
 

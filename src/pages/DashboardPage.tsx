@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { BookOpen, ClipboardList, Clock, TrendingUp, UserCheck, ChevronUp, ChevronDown, Calendar, Bell } from 'lucide-react'
+import { BookOpen, ClipboardList, Clock, TrendingUp, UserCheck, ChevronUp, ChevronDown, Calendar, Bell, GraduationCap, Megaphone } from 'lucide-react'
 
 import { Badge } from '../components/ui/Badge'
 import { useUserRole } from '../utils/userRole'
@@ -71,7 +71,7 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-5 shadow-sm">
         <div>
           <h1 className="text-xl font-bold text-[#111827]">
-            Bonjour, {firstName} 👋
+            Bonjour, {firstName}
           </h1>
           <p className="text-sm text-[#6b7280] mt-0.5">
             {language === 'FR' ? 'Lundi 13 mai 2024' : 'Monday, May 13, 2024'}
@@ -84,9 +84,16 @@ export default function DashboardPage() {
               Vue liste →
             </Link>
           )}
-          <span className="rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] px-3 py-1.5 text-xs font-semibold text-[#374151] uppercase tracking-wide">
-            {currentRole === 'teacher' ? '👨‍🏫 Enseignant' : currentRole === 'delegate' ? '📢 Délégué' : '🎓 Étudiant'}
-          </span>
+          {(() => {
+            const RoleIcon = currentRole === 'teacher' ? UserCheck : currentRole === 'delegate' ? Megaphone : GraduationCap
+            const roleLabel = currentRole === 'teacher' ? 'Enseignant' : currentRole === 'delegate' ? 'Délégué' : 'Étudiant'
+            return (
+              <span className="flex items-center gap-1.5 rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] px-3 py-1.5 text-xs font-semibold text-[#374151] uppercase tracking-wide">
+                <RoleIcon className="h-3.5 w-3.5 text-[#1e3a8a]" />
+                {roleLabel}
+              </span>
+            )
+          })()}
         </div>
       </div>
 

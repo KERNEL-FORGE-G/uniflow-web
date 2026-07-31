@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight, Play, CheckCircle, GraduationCap, Users, Wifi, Shield,
   MessageSquare, BarChart3, Zap, Lock, ChevronRight,
+  Smartphone, Globe, Monitor, Activity, Eye, Megaphone, UserCheck, Settings
 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
@@ -23,38 +24,38 @@ const features = [
     icon: Users,
     title: 'Multi-rôles',
     desc: 'Étudiant, Délégué, Enseignant, Admin — chaque acteur dispose de son espace dédié.',
-    color: 'bg-[#f0fdfa] text-[#0d9488]',
+    color: 'bg-purple-50 text-purple-700',
   },
   {
     icon: Wifi,
     title: 'Offline First',
-    desc: 'Fonctionne sans connexion Internet. Conçu pour les zones à faible connectivité.',
-    color: 'bg-emerald-50 text-emerald-700',
+    desc: 'Fonctionne sans Internet. Base de données locale synchronisée au retour du réseau.',
+    color: 'bg-[#f0fdfa] text-[#0d9488]',
   },
   {
     icon: Shield,
-    title: 'Sécurisé',
-    desc: 'Authentification JWT + RBAC. Données protégées par rôle avec audit complet.',
+    title: 'UniFlow Sentinelle',
+    desc: 'Module IoT pour le suivi santé et vigie campus. IA embarquée sans cloud.',
     color: 'bg-amber-50 text-amber-700',
   },
   {
     icon: MessageSquare,
-    title: 'Messagerie & Visio',
-    desc: 'Chat en temps réel et visioconférence intégrée avec mode LAN sans Internet.',
-    color: 'bg-purple-50 text-purple-700',
+    title: 'Communication & Visioconférence',
+    desc: 'Forums par cours, visioconférence sur réseau local pour cours magistraux.',
+    color: 'bg-indigo-50 text-indigo-700',
   },
   {
     icon: BarChart3,
-    title: 'Analytics',
-    desc: 'Tableaux de bord, statistiques de présence et suivi de progression en temps réel.',
+    title: 'Statistiques & Export',
+    desc: 'Taux de présence, moyennes, génération automatique de bulletins PDF.',
     color: 'bg-rose-50 text-rose-700',
   },
 ]
 
 const platforms = [
-  { emoji: '📱', label: 'Mobile', sub: 'iOS & Android' },
-  { emoji: '🌐', label: 'Web',    sub: 'PWA Progressive' },
-  { emoji: '🖥️', label: 'Desktop', sub: 'Win, Mac, Linux' },
+  { icon: Smartphone, label: 'Mobile', sub: 'iOS & Android' },
+  { icon: Globe, label: 'Web',    sub: 'PWA Progressive' },
+  { icon: Monitor, label: 'Desktop', sub: 'Win, Mac, Linux' },
 ]
 
 const testimonials = [
@@ -155,7 +156,7 @@ export default function LandingPage() {
                     className="h-28 w-28 object-contain drop-shadow-xl"
                   />
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-[#1e3a8a] px-3 py-1 text-[10px] font-bold text-white whitespace-nowrap shadow-lg">
-                    Bonjour ! 👋
+                    Bonjour !
                   </div>
                 </div>
               </div>
@@ -179,7 +180,7 @@ export default function LandingPage() {
                 <div className="bg-gradient-to-br from-[#f3f4f6] to-white p-5">
                   {/* Mini topbar */}
                   <div className="flex items-center justify-between mb-4 rounded-lg bg-white border border-[#e5e7eb] px-3 py-2">
-                    <span className="text-xs font-bold text-[#111827]">Bonjour, Emma 👋</span>
+                    <span className="text-xs font-bold text-[#111827]">Bonjour, Emma</span>
                     <span className="text-[10px] text-[#6b7280]">Lundi 13 mai 2024</span>
                   </div>
                   {/* KPI cards */}
@@ -188,11 +189,11 @@ export default function LandingPage() {
                       { label: 'Cours inscrits', val: '12', color: 'bg-[#eff3ff] text-[#1e3a8a]' },
                       { label: 'Moyenne', val: '14.6/20', color: 'bg-[#f0fdfa] text-[#0d9488]' },
                       { label: 'Présences', val: '87%', color: 'bg-emerald-50 text-emerald-700' },
-                      { label: 'Devoirs', val: '5 à rendre', color: 'bg-amber-50 text-amber-700' },
-                    ].map(s => (
-                      <div key={s.label} className={`rounded-lg p-3 ${s.color}`}>
-                        <p className="text-base font-extrabold">{s.val}</p>
-                        <p className="text-[10px] font-medium opacity-80 mt-0.5">{s.label}</p>
+                      { label: 'Devoirs', val: '2 à rendre', color: 'bg-amber-50 text-amber-700' },
+                    ].map(k => (
+                      <div key={k.label} className={`rounded-lg p-2.5 ${k.color}`}>
+                        <p className="text-xs font-bold">{k.val}</p>
+                        <p className="text-[10px] opacity-80 mt-0.5">{k.label}</p>
                       </div>
                     ))}
                   </div>
@@ -225,15 +226,20 @@ export default function LandingPage() {
             Disponible sur toutes les plateformes
           </p>
           <div className="flex flex-wrap items-center justify-center gap-6">
-            {platforms.map(p => (
-              <div key={p.label} className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white px-5 py-3 shadow-sm">
-                <span className="text-2xl">{p.emoji}</span>
-                <div>
-                  <p className="text-sm font-bold text-[#111827]">{p.label}</p>
-                  <p className="text-xs text-[#6b7280]">{p.sub}</p>
+            {platforms.map(p => {
+              const Icon = p.icon
+              return (
+                <div key={p.label} className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white px-5 py-3 shadow-sm">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eff3ff] text-[#1e3a8a]">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-[#111827]">{p.label}</p>
+                    <p className="text-xs text-[#6b7280]">{p.sub}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -267,10 +273,10 @@ export default function LandingPage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map(({ icon: Icon, title, desc, color }) => (
               <div key={title} className="group rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
-                <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl ${color}`}>
+                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${color}`}>
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="font-bold text-[#111827] mb-2">{title}</h3>
+                <h3 className="text-lg font-bold text-[#111827] mb-2">{title}</h3>
                 <p className="text-sm text-[#6b7280] leading-relaxed">{desc}</p>
               </div>
             ))}
@@ -278,32 +284,39 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Sentinelle teaser ── */}
-      <section className="py-20 bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0d9488]">
-        <div className="mx-auto w-full max-w-[1920px] px-6">
+      {/* ── Sentinelle Teaser ── */}
+      <section className="bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0d9488] py-20 text-white overflow-hidden relative">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div className="text-white">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white mb-5 border border-white/20">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0d9488] animate-pulse-dot" /> Extension IoT & IA
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white mb-6 border border-white/20">
+                <Shield className="h-3.5 w-3.5 text-amber-400" /> Nouveauté · UniFlow Sentinelle
               </span>
-              <h2 className="text-3xl font-extrabold mb-4">UniFlow Sentinelle</h2>
+              <h2 className="text-3xl font-extrabold mb-4 leading-tight">
+                L'IA physique & IoT au service de la santé et sécurité de votre campus
+              </h2>
               <p className="text-blue-100 leading-relaxed mb-6">
                 L'extension physique du campus. Matériel bas coût (Raspberry Pi) connecté à la plateforme pour une couverture totale — de la santé à la sécurité des espaces.
               </p>
               <div className="space-y-3 mb-8">
                 {[
-                  { icon: '🏥', label: 'Module Santé', desc: 'Kiosque de pré-diagnostic avec IA de triage médical' },
-                  { icon: '👁️', label: 'Module Vigie', desc: 'Détection d\'anomalies par edge AI, fonctionne offline' },
-                  { icon: '⚡', label: 'Synergie inter-modules', desc: 'Déclenchement croisé automatique en cas d\'urgence' },
-                ].map(item => (
-                  <div key={item.label} className="flex items-start gap-3 rounded-xl bg-white/10 p-3 border border-white/10">
-                    <span className="text-2xl shrink-0">{item.icon}</span>
-                    <div>
-                      <p className="font-semibold text-white text-sm">{item.label}</p>
-                      <p className="text-xs text-blue-200 mt-0.5">{item.desc}</p>
+                  { icon: Activity, label: 'Module Santé', desc: 'Kiosque de pré-diagnostic avec IA de triage médical' },
+                  { icon: Eye, label: 'Module Vigie', desc: 'Détection d\'anomalies par edge AI, fonctionne offline' },
+                  { icon: Zap, label: 'Synergie inter-modules', desc: 'Déclenchement croisé automatique en cas d\'urgence' },
+                ].map(item => {
+                  const Icon = item.icon
+                  return (
+                    <div key={item.label} className="flex items-start gap-3 rounded-xl bg-white/10 p-3 border border-white/10">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-white shrink-0">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-white text-sm">{item.label}</p>
+                        <p className="text-xs text-blue-200 mt-0.5">{item.desc}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
               <Link
                 to="/sentinelle"
@@ -321,14 +334,14 @@ export default function LandingPage() {
                   <img src="/logos/mascotte.png" alt="Sentinelle" className="h-48 w-48 object-contain drop-shadow-2xl animate-float" />
                 </div>
                 {/* Floating module badges */}
-                <div className="absolute -top-4 -right-4 rounded-2xl bg-emerald-500 px-4 py-2.5 text-white text-xs font-bold shadow-xl">
-                  🏥 Santé
+                <div className="absolute -top-4 -right-4 flex items-center gap-1.5 rounded-2xl bg-emerald-500 px-4 py-2.5 text-white text-xs font-bold shadow-xl">
+                  <Activity className="h-4 w-4" /> Santé
                 </div>
-                <div className="absolute -bottom-4 -left-4 rounded-2xl bg-purple-500 px-4 py-2.5 text-white text-xs font-bold shadow-xl">
-                  👁️ Vigie
+                <div className="absolute -bottom-4 -left-4 flex items-center gap-1.5 rounded-2xl bg-purple-500 px-4 py-2.5 text-white text-xs font-bold shadow-xl">
+                  <Eye className="h-4 w-4" /> Vigie
                 </div>
-                <div className="absolute top-1/2 -right-16 -translate-y-1/2 rounded-2xl bg-[#0d9488] px-4 py-2.5 text-white text-xs font-bold shadow-xl">
-                  ⚡ Synergie
+                <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex items-center gap-1.5 rounded-2xl bg-[#0d9488] px-4 py-2.5 text-white text-xs font-bold shadow-xl">
+                  <Zap className="h-4 w-4" /> Synergie
                 </div>
               </div>
             </div>
@@ -340,24 +353,24 @@ export default function LandingPage() {
       <section className="bg-[#f3f4f6] py-20">
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-extrabold text-[#111827]">Ils font confiance à UniFlow</h2>
-            <p className="mt-3 text-[#6b7280]">Des étudiants et enseignants qui ont transformé leur expérience académique.</p>
+            <h2 className="text-3xl font-extrabold text-[#111827]">Ce qu'en disent nos utilisateurs</h2>
+            <p className="mt-3 text-[#6b7280]">Créé par des étudiants et enseignants de l'Université de Yaoundé I</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-3">
             {testimonials.map(t => (
-              <div key={t.name} className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e3a8a] text-white font-bold text-sm">
+              <div key={t.name} className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm flex flex-col justify-between">
+                <p className="text-sm text-[#374151] leading-relaxed italic mb-6">"{t.text}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e3a8a] text-sm font-bold text-white">
                     {t.avatar}
                   </div>
                   <div>
-                    <p className="font-semibold text-[#111827] text-sm">{t.name}</p>
+                    <p className="text-sm font-bold text-[#111827]">{t.name}</p>
                     <p className="text-xs text-[#6b7280]">{t.role}</p>
                   </div>
                 </div>
-                <p className="text-sm text-[#374151] leading-relaxed italic">"{t.text}"</p>
-                <div className="mt-3 flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
+                <div className="flex gap-0.5 mt-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i} className="text-amber-400 text-sm">★</span>
                   ))}
                 </div>
@@ -412,35 +425,40 @@ export default function LandingPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                emoji: '🎓', role: 'Étudiant', color: 'border-[#1e3a8a] bg-[#eff3ff] text-[#1e3a8a]',
+                icon: GraduationCap, role: 'Étudiant', color: 'border-[#1e3a8a] bg-[#eff3ff] text-[#1e3a8a]',
                 features: ['Cours & documents', 'Emploi du temps', 'Notes & devoirs', 'Présences QR Code'],
               },
               {
-                emoji: '📢', role: 'Délégué', color: 'border-purple-300 bg-purple-50 text-purple-700',
+                icon: Megaphone, role: 'Délégué', color: 'border-purple-300 bg-purple-50 text-purple-700',
                 features: ['Gestion présences', 'QR Code appel', 'Rapports classe', 'Communication'],
               },
               {
-                emoji: '👨‍🏫', role: 'Enseignant', color: 'border-[#0d9488] bg-[#f0fdfa] text-[#0d9488]',
+                icon: UserCheck, role: 'Enseignant', color: 'border-[#0d9488] bg-[#f0fdfa] text-[#0d9488]',
                 features: ['Espace pédagogique', 'Saisie des notes', 'Visioconférence', 'Suivi cohorte'],
               },
               {
-                emoji: '⚙️', role: 'Administrateur', color: 'border-amber-300 bg-amber-50 text-amber-700',
+                icon: Settings, role: 'Administrateur', color: 'border-amber-300 bg-amber-50 text-amber-700',
                 features: ['Gestion utilisateurs', 'Structure académique', 'Statistiques', 'Configuration'],
               },
-            ].map(r => (
-              <div key={r.role} className={`rounded-2xl border-2 p-5 ${r.color}`}>
-                <div className="text-3xl mb-3">{r.emoji}</div>
-                <h3 className="font-bold text-[#111827] mb-3">{r.role}</h3>
-                <ul className="space-y-1.5">
-                  {r.features.map(f => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
-                      <CheckCircle className="h-3.5 w-3.5 text-[#0d9488] shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            ].map(r => {
+              const Icon = r.icon
+              return (
+                <div key={r.role} className={`rounded-2xl border-2 p-5 ${r.color}`}>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 shadow-sm mb-3">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-bold text-[#111827] mb-3">{r.role}</h3>
+                  <ul className="space-y-1.5">
+                    {r.features.map(f => (
+                      <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
+                        <CheckCircle className="h-3.5 w-3.5 text-[#0d9488] shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

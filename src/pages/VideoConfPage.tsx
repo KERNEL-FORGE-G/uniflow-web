@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import {
   Mic, MicOff, Video, VideoOff, MonitorUp, Users, MessageSquare,
   MoreHorizontal, PhoneOff, Radio, Hand, Download, AlertCircle,
-  Sparkles, Wifi, WifiOff, Shield, VolumeX, HardDrive, Send
+  Sparkles, Wifi, WifiOff, Shield, VolumeX, HardDrive, Send,
+  Lightbulb, CheckCircle
 } from 'lucide-react'
 import { useUserRole } from '../utils/userRole'
 import { Avatar } from '../components/ui/Avatar'
@@ -118,13 +119,13 @@ export default function VideoConfPage() {
           {!dataSaver && !isOfflineMode && (
             <div className="rounded-xl bg-amber-950/40 border border-amber-900/50 p-3 flex gap-3 text-xs text-amber-200">
               <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
-              <p>💡 Astuce Cameroun : connectez-vous au Wi-Fi local du campus pour un flux vidéo gratuit sans forfait data. En 3G/4G, activez le Mode Éco.</p>
+              <p className="flex items-start gap-1.5"><Lightbulb className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /> Astuce Cameroun : connectez-vous au Wi-Fi local du campus pour un flux vidéo gratuit sans forfait data. En 3G/4G, activez le Mode Éco.</p>
             </div>
           )}
           {dataSaver && (
             <div className="rounded-xl bg-emerald-950/40 border border-emerald-900/50 p-3 flex gap-3 text-xs text-emerald-200">
               <Sparkles className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
-              <p>✅ Mode Éco actif (8 Ko/s) — vous économisez ~92% de données mobiles par rapport à un flux HD classique.</p>
+              <p className="flex items-start gap-1.5"><CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" /> Mode Éco actif (8 Ko/s) — vous économisez ~92% de données mobiles par rapport à un flux HD classique.</p>
             </div>
           )}
 
@@ -164,7 +165,7 @@ export default function VideoConfPage() {
               <div className="relative shrink-0 w-32 h-20 rounded-xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center text-center p-1.5">
                 <Avatar name={currentRole === 'teacher' ? 'Prof. Martin' : 'Emma Martin'} size="sm" />
                 <span className="text-[10px] font-medium mt-1 text-slate-300 truncate w-full text-center">Vous</span>
-                {handRaised && <span className="absolute top-1 right-1 text-yellow-400 text-xs">✋</span>}
+                {handRaised && <span className="absolute top-1 right-1"><Hand className="h-4 w-4 text-yellow-400" /></span>}
                 <span className="absolute bottom-1 right-1 text-[8px]">
                   {isMuted ? <MicOff className="h-3 w-3 text-rose-400" /> : <Mic className="h-3 w-3 text-emerald-400" />}
                 </span>

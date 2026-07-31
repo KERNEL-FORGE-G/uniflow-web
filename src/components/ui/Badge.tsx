@@ -15,17 +15,19 @@ const variants: Record<BadgeVariant, string> = {
 export function Badge({
   children,
   variant = 'neutral',
+  color,
   className,
 }: {
   children: React.ReactNode
   variant?: BadgeVariant
+  color?: BadgeVariant
   className?: string
 }) {
   return (
     <span
       className={cn(
         'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
-        variants[variant],
+        variants[color || variant],
         className,
       )}
     >

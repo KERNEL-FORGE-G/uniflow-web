@@ -1,4 +1,4 @@
-import { Users, GraduationCap, BookOpen, TrendingUp, UserCheck, AlertCircle, CheckCircle, Clock } from 'lucide-react'
+import { Users, GraduationCap, BookOpen, TrendingUp, UserCheck, AlertCircle, CheckCircle, Clock, ShieldCheck, Building2, BarChart3 } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts'
 
 const attendanceData = [
@@ -39,8 +39,8 @@ export default function AdminDashboardPage() {
           <h1 className="text-2xl font-bold text-[#111827]">Tableau de bord Admin</h1>
           <p className="text-sm text-[#6b7280] mt-0.5">UniFlow — Vue d'ensemble · Lundi 13 mai 2026</p>
         </div>
-        <span className="rounded-full bg-amber-100 border border-amber-300 px-3 py-1.5 text-xs font-bold text-amber-700">
-          ⚙️ Super Admin
+        <span className="flex items-center gap-1 rounded-full bg-amber-100 border border-amber-300 px-3 py-1.5 text-xs font-bold text-amber-700">
+          <ShieldCheck className="h-3.5 w-3.5 text-amber-700" /> Super Admin
         </span>
       </div>
 
@@ -138,17 +138,22 @@ export default function AdminDashboardPage() {
         <h2 className="text-sm font-bold text-[#111827] mb-4">Actions rapides</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: 'Ajouter un étudiant',     icon: '🎓', to: '/admin/etudiants' },
-            { label: 'Créer un cours',           icon: '📚', to: '/admin/cours' },
-            { label: 'Gérer les salles',         icon: '🏫', to: '/admin/salles' },
-            { label: 'Export rapport mensuel',   icon: '📊', to: '/admin' },
-          ].map(a => (
-            <a key={a.label} href={a.to}
-              className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] hover:border-[#1e3a8a]/30 transition-all group">
-              <span className="text-2xl">{a.icon}</span>
-              <span className="text-sm font-medium text-[#374151] group-hover:text-[#1e3a8a]">{a.label}</span>
-            </a>
-          ))}
+            { label: 'Ajouter un étudiant',     icon: GraduationCap, to: '/admin/etudiants' },
+            { label: 'Créer un cours',           icon: BookOpen, to: '/admin/cours' },
+            { label: 'Gérer les salles',         icon: Building2, to: '/admin/salles' },
+            { label: 'Export rapport mensuel',   icon: BarChart3, to: '/admin' },
+          ].map(a => {
+            const Icon = a.icon
+            return (
+              <a key={a.label} href={a.to}
+                className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] hover:border-[#1e3a8a]/30 transition-all group">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eff3ff] text-[#1e3a8a]">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="text-sm font-medium text-[#374151] group-hover:text-[#1e3a8a]">{a.label}</span>
+              </a>
+            )
+          })}
         </div>
       </div>
     </div>

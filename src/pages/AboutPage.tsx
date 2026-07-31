@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle, Globe, Code2, Heart } from 'lucide-react'
+import { ArrowRight, CheckCircle, Globe, Code2, Heart, GraduationCap, UserCheck, Key, BookOpen, Shield } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
 const team = [
-  { name: 'NGHOMSI FEUKOUO RAVEL', role: 'Fondateur & Chef de projet', desc: 'GitHub: Archlord12345 · KERNEL FORGE', avatar: '👨‍💻', color: 'bg-[#eff3ff] text-[#1e3a8a]' },
-  { name: 'KERNEL FORGE', role: 'Équipe de développement', desc: 'Étudiants en Informatique — Université de Yaoundé I', avatar: '🦅', color: 'bg-[#f0fdfa] text-[#0d9488]' },
-  { name: 'Dr. Kamga',   role: 'Encadrant académique',   desc: 'Département Informatique — UY1',                    avatar: '👨‍🏫', color: 'bg-purple-50 text-purple-700' },
+  { name: 'NGHOMSI FEUKOUO RAVEL', role: 'Fondateur & Chef de projet', desc: 'GitHub: Archlord12345 · KERNEL FORGE', avatar: Code2, color: 'bg-[#eff3ff] text-[#1e3a8a]' },
+  { name: 'KERNEL FORGE', role: 'Équipe de développement', desc: 'Étudiants en Informatique — Université de Yaoundé I', avatar: Shield, color: 'bg-[#f0fdfa] text-[#0d9488]' },
+  { name: 'Dr. Kamga',   role: 'Encadrant académique',   desc: 'Département Informatique — UY1',                    avatar: UserCheck, color: 'bg-purple-50 text-purple-700' },
 ]
 
 const techStack = [
@@ -79,17 +79,22 @@ export default function AboutPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { val: '12 000+', label: 'Étudiants ciblés', icon: '🎓', color: 'bg-[#eff3ff]' },
-                { val: '480+',    label: 'Enseignants',       icon: '👨‍🏫', color: 'bg-[#f0fdfa]' },
-                { val: '4',       label: 'Rôles différents',  icon: '🔑', color: 'bg-purple-50' },
-                { val: 'MIT',     label: 'Licence Open Source', icon: '📖', color: 'bg-amber-50' },
-              ].map(s => (
-                <div key={s.label} className={`rounded-2xl ${s.color} border border-[#e5e7eb] p-6 text-center`}>
-                  <div className="text-4xl mb-2">{s.icon}</div>
-                  <p className="text-3xl font-extrabold text-[#111827]">{s.val}</p>
-                  <p className="text-sm text-[#6b7280] mt-1">{s.label}</p>
-                </div>
-              ))}
+                { val: '12 000+', label: 'Étudiants ciblés', icon: GraduationCap, color: 'bg-[#eff3ff]' },
+                { val: '480+',    label: 'Enseignants',       icon: UserCheck, color: 'bg-[#f0fdfa]' },
+                { val: '4',       label: 'Rôles différents',  icon: Key, color: 'bg-purple-50' },
+                { val: 'MIT',     label: 'Licence Open Source', icon: BookOpen, color: 'bg-amber-50' },
+              ].map(s => {
+                const Icon = s.icon
+                return (
+                  <div key={s.label} className={`rounded-2xl ${s.color} border border-[#e5e7eb] p-6 text-center`}>
+                    <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 shadow-sm">
+                      <Icon className="h-6 w-6 text-[#111827]" />
+                    </div>
+                    <p className="text-3xl font-extrabold text-[#111827]">{s.val}</p>
+                    <p className="text-sm text-[#6b7280] mt-1">{s.label}</p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -103,16 +108,19 @@ export default function AboutPage() {
             <p className="mt-2 text-[#6b7280]">Étudiants et enseignants de l'Université de Yaoundé I</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-3">
-            {team.map(t => (
-              <div key={t.name} className="rounded-2xl border border-[#e5e7eb] bg-white p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-                <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold ${t.color}`}>
-                  {t.avatar}
+            {team.map(t => {
+              const AvatarIcon = t.avatar
+              return (
+                <div key={t.name} className="rounded-2xl border border-[#e5e7eb] bg-white p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                  <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold ${t.color}`}>
+                    <AvatarIcon className="h-8 w-8" />
+                  </div>
+                  <h3 className="font-bold text-[#111827]">{t.name}</h3>
+                  <p className="text-sm text-[#1e3a8a] font-medium mt-0.5">{t.role}</p>
+                  <p className="text-xs text-[#9ca3af] mt-1">{t.desc}</p>
                 </div>
-                <h3 className="font-bold text-[#111827]">{t.name}</h3>
-                <p className="text-sm text-[#1e3a8a] font-medium mt-0.5">{t.role}</p>
-                <p className="text-xs text-[#9ca3af] mt-1">{t.desc}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

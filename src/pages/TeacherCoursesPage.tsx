@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Users, Download, UploadCloud, Trash2, Edit3, Save, Video, Check, Code2, Database, Network, Brain, GraduationCap } from 'lucide-react'
+import { Plus, Users, Download, UploadCloud, Trash2, Save, Video, Check, Code2, Database, Network, Brain, GraduationCap, UserCheck, Calendar, Upload, CheckCircle, AlertTriangle, BookOpen } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
@@ -79,7 +79,9 @@ export default function TeacherCoursesPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-5 shadow-sm">
         <div>
-          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700 mb-2">👨‍🏫 ESPACE ENSEIGNANT</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700 mb-2">
+            <UserCheck className="h-3.5 w-3.5" /> ESPACE ENSEIGNANT
+          </span>
           <h1 className="text-xl font-bold text-[#111827]">Espace Pédagogique & Évaluations</h1>
           <p className="text-sm text-[#6b7280] mt-0.5">Gérez vos syllabus, ressources et notes · CC 30% + Examen 70%</p>
         </div>
@@ -196,7 +198,7 @@ export default function TeacherCoursesPage() {
               {/* Resources list */}
               <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm font-bold text-[#111827]">📚 Supports & Ressources</h2>
+                  <h2 className="text-sm font-bold text-[#111827] flex items-center gap-1.5"><BookOpen className="h-4 w-4 text-indigo-600" /> Supports & Ressources</h2>
                   <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">{resources.length} fichiers</span>
                 </div>
                 <div className="divide-y divide-[#f9fafb]">
@@ -269,9 +271,9 @@ export default function TeacherCoursesPage() {
                     <Badge variant={d.status === 'Terminé' ? 'success' : 'warning'}>{d.status}</Badge>
                   </div>
                   <div className="mt-2 flex gap-4 text-xs text-[#6b7280]">
-                    <span>📅 {d.due}</span>
-                    <span>📤 {d.submitted} soumissions</span>
-                    <span>✅ {d.corrected} corrigés</span>
+                    <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5 text-[#9ca3af]" /> {d.due}</span>
+                    <span className="flex items-center gap-1"><Upload className="h-3.5 w-3.5 text-[#9ca3af]" /> {d.submitted} soumissions</span>
+                    <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-600" /> {d.corrected} corrigés</span>
                   </div>
                 </div>
               ))}
@@ -280,58 +282,57 @@ export default function TeacherCoursesPage() {
 
           {activeTab === 'notes' && (
             <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-hidden">
-              <div className="px-5 py-3.5 border-b border-[#f3f4f6] bg-[#f9fafb] flex justify-between items-center">
+              <div className="px-5 py-4 border-b border-[#f3f4f6] bg-[#f9fafb] flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-sm font-bold text-[#111827]">Grille d'évaluation — {course.code}</h3>
-                  <p className="text-xs text-[#9ca3af] mt-0.5">CC (×0.3) + Examen (×0.7)</p>
+                  <h3 className="text-sm font-bold text-[#111827]">Saisie des notes — {course.code}</h3>
+                  <p className="text-xs text-[#9ca3af]">Coefficient : CC 30% / Examen 70% · Note /20</p>
                 </div>
-                <button className="flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb]">
-                  <Download className="h-3.5 w-3.5" /> Exporter
-                </button>
+                <div className="flex items-center gap-2">
+                  <Badge variant="primary">Pondération 30/70</Badge>
+                  <button onClick={handleSaveGrades}
+                    className="flex items-center gap-1.5 rounded-lg bg-[#1e3a8a] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
+                    <Save className="h-3.5 w-3.5" /> Enregistrer les notes
+                  </button>
+                </div>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="border-b border-[#f3f4f6] bg-[#f9fafb]">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#f9fafb] text-[#6b7280] uppercase tracking-wider font-semibold border-b border-[#e5e7eb]">
                     <tr>
-                      {['Étudiant','CC /20','Examen /20','Moyenne','Statut','Figer'].map(h => (
-                        <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">{h}</th>
-                      ))}
+                      <th className="px-5 py-3">Matricule</th>
+                      <th className="px-5 py-3">Étudiant</th>
+                      <th className="px-5 py-3 text-center">CC (30%)</th>
+                      <th className="px-5 py-3 text-center">Examen (70%)</th>
+                      <th className="px-5 py-3 text-center">Note finale</th>
+                      <th className="px-5 py-3 text-center">Statut</th>
+                      <th className="px-5 py-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#f9fafb]">
+                  <tbody className="divide-y divide-[#f3f4f6]">
                     {students.map(s => {
                       const final = parseFloat((s.cc * CC_W + s.exam * EXAM_W).toFixed(2))
+                      const isValidated = final >= 10
                       return (
                         <tr key={s.id} className="hover:bg-[#f9fafb]">
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <Avatar name={s.name} size="sm" />
-                              <div>
-                                <p className="font-semibold text-[#111827]">{s.name}</p>
-                                <p className="text-xs font-mono text-[#9ca3af]">{s.id}</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <input type="number" min={0} max={20} step={0.25} value={s.cc} disabled={s.locked}
+                          <td className="px-5 py-3 font-mono font-medium text-[#374151]">{s.id}</td>
+                          <td className="px-5 py-3 font-semibold text-[#111827]">{s.name}</td>
+                          <td className="px-5 py-3 text-center">
+                            <input type="number" min="0" max="20" step="0.5" value={s.cc}
                               onChange={e => updateGrade(s.id, 'cc', parseFloat(e.target.value) || 0)}
-                              className={`w-16 text-center font-mono font-bold text-sm rounded-lg border py-1 px-2 outline-none ${s.locked ? 'bg-[#f9fafb] text-[#6b7280] border-[#e5e7eb]' : 'border-[#e5e7eb] focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'}`} />
+                              className="w-16 rounded border border-[#e5e7eb] px-2 py-1 text-center font-semibold text-[#111827] outline-none focus:border-[#1e3a8a]" />
                           </td>
-                          <td className="px-4 py-3">
-                            <input type="number" min={0} max={20} step={0.25} value={s.exam} disabled={s.locked}
+                          <td className="px-5 py-3 text-center">
+                            <input type="number" min="0" max="20" step="0.5" value={s.exam}
                               onChange={e => updateGrade(s.id, 'exam', parseFloat(e.target.value) || 0)}
-                              className={`w-16 text-center font-mono font-bold text-sm rounded-lg border py-1 px-2 outline-none ${s.locked ? 'bg-[#f9fafb] text-[#6b7280] border-[#e5e7eb]' : 'border-[#e5e7eb] focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'}`} />
+                              className="w-16 rounded border border-[#e5e7eb] px-2 py-1 text-center font-semibold text-[#111827] outline-none focus:border-[#1e3a8a]" />
                           </td>
-                          <td className="px-4 py-3 font-mono font-extrabold text-sm">
-                            <span className={final >= 10 ? 'text-[#059669]' : 'text-[#dc2626]'}>{final}/20</span>
+                          <td className="px-5 py-3 text-center font-bold text-sm text-[#111827]">{final} / 20</td>
+                          <td className="px-5 py-3 text-center">
+                            <Badge variant={isValidated ? 'success' : 'danger'}>{isValidated ? 'Validé' : 'Échoué'}</Badge>
                           </td>
-                          <td className="px-4 py-3">
-                            <Badge variant={final >= 10 ? 'success' : 'danger'}>{final >= 10 ? 'Validé' : 'Échoué'}</Badge>
-                          </td>
-                          <td className="px-4 py-3">
-                            <button onClick={() => toggleLock(s.id)}
-                              className={`flex items-center justify-center h-7 w-7 rounded-lg transition-colors ${s.locked ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'bg-[#f3f4f6] text-[#9ca3af] hover:bg-[#e5e7eb]'}`}>
-                              {s.locked ? <Check className="h-4 w-4 stroke-[3]" /> : <Edit3 className="h-4 w-4" />}
+                          <td className="px-5 py-3 text-right">
+                            <button onClick={() => toggleLock(s.id)} className="rounded p-1 hover:bg-[#f3f4f6] text-[#9ca3af] hover:text-[#1e3a8a]" title="Mettre à jour">
+                              <Save className="h-4 w-4" />
                             </button>
                           </td>
                         </tr>
@@ -341,7 +342,7 @@ export default function TeacherCoursesPage() {
                 </table>
               </div>
               <div className="px-5 py-4 border-t border-[#f3f4f6] bg-[#f9fafb] flex items-center justify-between gap-4">
-                <p className="text-xs text-[#9ca3af]">⚠️ Les notes figées sont immédiatement visibles par les étudiants.</p>
+                <p className="text-xs text-[#9ca3af] flex items-center gap-1.5"><AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Les notes figées sont immédiatement visibles par les étudiants.</p>
                 <button onClick={handleSaveGrades}
                   className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors">
                   <Save className="h-4 w-4" /> Enregistrer la grille

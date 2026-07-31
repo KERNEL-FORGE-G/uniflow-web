@@ -1,4 +1,4 @@
-import { Mail, Code2, Smartphone, Server, Database, Sparkles, Crown } from 'lucide-react'
+import { Mail, Code2, Smartphone, Server, Database, Sparkles, Crown, Rocket, Laptop, Users } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
 interface TeamMember {
@@ -24,7 +24,7 @@ const teamMembers: TeamMember[] = [
     role: 'Chef de projet & Architecte',
     icon: Crown,
     gradient: 'from-[#1e3a8a] via-[#7c3aed] to-[#0d9488]',
-    badge: '🚀 Lead',
+    badge: 'Lead',
     borderColor: 'border-[#1e3a8a]',
   },
   {
@@ -36,7 +36,7 @@ const teamMembers: TeamMember[] = [
     role: 'Frontend Developer',
     icon: Code2,
     gradient: 'from-[#7c3aed] to-[#db2777]',
-    badge: '💻 Web',
+    badge: 'Web',
     borderColor: 'border-purple-500',
   },
   {
@@ -48,7 +48,7 @@ const teamMembers: TeamMember[] = [
     role: 'Mobile Developer',
     icon: Smartphone,
     gradient: 'from-[#0d9488] to-[#059669]',
-    badge: '📱 Mobile',
+    badge: 'Mobile',
     borderColor: 'border-[#0d9488]',
   },
   {
@@ -60,7 +60,7 @@ const teamMembers: TeamMember[] = [
     role: 'Backend Developer',
     icon: Server,
     gradient: 'from-[#f59e0b] to-[#d97706]',
-    badge: '⚙️ Backend',
+    badge: 'Backend',
     borderColor: 'border-amber-500',
   },
   {
@@ -72,7 +72,7 @@ const teamMembers: TeamMember[] = [
     role: 'Mobile Developer',
     icon: Smartphone,
     gradient: 'from-[#0d9488] to-[#059669]',
-    badge: '📱 Mobile',
+    badge: 'Mobile',
     borderColor: 'border-[#0d9488]',
   },
   {
@@ -84,7 +84,7 @@ const teamMembers: TeamMember[] = [
     role: 'Backend Developer',
     icon: Server,
     gradient: 'from-[#ef4444] to-[#dc2626]',
-    badge: '🔥 NestJS',
+    badge: 'NestJS',
     borderColor: 'border-red-500',
   },
   {
@@ -96,7 +96,7 @@ const teamMembers: TeamMember[] = [
     role: 'Backend Developer',
     icon: Database,
     gradient: 'from-[#f59e0b] to-[#d97706]',
-    badge: '🗄️ Database',
+    badge: 'Database',
     borderColor: 'border-amber-500',
   },
   {
@@ -108,7 +108,7 @@ const teamMembers: TeamMember[] = [
     role: 'Full Frontend Developer',
     icon: Code2,
     gradient: 'from-[#06b6d4] to-[#0891b2]',
-    badge: '🎨 Full Frontend',
+    badge: 'Full Frontend',
     borderColor: 'border-cyan-500',
   },
   {
@@ -120,7 +120,7 @@ const teamMembers: TeamMember[] = [
     role: 'Frontend Developer',
     icon: Code2,
     gradient: 'from-[#8b5cf6] to-[#6366f1]',
-    badge: '💻📱 Full Stack Frontend',
+    badge: 'Full Stack Frontend',
     borderColor: 'border-indigo-500',
   },
 ]
@@ -155,17 +155,22 @@ export default function TeamsPage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {[
-              { label: 'Membres', value: teamMembers.length.toString(), icon: '👥' },
-              { label: 'Frontend', value: '5', icon: '💻' },
-              { label: 'Backend', value: '3', icon: '⚙️' },
-              { label: 'Leadership', value: '1', icon: '🚀' },
-            ].map((s, i) => (
-              <div key={s.label} className="text-center animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="text-4xl mb-2">{s.icon}</div>
-                <p className="text-4xl font-extrabold text-[#1e3a8a]">{s.value}</p>
-                <p className="text-sm text-[#6b7280] mt-2 font-medium">{s.label}</p>
-              </div>
-            ))}
+              { label: 'Membres', value: teamMembers.length.toString(), icon: Users },
+              { label: 'Frontend', value: '5', icon: Laptop },
+              { label: 'Backend', value: '3', icon: Server },
+              { label: 'Leadership', value: '1', icon: Rocket },
+            ].map((s, i) => {
+              const Icon = s.icon
+              return (
+                <div key={s.label} className="text-center animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
+                  <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eff3ff] text-[#1e3a8a]">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <p className="text-4xl font-extrabold text-[#1e3a8a]">{s.value}</p>
+                  <p className="text-sm text-[#6b7280] mt-2 font-medium">{s.label}</p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

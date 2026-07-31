@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { QrCode, Download, UserCheck, RefreshCw, AlertTriangle, Wifi, FileSpreadsheet, Check, Clock, X, HelpCircle, Megaphone } from 'lucide-react'
+import { QrCode, Download, UserCheck, RefreshCw, AlertTriangle, Wifi, FileSpreadsheet, Check, Clock, X, HelpCircle, Megaphone, User, CheckCircle2 } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
@@ -52,7 +52,7 @@ export default function AttendanceManagePage() {
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-5 shadow-sm">
         <div>
           <span className="inline-flex items-center gap-1 rounded-full bg-[#f0fdfa] border border-[#ccfbf1] px-2.5 py-1 text-xs font-semibold text-[#0d9488] mb-2">
-            📢 ESPACE DÉLÉGUÉ
+            <Megaphone className="h-3.5 w-3.5" /> ESPACE DÉLÉGUÉ
           </span>
           <h1 className="text-xl font-bold text-[#111827]">Gestion des présences — Cohorte L2 Info</h1>
           <p className="text-sm text-[#6b7280] mt-0.5">Lucas Dubois · Délégué · Lundi 13 mai 2024</p>
@@ -93,8 +93,8 @@ export default function AttendanceManagePage() {
       {/* Saved toast */}
       {saved && (
         <div className="rounded-xl bg-slate-900 text-white px-4 py-3 text-sm font-medium flex items-center gap-2 animate-fade-in">
-          <Check className="h-4 w-4 text-[#0d9488]" />
-          {isOfflineMode ? '⚠️ Rapport enregistré localement (Outbox SQLite).' : '🟢 Rapport synchronisé avec les serveurs UniFlow !'}
+          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+          {isOfflineMode ? 'Rapport enregistré localement (Outbox SQLite).' : 'Rapport synchronisé avec les serveurs UniFlow !'}
         </div>
       )}
 
@@ -123,8 +123,8 @@ export default function AttendanceManagePage() {
                   </div>
                   <p className="font-medium text-[#374151] mt-0.5 truncate">{c.name}</p>
                   <div className="flex justify-between text-xs text-[#9ca3af] mt-1">
-                    <span>👤 {c.teacher}</span>
-                    <span className="font-semibold text-[#1e3a8a]">🕒 {c.time}</span>
+                    <span className="flex items-center gap-1"><User className="h-3 w-3" /> {c.teacher}</span>
+                    <span className="flex items-center gap-1 font-semibold text-[#1e3a8a]"><Clock className="h-3 w-3" /> {c.time}</span>
                   </div>
                 </button>
               ))}
@@ -254,8 +254,8 @@ export default function AttendanceManagePage() {
             <div className="mx-auto flex h-52 w-52 items-center justify-center rounded-xl border border-[#e5e7eb] bg-[#f9fafb]">
               <QrCode className="h-44 w-44 text-[#1e3a8a]" />
             </div>
-            <p className="mt-4 rounded-lg bg-[#fef3c7] border border-[#fde68a] px-3 py-2 text-xs font-semibold text-[#92400e] animate-pulse">
-              🕒 Expire dans 04:59 — Rotation automatique anti-fraude
+            <p className="mt-4 rounded-lg bg-[#fef3c7] border border-[#fde68a] px-3 py-2 text-xs font-semibold text-[#92400e] animate-pulse flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 shrink-0" /> Expire dans 04:59 — Rotation automatique anti-fraude
             </p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button onClick={() => setShowQR(false)} className="rounded-lg border border-[#e5e7eb] py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">Fermer</button>

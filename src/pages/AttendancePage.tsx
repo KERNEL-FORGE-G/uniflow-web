@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { QrCode, Download, CheckCircle, XCircle, Clock, Calendar, TrendingUp } from 'lucide-react'
+import { QrCode, Download, CheckCircle, XCircle, Clock, Calendar, TrendingUp, Smartphone } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from 'recharts'
 
@@ -273,8 +273,8 @@ export default function AttendancePage() {
             <div className="mx-auto flex h-52 w-52 items-center justify-center rounded-xl border-2 border-dashed border-[#1e3a8a] bg-[#eff3ff] animate-pulse">
               <QrCode className="h-44 w-44 text-[#1e3a8a]" />
             </div>
-            <p className="mt-4 rounded-lg bg-[#eff3ff] border border-[#1e3a8a]/20 px-3 py-2 text-xs text-[#1e3a8a]">
-              📱 Positionnez le QR code dans le cadre
+            <p className="mt-4 rounded-lg bg-[#eff3ff] border border-[#1e3a8a]/20 px-3 py-2 text-xs text-[#1e3a8a] flex items-center justify-center gap-1.5">
+              <Smartphone className="h-3.5 w-3.5 shrink-0" /> Positionnez le QR code dans le cadre
             </p>
             <div className="mt-4">
               <button onClick={() => setShowQR(false)}

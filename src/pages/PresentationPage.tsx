@@ -1,21 +1,21 @@
 import { Link } from 'react-router-dom'
-import { Play, ExternalLink, CheckCircle, ArrowRight } from 'lucide-react'
+import { Play, ExternalLink, CheckCircle, ArrowRight, GraduationCap, UserCheck, Megaphone, Settings, Microscope, Wifi, Smartphone, Lock, Lightbulb, BookOpen, ListChecks, Target } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
 const agenda = [
-  { emoji: '🎓', title: 'Interface étudiante', desc: 'Gestion des cours, devoirs, notes et emploi du temps' },
-  { emoji: '👨‍🏫', title: 'Espace enseignant', desc: 'Création de cours, gestion des présences, notation' },
-  { emoji: '📢', title: 'Rôle délégué', desc: 'Prise de présences, exports, communication classe' },
-  { emoji: '⚙️', title: 'Panneau admin', desc: 'Gestion des salles, statistiques, utilisateurs' },
-  { emoji: '🔬', title: 'UniFlow Sentinelle', desc: 'Extension IoT avec modules Santé et Vigie' },
+  { icon: GraduationCap, title: 'Interface étudiante', desc: 'Gestion des cours, devoirs, notes et emploi du temps' },
+  { icon: UserCheck, title: 'Espace enseignant', desc: 'Création de cours, gestion des présences, notation' },
+  { icon: Megaphone, title: 'Rôle délégué', desc: 'Prise de présences, exports, communication classe' },
+  { icon: Settings, title: 'Panneau admin', desc: 'Gestion des salles, statistiques, utilisateurs' },
+  { icon: Microscope, title: 'UniFlow Sentinelle', desc: 'Extension IoT avec modules Santé et Vigie' },
 ]
 
 const highlights = [
-  { icon: '📡', title: 'Offline First', desc: 'Fonctionne même sans connexion Internet' },
-  { icon: '📱', title: 'Multi-plateforme', desc: 'Web, Mobile iOS/Android, Desktop' },
-  { icon: '🔐', title: 'Sécurisé', desc: 'JWT + RBAC, multi-rôles' },
-  { icon: '💡', title: 'Bas coût', desc: 'Architecture légère adaptée au terrain africain' },
-  { icon: '📖', title: 'Open Source', desc: 'Licence MIT, GitHub public' },
+  { icon: Wifi, title: 'Offline First', desc: 'Fonctionne même sans connexion Internet' },
+  { icon: Smartphone, title: 'Multi-plateforme', desc: 'Web, Mobile iOS/Android, Desktop' },
+  { icon: Lock, title: 'Sécurisé', desc: 'JWT + RBAC, multi-rôles' },
+  { icon: Lightbulb, title: 'Bas coût', desc: 'Architecture légère adaptée au terrain africain' },
+  { icon: BookOpen, title: 'Open Source', desc: 'Licence MIT, GitHub public' },
 ]
 
 export default function PresentationPage() {
@@ -70,36 +70,48 @@ export default function PresentationPage() {
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
-              <h2 className="text-2xl font-extrabold text-[#111827] mb-6">📋 Au programme</h2>
+              <h2 className="text-2xl font-extrabold text-[#111827] mb-6 flex items-center gap-2">
+                <ListChecks className="h-6 w-6 text-[#1e3a8a]" /> Au programme
+              </h2>
               <div className="space-y-3">
-                {agenda.map((a, i) => (
-                  <div key={a.title} className="flex items-start gap-4 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] transition-colors">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#eff3ff] text-xl">
-                      {a.emoji}
+                {agenda.map((a, i) => {
+                  const Icon = a.icon
+                  return (
+                    <div key={a.title} className="flex items-start gap-4 rounded-xl border border-[#e5e7eb] p-4 hover:bg-[#f9fafb] transition-colors">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#eff3ff] text-[#1e3a8a]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">Partie {i + 1}</span>
+                        <p className="font-semibold text-[#111827] text-sm">{a.title}</p>
+                        <p className="text-xs text-[#6b7280] mt-0.5">{a.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">Partie {i + 1}</span>
-                      <p className="font-semibold text-[#111827] text-sm">{a.title}</p>
-                      <p className="text-xs text-[#6b7280] mt-0.5">{a.desc}</p>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 
             <div>
-              <h2 className="text-2xl font-extrabold text-[#111827] mb-6">🎯 Points clés</h2>
+              <h2 className="text-2xl font-extrabold text-[#111827] mb-6 flex items-center gap-2">
+                <Target className="h-6 w-6 text-[#1e3a8a]" /> Points clés
+              </h2>
               <div className="space-y-3">
-                {highlights.map(h => (
-                  <div key={h.title} className="flex items-start gap-4 rounded-xl border border-[#e5e7eb] p-4">
-                    <span className="text-2xl">{h.icon}</span>
-                    <div>
-                      <p className="font-semibold text-[#111827] text-sm">{h.title}</p>
-                      <p className="text-xs text-[#6b7280] mt-0.5">{h.desc}</p>
+                {highlights.map(h => {
+                  const Icon = h.icon
+                  return (
+                    <div key={h.title} className="flex items-start gap-4 rounded-xl border border-[#e5e7eb] p-4">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f0fdfa] text-[#0d9488]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827] text-sm">{h.title}</p>
+                        <p className="text-xs text-[#6b7280] mt-0.5">{h.desc}</p>
+                      </div>
+                      <CheckCircle className="h-4 w-4 text-[#0d9488] ml-auto shrink-0 mt-0.5" />
                     </div>
-                    <CheckCircle className="h-4 w-4 text-[#0d9488] ml-auto shrink-0 mt-0.5" />
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           </div>

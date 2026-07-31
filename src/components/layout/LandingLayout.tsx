@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ArrowRight, Menu, X } from 'lucide-react'
+import { ArrowRight, Menu, X, Lock } from 'lucide-react'
 import { useState } from 'react'
 
 const navLinks = [
@@ -112,7 +112,7 @@ export function LandingFooter() {
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Offline First
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300">
-                🔐 JWT + RBAC
+                <Lock className="h-3 w-3 text-slate-400" /> JWT + RBAC
               </span>
             </div>
           </div>

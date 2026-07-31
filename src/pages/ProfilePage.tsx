@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Edit, Users, Star, UserCheck, Camera } from 'lucide-react'
+import { Edit, Users, Star, UserCheck, Camera, Microscope, Laptop, Wifi } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
@@ -284,21 +284,26 @@ export default function ProfilePage() {
             <h2 className="text-sm font-bold text-[#111827] mb-4">Portfolio académique</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-                { title: 'Projet IA — Détection d\'anomalies', course: 'Intelligence Artificielle', note: '17/20', type: '🔬' },
-                { title: 'Application Web — UniFlow prototype', course: 'Programmation Web', note: '18/20', type: '💻' },
-                { title: 'Rapport — Réseaux LAN', course: 'Réseaux', note: '15/20', type: '📡' },
-              ].map(p => (
-                <div key={p.title} className="rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb]">
-                  <div className="flex items-start gap-2 mb-1">
-                    <span className="text-xl">{p.type}</span>
-                    <div>
-                      <p className="font-semibold text-[#111827] text-xs leading-tight">{p.title}</p>
-                      <p className="text-[10px] text-[#6b7280] mt-0.5">{p.course}</p>
+                { title: 'Projet IA — Détection d\'anomalies', course: 'Intelligence Artificielle', note: '17/20', icon: Microscope },
+                { title: 'Application Web — UniFlow prototype', course: 'Programmation Web', note: '18/20', icon: Laptop },
+                { title: 'Rapport — Réseaux LAN', course: 'Réseaux', note: '15/20', icon: Wifi },
+              ].map(p => {
+                const PIcon = p.icon
+                return (
+                  <div key={p.title} className="rounded-lg border border-[#e5e7eb] p-4 hover:bg-[#f9fafb]">
+                    <div className="flex items-start gap-2 mb-1">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#eff3ff] text-[#1e3a8a]">
+                        <PIcon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827] text-xs leading-tight">{p.title}</p>
+                        <p className="text-[10px] text-[#6b7280] mt-0.5">{p.course}</p>
+                      </div>
                     </div>
+                    <span className="inline-block rounded-md bg-[#eff3ff] px-2 py-0.5 text-xs font-bold text-[#1e3a8a]">{p.note}</span>
                   </div>
-                  <span className="inline-block rounded-md bg-[#eff3ff] px-2 py-0.5 text-xs font-bold text-[#1e3a8a]">{p.note}</span>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>

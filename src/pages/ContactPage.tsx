@@ -81,7 +81,7 @@ export default function ContactPage() {
               <div className="rounded-2xl bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] p-6 text-center">
                 <img src="/logos/mascotte.png" alt="Mascotte" className="mx-auto h-20 w-20 object-contain mb-3 animate-float" />
                 <p className="text-sm font-semibold text-white">Pas de réponse ?</p>
-                <p className="text-xs text-blue-200 mt-1">Notre chouette répond toujours ! 🦉</p>
+                <p className="text-xs text-blue-200 mt-1">Notre chouette répond toujours !</p>
               </div>
             </div>
 

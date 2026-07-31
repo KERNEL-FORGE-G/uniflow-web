@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, BookOpen, FileText, Video, Users, Clock, Calendar, Download, Play, Eye, CheckCircle } from 'lucide-react'
+import { ArrowLeft, BookOpen, FileText, Video, Users, Clock, Calendar, Download, Play, Eye, CheckCircle, Film } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { mockCourses } from '../data/mockData'
@@ -15,10 +15,10 @@ const mockDocuments = [
 ]
 
 const mockVideos = [
-  { id: 1, title: 'Introduction - Qu\'est-ce qu\'un algorithme ?', duration: '12:34', date: '15 janv. 2024', views: 234, thumbnail: '🎥' },
-  { id: 2, title: 'Chapitre 1 - Complexité algorithmique', duration: '25:18', date: '18 janv. 2024', views: 198, thumbnail: '🎥' },
-  { id: 3, title: 'TD 1 - Correction des exercices', duration: '45:22', date: '22 janv. 2024', views: 167, thumbnail: '🎥' },
-  { id: 4, title: 'Structures de données - Les tableaux', duration: '18:45', date: '25 janv. 2024', views: 189, thumbnail: '🎥' },
+  { id: 1, title: 'Introduction - Qu\'est-ce qu\'un algorithme ?', duration: '12:34', date: '15 janv. 2024', views: 234 },
+  { id: 2, title: 'Chapitre 1 - Complexité algorithmique', duration: '25:18', date: '18 janv. 2024', views: 198 },
+  { id: 3, title: 'TD 1 - Correction des exercices', duration: '45:22', date: '22 janv. 2024', views: 167 },
+  { id: 4, title: 'Structures de données - Les tableaux', duration: '18:45', date: '25 janv. 2024', views: 189 },
 ]
 
 const mockSyllabus = [
@@ -217,8 +217,8 @@ export default function CourseDetailPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {mockVideos.map(video => (
               <div key={video.id} className="rounded-xl border border-[#e5e7eb] overflow-hidden hover:shadow-md transition-shadow group cursor-pointer">
-                <div className="relative h-40 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-6xl">
-                  {video.thumbnail}
+                <div className="relative h-40 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                  <Film className="h-12 w-12 text-white/30" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Play className="h-12 w-12 text-white" />
                   </div>

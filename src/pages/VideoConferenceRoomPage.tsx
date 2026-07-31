@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Video, Mic, MicOff, VideoOff, PhoneOff, Users, MessageSquare, Share2, Settings } from 'lucide-react'
+import { Video, Mic, MicOff, VideoOff, PhoneOff, Users, MessageSquare, Share2, Settings, UserCheck, GraduationCap, Megaphone } from 'lucide-react'
 
 export default function VideoConferenceRoomPage() {
   const [micOn, setMicOn] = useState(true)
@@ -46,7 +46,7 @@ export default function VideoConferenceRoomPage() {
             {/* Main speaker (teacher) */}
             <div className="sm:col-span-2 lg:col-span-2 rounded-xl bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-8xl opacity-20">👨‍🏫</span>
+                <UserCheck className="h-20 w-20 text-white/20" />
               </div>
               <div className="absolute bottom-3 left-3 rounded-lg bg-black/60 px-3 py-1.5 backdrop-blur-sm">
                 <p className="text-sm font-bold text-white">Pr. Martin</p>
@@ -65,7 +65,7 @@ export default function VideoConferenceRoomPage() {
             {/* Participants */}
             {participants.slice(0, 3).map((p, i) => (
               <div key={i} className="rounded-xl bg-slate-800 flex items-center justify-center relative overflow-hidden min-h-[160px]">
-                <span className="text-5xl opacity-30">{p.role === 'Étudiant' ? '🎓' : '📢'}</span>
+                <span className="opacity-30">{p.role === 'Étudiant' ? <GraduationCap className="h-12 w-12 text-white" /> : <Megaphone className="h-12 w-12 text-white" />}</span>
                 <div className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-1 backdrop-blur-sm">
                   <p className="text-xs font-bold text-white">{p.name}</p>
                 </div>

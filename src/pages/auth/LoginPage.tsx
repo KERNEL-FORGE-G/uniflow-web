@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, GraduationCap, Wifi, ShieldCheck } from 'lucide-react'
 import { useUserRole } from '../../utils/userRole'
 
 const demoAccounts = [
@@ -67,18 +67,23 @@ export default function LoginPage() {
           </div>
           <div className="space-y-5 text-left">
             {[
-              { icon: '🎓', title: 'Gestion académique complète', desc: 'Cours, devoirs, notes et emploi du temps centralisés.' },
-              { icon: '📡', title: 'Offline First', desc: 'Fonctionne même sans connexion Internet.' },
-              { icon: '🔐', title: 'Sécurisé & Multi-rôles', desc: 'JWT + RBAC pour chaque type d\'utilisateur.' },
-            ].map(item => (
-              <div key={item.title} className="flex gap-4 rounded-xl bg-white/10 backdrop-blur-sm p-5 hover:bg-white/15 transition-colors">
-                <span className="text-3xl">{item.icon}</span>
-                <div>
-                  <p className="font-semibold text-white text-base">{item.title}</p>
-                  <p className="text-blue-100 text-sm mt-1">{item.desc}</p>
+              { icon: GraduationCap, title: 'Gestion académique complète', desc: 'Cours, devoirs, notes et emploi du temps centralisés.' },
+              { icon: Wifi, title: 'Offline First', desc: 'Fonctionne même sans connexion Internet.' },
+              { icon: ShieldCheck, title: 'Sécurisé & Multi-rôles', desc: 'JWT + RBAC pour chaque type d\'utilisateur.' },
+            ].map(item => {
+              const Icon = item.icon
+              return (
+                <div key={item.title} className="flex gap-4 rounded-xl bg-white/10 backdrop-blur-sm p-5 hover:bg-white/15 transition-colors">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white text-base">{item.title}</p>
+                    <p className="text-blue-100 text-sm mt-1">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>

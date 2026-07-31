@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { CheckCircle, ArrowRight, Zap } from 'lucide-react'
+import { CheckCircle, ArrowRight, Zap, Sparkles } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
 const plans = [
@@ -89,8 +89,8 @@ export default function PricingPage() {
         <div className="mx-auto max-w-[1920px] px-6">
           {/* Demo banner */}
           <div className="mb-8 rounded-2xl bg-[#eff3ff] border border-[#1e3a8a]/20 p-5 text-center">
-            <p className="text-sm font-semibold text-[#1e3a8a]">
-              🎉 Phase de démonstration — Tous les plans sont <strong>entièrement gratuits</strong> jusqu'à la version 1.2
+            <p className="text-sm font-semibold text-[#1e3a8a] flex items-center justify-center gap-1.5">
+              <Sparkles className="h-4 w-4 text-[#1e3a8a]" /> Phase de démonstration — Tous les plans sont <strong>entièrement gratuits</strong> jusqu'à la version 1.2
             </p>
           </div>
 

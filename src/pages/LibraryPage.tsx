@@ -11,10 +11,10 @@ const docs = [
 ]
 
 const videos = [
-  { id: '1', title: 'Introduction à l\'Algorithmique', course: 'INFO101', duration: '45:30', size: '120 MB', date: 'Mai 2026', thumbnail: '🎬' },
-  { id: '2', title: 'Bases de données relationnelles', course: 'INFO201', duration: '1:12:45', size: '280 MB', date: 'Mai 2026', thumbnail: '🎥' },
-  { id: '3', title: 'Réseaux TCP/IP - Partie 1', course: 'INFO301', duration: '38:20', size: '95 MB', date: 'Avr 2026', thumbnail: '📹' },
-  { id: '4', title: 'Machine Learning - Régression', course: 'INFO401', duration: '52:15', size: '145 MB', date: 'Mar 2026', thumbnail: '🎞️' },
+  { id: '1', title: 'Introduction à l\'Algorithmique', course: 'INFO101', duration: '45:30', size: '120 MB', date: 'Mai 2026' },
+  { id: '2', title: 'Bases de données relationnelles', course: 'INFO201', duration: '1:12:45', size: '280 MB', date: 'Mai 2026' },
+  { id: '3', title: 'Réseaux TCP/IP - Partie 1', course: 'INFO301', duration: '38:20', size: '95 MB', date: 'Avr 2026' },
+  { id: '4', title: 'Machine Learning - Régression', course: 'INFO401', duration: '52:15', size: '145 MB', date: 'Mar 2026' },
 ]
 
 const audios = [
@@ -109,8 +109,8 @@ export default function LibraryPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(filtered as typeof videos).map(video => (
             <div key={video.id} className="group rounded-xl border border-[#e5e7eb] bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-[#1e3a8a]/30 transition-all">
-              <div className="relative aspect-video bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] flex items-center justify-center text-6xl">
-                {video.thumbnail}
+              <div className="relative aspect-video bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] flex items-center justify-center">
+                <Film className="h-12 w-12 text-white/40" />
                 <div className="absolute bottom-2 right-2 rounded-md bg-black/70 px-2 py-0.5 text-xs font-bold text-white">
                   {video.duration}
                 </div>
