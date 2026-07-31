@@ -99,6 +99,30 @@ const teamMembers: TeamMember[] = [
     badge: '🗄️ Database',
     borderColor: 'border-amber-500',
   },
+  {
+    id: 'aristide',
+    name: 'EMTCHEU ARISTIDE BIENVENU',
+    github: 'paccotiktok37',
+    email: 'paccotiktok37@gmail.com',
+    team: 'Frontend Full',
+    role: 'Full Frontend Developer',
+    icon: Code2,
+    gradient: 'from-[#06b6d4] to-[#0891b2]',
+    badge: '🎨 Full Frontend',
+    borderColor: 'border-cyan-500',
+  },
+  {
+    id: 'juvenal',
+    name: 'SINENG KENGNI JUVENAL',
+    github: 'skjuv',
+    email: 'sinengjuvenal@gmail.com',
+    team: 'Frontend Desktop & Mobile',
+    role: 'Frontend Developer',
+    icon: Code2,
+    gradient: 'from-[#8b5cf6] to-[#6366f1]',
+    badge: '💻📱 Full Stack Frontend',
+    borderColor: 'border-indigo-500',
+  },
 ]
 
 export default function TeamsPage() {
@@ -132,7 +156,7 @@ export default function TeamsPage() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {[
               { label: 'Membres', value: teamMembers.length.toString(), icon: '👥' },
-              { label: 'Frontend', value: '3', icon: '💻' },
+              { label: 'Frontend', value: '5', icon: '💻' },
               { label: 'Backend', value: '3', icon: '⚙️' },
               { label: 'Leadership', value: '1', icon: '🚀' },
             ].map((s, i) => (
@@ -182,24 +206,25 @@ export default function TeamsPage() {
                       </div>
                     </div>
 
-                    {/* Avatar - Grande photo */}
-                    <div className="relative px-6 pb-6">
-                      <div className="absolute -top-20 left-1/2 -translate-x-1/2">
-                        <div className={`h-40 w-40 rounded-full border-[6px] border-white bg-white shadow-2xl overflow-hidden ring-4 ${member.borderColor} ring-opacity-50 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
-                          <img
-                            src={`https://github.com/${member.github}.png`}
-                            alt={member.name}
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=1e3a8a&color=fff&size=256&bold=true`
-                            }}
-                          />
-                        </div>
+                    {/* Avatar - Grande photo FIXE au centre */}
+                    <div className="flex justify-center py-6">
+                      <div className={`h-40 w-40 rounded-full border-[6px] border-white bg-white shadow-2xl overflow-hidden ring-4 ${member.borderColor} ring-opacity-50 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                        <img
+                          src={`https://github.com/${member.github}.png`}
+                          alt={member.name}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=1e3a8a&color=fff&size=256&bold=true`
+                          }}
+                        />
                       </div>
+                    </div>
 
-                      <div className="mt-24 text-center">
-                        <h3 className="font-bold text-[#111827] text-lg leading-tight mb-2 px-2">{member.name}</h3>
+                    {/* Contenu texte EN BAS */}
+                    <div className="px-6 pb-6">
+                      <div className="text-center">
+                        <h3 className="font-bold text-[#111827] text-lg leading-tight mb-2">{member.name}</h3>
                         <p className="text-sm font-semibold text-[#1e3a8a] mb-1">{member.role}</p>
                         <p className="text-xs text-[#9ca3af] mb-5">{member.team}</p>
 
