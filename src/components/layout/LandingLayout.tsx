@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 const navLinks = [
   { to: '/about',        label: 'À propos' },
+  { to: '/teams',        label: 'Équipe' },
   { to: '/sentinelle',   label: 'Sentinelle' },
   { to: '/pricing',      label: 'Tarifs' },
   { to: '/presentation', label: 'Présentation' },

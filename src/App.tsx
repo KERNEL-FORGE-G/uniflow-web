@@ -38,6 +38,7 @@ import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import SentinellePage from './pages/SentinellePage'
 import ForumPage from './pages/ForumPage'
+import TeamsPage from './pages/TeamsPage'
 
 function StudentApp({ children }: { children: React.ReactNode }) {
   return <AppLayout>{children}</AppLayout>
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/sentinelle" element={<SentinellePage />} />
         <Route path="/forum" element={<ForumPage />} />
+        <Route path="/teams" element={<TeamsPage />} />
 
         {/* Partie 1 — Dashboard */}
         <Route path="/app" element={<StudentApp><DashboardPage /></StudentApp>} />

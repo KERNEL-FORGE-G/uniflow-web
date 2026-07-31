@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Plus, Edit, Trash2, X, Save, UserPlus } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, X, Save } from 'lucide-react'
 
 interface User {
   id: string
