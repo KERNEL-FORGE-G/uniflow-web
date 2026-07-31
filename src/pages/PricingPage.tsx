@@ -86,7 +86,7 @@ export default function PricingPage() {
 
       {/* Plans */}
       <section className="bg-[#f3f4f6] py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           {/* Demo banner */}
           <div className="mb-8 rounded-2xl bg-[#eff3ff] border border-[#1e3a8a]/20 p-5 text-center">
             <p className="text-sm font-semibold text-[#1e3a8a]">

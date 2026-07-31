@@ -91,7 +91,7 @@ export default function LandingPage() {
           <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-[#f0fdfa] blur-3xl opacity-60" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-6 py-16 lg:py-24">
+        <div className="relative mx-auto w-full px-6 py-16 lg:py-24">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             {/* Left content */}
             <div className="animate-fade-in">
@@ -254,7 +254,7 @@ export default function LandingPage() {
 
       {/* ── Features ── */}
       <section id="fonctionnalites" className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-14">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eff3ff] px-3 py-1 text-xs font-semibold text-[#1e3a8a] mb-4">
               <Zap className="h-3.5 w-3.5" /> Fonctionnalités clés
@@ -280,7 +280,7 @@ export default function LandingPage() {
 
       {/* ── Sentinelle teaser ── */}
       <section className="py-20 bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0d9488]">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto w-full max-w-[1920px] px-6">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="text-white">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white mb-5 border border-white/20">
@@ -338,7 +338,7 @@ export default function LandingPage() {
 
       {/* ── Testimonials ── */}
       <section className="bg-[#f3f4f6] py-20">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-[#111827]">Ils font confiance à UniFlow</h2>
             <p className="mt-3 text-[#6b7280]">Des étudiants et enseignants qui ont transformé leur expérience académique.</p>
@@ -407,7 +407,7 @@ export default function LandingPage() {
 
       {/* ── Roles overview ── */}
       <section className="bg-[#f3f4f6] border-t border-[#e5e7eb] py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <h2 className="text-2xl font-extrabold text-[#111827] text-center mb-10">Une plateforme, 4 expériences</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[

@@ -58,7 +58,7 @@ export default function ContactPage() {
 
       {/* Contact section */}
       <section className="bg-[#f3f4f6] py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid gap-10 lg:grid-cols-3">
 
             {/* Info cards */}
@@ -175,7 +175,7 @@ export default function ContactPage() {
 
       {/* Map placeholder */}
       <section className="bg-white py-8">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="rounded-2xl overflow-hidden border border-[#e5e7eb] bg-[#f3f4f6] h-48 flex items-center justify-center">
             <div className="text-center text-[#9ca3af]">
               <MapPin className="h-10 w-10 mx-auto mb-2 opacity-30" />

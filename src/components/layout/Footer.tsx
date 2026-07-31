@@ -3,7 +3,7 @@ import { Monitor, Smartphone, Download, Globe } from 'lucide-react'
 export function Footer() {
   return (
     <footer className="border-t border-[#e5e7eb] bg-white">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="w-full max-w-[1920px] mx-auto px-6 py-8">
         {/* Platform badges */}
         <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
           <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f9fafb] border border-[#e5e7eb]">

@@ -31,7 +31,7 @@ export default function SentinellePage() {
           <div className="absolute top-20 left-20 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute bottom-20 right-20 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
         </div>
-        <div className="relative mx-auto max-w-7xl px-6 text-center">
+        <div className="relative mx-auto max-w-[1920px] px-6 text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs font-semibold text-white mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-[#0d9488] animate-pulse-dot" />
             Extension IoT & IA — Campus Intelligent
@@ -57,7 +57,7 @@ export default function SentinellePage() {
 
       {/* Concept */}
       <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-[#111827]">Pourquoi Sentinelle ?</h2>
             <p className="mt-3 text-[#6b7280] max-w-2xl mx-auto">
@@ -84,7 +84,7 @@ export default function SentinellePage() {
 
       {/* Module Santé */}
       <section className="bg-[#f3f4f6] py-20">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-semibold text-emerald-700 mb-4">
@@ -149,7 +149,7 @@ export default function SentinellePage() {
 
       {/* Module Vigie */}
       <section className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="order-2 lg:order-1 rounded-2xl border border-slate-200 bg-[#0f172a] p-8 shadow-xl">
               <h3 className="text-sm font-bold text-white mb-6 text-center">Interface Vigie — Campus en direct</h3>
@@ -254,7 +254,7 @@ export default function SentinellePage() {
 
       {/* Tech stack */}
       <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <h2 className="text-2xl font-extrabold text-[#111827] text-center mb-10">Stack technique</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[

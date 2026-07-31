@@ -34,7 +34,7 @@ export default function AboutPage() {
           <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
         </div>
-        <div className="relative mx-auto max-w-7xl px-6 text-center">
+        <div className="relative mx-auto max-w-[1920px] px-6 text-center">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center">
             <img src="/logos/mascotte.png" alt="UniFlow" className="h-20 w-20 object-contain drop-shadow-2xl" />
           </div>
@@ -48,7 +48,7 @@ export default function AboutPage() {
 
       {/* Mission */}
       <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid gap-12 lg:grid-cols-2 items-center">
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eff3ff] px-3 py-1 text-xs font-semibold text-[#1e3a8a] mb-4">
@@ -97,7 +97,7 @@ export default function AboutPage() {
 
       {/* Équipe */}
       <section className="bg-[#f3f4f6] py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl font-extrabold text-[#111827]">L'équipe KERNEL FORGE</h2>
             <p className="mt-2 text-[#6b7280]">Étudiants et enseignants de l'Université de Yaoundé I</p>
@@ -141,7 +141,7 @@ export default function AboutPage() {
 
       {/* Tech Stack */}
       <section className="bg-[#f3f4f6] py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-10">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eff3ff] px-3 py-1 text-xs font-semibold text-[#1e3a8a] mb-3">
               <Code2 className="h-3 w-3" /> Stack technique

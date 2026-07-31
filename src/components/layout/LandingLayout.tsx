@@ -18,7 +18,7 @@ export function LandingNavbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
+      <div className="mx-auto flex w-full max-w-[1920px] items-center justify-between px-6 py-3.5">
         {/* Logo */}
         <Link to="/" className="flex items-center shrink-0">
           <img src="/logos/logo-principal.png" alt="UniFlow" className="h-10 w-auto object-contain" />
@@ -98,7 +98,7 @@ export function LandingNavbar() {
 export function LandingFooter() {
   return (
     <footer className="bg-[#0f172a] text-slate-300">
-      <div className="mx-auto max-w-7xl px-6 py-16">
+      <div className="mx-auto w-full max-w-[1920px] px-6 py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-2">

@@ -67,7 +67,7 @@ export default function PresentationPage() {
 
       {/* Au programme */}
       <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-[1920px] px-6">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
               <h2 className="text-2xl font-extrabold text-[#111827] mb-6">📋 Au programme</h2>
