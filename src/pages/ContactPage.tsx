@@ -3,8 +3,8 @@ import { Mail, Phone, MapPin, Send, CheckCircle, MessageSquare, Clock, Loader2 }
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
 const contactInfo = [
-  { icon: Mail,    label: 'Email', value: 'contact@uniflow.edu', sub: 'Réponse sous 24h' },
-  { icon: Phone,   label: 'Téléphone', value: '+237 6 XX XX XX XX', sub: 'Lun–Ven 8h–18h' },
+  { icon: Mail,    label: 'Email', value: 'ravelnghomsi@gmail.com', sub: 'Réponse sous 24h' },
+  { icon: Phone,   label: 'Téléphone', value: '+237 657 635 644', sub: 'Lun–Ven 8h–18h' },
   { icon: MapPin,  label: 'Adresse', value: 'Université de Yaoundé I', sub: 'Yaoundé, Cameroun' },
   { icon: Clock,   label: 'Horaires', value: 'Lundi – Vendredi', sub: '08h00 – 18h00' },
 ]

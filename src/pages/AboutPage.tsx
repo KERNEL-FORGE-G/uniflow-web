@@ -3,9 +3,9 @@ import { ArrowRight, CheckCircle, Globe, Code2, Heart } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 
 const team = [
-  { name: 'KERNEL FORGE', role: 'Équipe de développement', desc: 'Étudiants en Informatique — Université de Yaoundé I', avatar: '🦅', color: 'bg-[#eff3ff] text-[#1e3a8a]' },
-  { name: 'Dr. Kamga',   role: 'Encadrant académique',   desc: 'Département Informatique — UY1',                    avatar: '👨‍🏫', color: 'bg-[#f0fdfa] text-[#0d9488]' },
-  { name: 'Emma Martin', role: 'Lead UX & Frontend',      desc: 'React, TypeScript, Tailwind CSS',                  avatar: 'E',  color: 'bg-purple-50 text-purple-700' },
+  { name: 'NGHOMSI FEUKOUO RAVEL', role: 'Fondateur & Chef de projet', desc: 'GitHub: Archlord12345 · KERNEL FORGE', avatar: '👨‍💻', color: 'bg-[#eff3ff] text-[#1e3a8a]' },
+  { name: 'KERNEL FORGE', role: 'Équipe de développement', desc: 'Étudiants en Informatique — Université de Yaoundé I', avatar: '🦅', color: 'bg-[#f0fdfa] text-[#0d9488]' },
+  { name: 'Dr. Kamga',   role: 'Encadrant académique',   desc: 'Département Informatique — UY1',                    avatar: '👨‍🏫', color: 'bg-purple-50 text-purple-700' },
 ]
 
 const techStack = [
@@ -16,11 +16,11 @@ const techStack = [
 ]
 
 const milestones = [
-  { year: '2023', title: 'Idée & concept', desc: 'Naissance du projet KERNEL FORGE lors d\'un hackathon universitaire.' },
-  { year: '2024 T1', title: 'Prototype web', desc: 'Première version de l\'interface web avec 4 rôles fonctionnels.' },
-  { year: '2024 T2', title: 'Sentinelle IoT', desc: 'Développement des modules Santé et Vigie sur Raspberry Pi.' },
-  { year: '2024 T3', title: 'Version 1.0', desc: 'Déploiement sur Vercel. Intégration visioconférence LAN.' },
-  { year: '2025', title: 'Version 1.2', desc: 'Mobile offline, desktop Electron, API publique.' },
+  { year: '2024', title: 'Idée & concept', desc: 'Naissance du projet KERNEL FORGE lors d\'un hackathon universitaire.' },
+  { year: '2025 T1', title: 'Prototype web', desc: 'Première version de l\'interface web avec 4 rôles fonctionnels.' },
+  { year: '2025 T2', title: 'Sentinelle IoT', desc: 'Développement des modules Santé et Vigie sur Raspberry Pi.' },
+  { year: '2025 T4', title: 'Version 1.0', desc: 'Déploiement sur Vercel. Intégration visioconférence LAN.' },
+  { year: '2026', title: 'Version 1.2', desc: 'Mobile offline, desktop Electron, API publique.' },
 ]
 
 export default function AboutPage() {

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Download, Printer, Sparkles, X } from 'lucide-react'
 
 import { mockScheduleEvents, eventColors, type ScheduleEvent } from '../data/mockData'
+import { useUserRole } from '../utils/userRole'
 
 const hours = ['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00']
 const days  = ['Lun 13','Mar 14','Mer 15','Jeu 16','Ven 17','Sam 18']
@@ -15,8 +16,15 @@ const typeLegend = [
 ]
 
 export default function SchedulePage() {
+  const { currentRole } = useUserRole()
   const [view, setView] = useState<'Semaine'|'Mois'|'Jour'>('Semaine')
-  const [selected, setSelected] = useState<ScheduleEvent | null>(mockScheduleEvents[6])
+  
+  // Teacher only sees their own courses
+  const displayEvents = currentRole === 'teacher' 
+    ? mockScheduleEvents.filter(e => e.teacher === 'Pr. Martin')
+    : mockScheduleEvents
+    
+  const [selected, setSelected] = useState<ScheduleEvent | null>(displayEvents[0] || null)
 
   return (
     <div className="space-y-4 animate-fade-in">
@@ -26,7 +34,7 @@ export default function SchedulePage() {
           <button className="rounded-lg border border-[#e5e7eb] p-1.5 hover:bg-[#f9fafb] transition-colors">
             <ChevronLeft className="h-4 w-4 text-[#374151]" />
           </button>
-          <h1 className="text-base font-bold text-[#111827]">13 – 19 mai 2024</h1>
+          <h1 className="text-2xl font-bold text-[#111827]">13 – 19 mai 2026</h1>
           <button className="rounded-lg border border-[#e5e7eb] p-1.5 hover:bg-[#f9fafb] transition-colors">
             <ChevronRight className="h-4 w-4 text-[#374151]" />
           </button>
@@ -83,7 +91,7 @@ export default function SchedulePage() {
               <div key={hour} className="grid border-b border-[#f3f4f6] last:border-0" style={{ gridTemplateColumns: '60px repeat(6,1fr)', minHeight: CELL_H }}>
                 <div className="p-2 text-[10px] text-[#9ca3af] font-mono">{hour}</div>
                 {days.map((_, di) => {
-                  const ev = mockScheduleEvents.find(e => e.day === di && e.start === hi)
+                  const ev = displayEvents.find(e => e.day === di && e.start === hi)
                   return (
                     <div key={di} className="relative border-l border-[#f3f4f6]">
                       {ev && (

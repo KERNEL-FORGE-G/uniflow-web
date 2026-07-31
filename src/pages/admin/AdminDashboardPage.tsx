@@ -37,7 +37,7 @@ export default function AdminDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#111827]">Tableau de bord Admin</h1>
-          <p className="text-sm text-[#6b7280] mt-0.5">UniFlow — Vue d'ensemble · Lundi 13 mai 2024</p>
+          <p className="text-sm text-[#6b7280] mt-0.5">UniFlow — Vue d'ensemble · Lundi 13 mai 2026</p>
         </div>
         <span className="rounded-full bg-amber-100 border border-amber-300 px-3 py-1.5 text-xs font-bold text-amber-700">
           ⚙️ Super Admin

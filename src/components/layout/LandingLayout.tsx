@@ -7,6 +7,7 @@ const navLinks = [
   { to: '/sentinelle',   label: 'Sentinelle' },
   { to: '/pricing',      label: 'Tarifs' },
   { to: '/presentation', label: 'Présentation' },
+  { to: '/forum',        label: 'Forum' },
   { to: '/contact',      label: 'Contact' },
 ]
 
@@ -169,7 +170,7 @@ export function LandingFooter() {
 
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800 pt-8 text-xs text-slate-500">
-          <p>© 2024 UniFlow — KERNEL FORGE · Université de Yaoundé I · Licence MIT</p>
+          <p>© 2026 UniFlow — KERNEL FORGE · Université de Yaoundé I · Licence MIT</p>
           <div className="flex items-center gap-4">
             <Link to="/about" className="hover:text-slate-300 transition-colors">Confidentialité</Link>
             <Link to="/about" className="hover:text-slate-300 transition-colors">CGU</Link>
