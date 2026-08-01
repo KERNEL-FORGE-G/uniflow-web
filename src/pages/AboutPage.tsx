@@ -5,7 +5,6 @@ import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout
 const team = [
   { name: 'NGHOMSI FEUKOUO RAVEL', role: 'Fondateur & Chef de projet', desc: 'GitHub: Archlord12345 · KERNEL FORGE', avatar: Code2, color: 'bg-[#eff3ff] text-[#1e3a8a]' },
   { name: 'KERNEL FORGE', role: 'Équipe de développement', desc: 'Étudiants en Informatique — Université de Yaoundé I', avatar: Shield, color: 'bg-[#f0fdfa] text-[#0d9488]' },
-  { name: 'Dr. Kamga',   role: 'Encadrant académique',   desc: 'Département Informatique — UY1',                    avatar: UserCheck, color: 'bg-purple-50 text-purple-700' },
 ]
 
 const techStack = [
