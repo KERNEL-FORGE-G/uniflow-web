@@ -1,12 +1,50 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, CheckCircle } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Eye, EyeOff, Loader2, CheckCircle, User, Mail, Lock, GraduationCap, BookOpen, Award, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react'
 import { useUserRole } from '../../utils/userRole'
+import { fadeInUp, staggerContainer } from '../../utils/animations'
+
+const benefits = [
+  {
+    icon: GraduationCap,
+    title: 'Gestion académique complète',
+    desc: 'Accès à tous vos cours, emplois du temps et ressources pédagogiques.',
+    color: 'text-blue-400'
+  },
+  {
+    icon: CheckCircle,
+    title: 'Suivi en temps réel',
+    desc: 'Présences, devoirs, notes et bulletins synchronisés automatiquement.',
+    color: 'text-emerald-400'
+  },
+  {
+    icon: Sparkles,
+    title: 'Mode Offline puissant',
+    desc: 'Fonctionne sans Internet avec synchronisation intelligente.',
+    color: 'text-purple-400'
+  },
+  {
+    icon: Award,
+    title: 'Multi-plateforme',
+    desc: 'Mobile, Web, Desktop - vos données partout avec vous.',
+    color: 'text-amber-400'
+  },
+]
 
 export default function RegisterPage() {
   const navigate = useNavigate()
   const { setCurrentRole } = useUserRole()
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirm: '', role: 'student', filiere: 'Informatique', niveau: 'Licence 2' })
+  const [form, setForm] = useState({ 
+    firstName: '', 
+    lastName: '', 
+    email: '', 
+    password: '', 
+    confirm: '', 
+    role: 'student', 
+    filiere: 'Informatique', 
+    niveau: 'Licence 2' 
+  })
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<1 | 2>(1)
@@ -27,147 +65,349 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-gradient-to-br from-[#0d9488] via-[#14b8a8] to-[#0a7167] p-12 relative overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute top-10 left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 h-40 w-40 rounded-full bg-white/5 blur-3xl"></div>
-        <div className="absolute top-1/3 right-1/3 h-24 w-24 rounded-full bg-white/5 blur-3xl"></div>
+    <div className="flex min-h-screen">
+      {/* Left panel - Hero */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-gradient-to-br from-[#0d9488] via-[#14b8a8] to-[#0a7167] p-12 relative overflow-hidden">
+        {/* Animated background */}
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.1, 0.2, 0.1]
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute top-10 left-10 h-96 w-96 rounded-full bg-white blur-3xl"
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.1, 0.15, 0.1]
+          }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-white blur-3xl"
+        />
         
-        <div className="max-w-md text-center text-white relative z-10">
-          <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-16 mb-8 object-contain brightness-0 invert" />
-          <p className="text-teal-50 text-xl leading-relaxed mb-10">Créez votre espace en quelques minutes</p>
-          <div className="space-y-3 text-sm text-teal-50 mb-10">
-            <p className="flex items-center justify-center gap-2.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
-              <span className="text-base">Gestion complète de votre parcours académique</span>
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="max-w-lg text-white relative z-10 space-y-8"
+        >
+          {/* Logo */}
+          <motion.div variants={fadeInUp} className="text-center">
+            <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-20 mb-6 object-contain brightness-0 invert drop-shadow-2xl" />
+            <h1 className="text-4xl font-black mb-3">Rejoignez UniFlow</h1>
+            <p className="text-teal-100 text-lg leading-relaxed">
+              Créez votre compte et profitez d'une expérience universitaire moderne et connectée
             </p>
-            <p className="flex items-center justify-center gap-2.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
-              <span className="text-base">Synchronisation multi-appareils</span>
-            </p>
-          </div>
-          <div className="space-y-5 text-left">
+          </motion.div>
+
+          {/* Benefits */}
+          <motion.div variants={fadeInUp} className="space-y-4">
+            {benefits.map((benefit) => {
+              const Icon = benefit.icon
+              return (
+                <motion.div
+                  key={benefit.title}
+                  whileHover={{ x: 8, scale: 1.02 }}
+                  className="flex gap-4 rounded-2xl bg-white/10 backdrop-blur-sm p-5 border border-white/20 hover:bg-white/15 transition-all cursor-pointer"
+                >
+                  <div className="flex-shrink-0">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 ${benefit.color}`}>
+                      <Icon className="h-6 w-6" />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-bold text-white text-base mb-1">{benefit.title}</p>
+                    <p className="text-teal-100 text-sm leading-relaxed">{benefit.desc}</p>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+
+          {/* Trust indicators */}
+          <motion.div variants={fadeInUp} className="flex items-center justify-center gap-8 pt-4">
             {[
-              'Accès à tous vos cours et emplois du temps',
-              'Suivi des présences et devoirs en temps réel',
-              'Messagerie et visioconférence intégrées',
-              'Fonctionne même sans connexion Internet',
-            ].map(t => (
-              <div key={t} className="flex items-center gap-3.5 text-base text-teal-50 rounded-xl bg-white/10 backdrop-blur-sm p-4 hover:bg-white/15 transition-colors">
-                <CheckCircle className="h-6 w-6 text-white shrink-0" />
-                <span>{t}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+              { icon: CheckCircle, label: '100% Gratuit' },
+              { icon: Lock, label: 'Sécurisé' },
+              { icon: Sparkles, label: 'Open Source' },
+            ].map(item => {
+              const Icon = item.icon
+              return (
+                <div key={item.label} className="flex items-center gap-2">
+                  <Icon className="h-5 w-5 text-emerald-300" />
+                  <span className="text-sm font-medium text-teal-100">{item.label}</span>
+                </div>
+              )
+            })}
+          </motion.div>
+        </motion.div>
       </div>
 
-      {/* Right panel */}
-      <div className="flex flex-1 items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
-          <h2 className="text-2xl font-extrabold text-[#111827]">Créer un compte</h2>
-          <p className="mt-1 text-sm text-[#6b7280]">Étape {step} sur 2</p>
+      {/* Right panel - Form */}
+      <div className="flex flex-1 items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-slate-50 via-white to-slate-50">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-md"
+        >
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-8 lg:p-10">
+            {/* Header */}
+            <div className="mb-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring" }}
+                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0d9488] to-[#14b8a8] mb-4"
+              >
+                <User className="h-8 w-8 text-white" />
+              </motion.div>
+              <h2 className="text-3xl font-black text-[#111827]">Créer un compte</h2>
+              <p className="mt-2 text-sm text-[#6b7280]">Étape {step} sur 2 - {step === 1 ? 'Informations personnelles' : 'Informations académiques'}</p>
+            </div>
 
-          {/* Progress */}
-          <div className="mt-4 flex gap-2">
-            {[1, 2].map(s => (
-              <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? 'bg-[#1e3a8a]' : 'bg-[#e5e7eb]'}`} />
-            ))}
+            {/* Progress bar */}
+            <div className="mb-8 flex gap-2">
+              {[1, 2].map(s => (
+                <motion.div 
+                  key={s} 
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: s <= step ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-2 flex-1 rounded-full bg-gradient-to-r from-[#0d9488] to-[#14b8a8] origin-left"
+                  style={{ backgroundColor: s > step ? '#e5e7eb' : undefined }}
+                />
+              ))}
+            </div>
+
+            <AnimatePresence mode="wait">
+              {step === 1 ? (
+                <motion.form 
+                  key="step1"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  onSubmit={handleNext} 
+                  className="space-y-5"
+                >
+                  {/* Name fields */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-[#374151] mb-2">Prénom</label>
+                      <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                          <User className="h-5 w-5" />
+                        </div>
+                        <input 
+                          type="text" 
+                          value={form.firstName} 
+                          onChange={e => set('firstName', e.target.value)} 
+                          required
+                          className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                          placeholder="Emma" 
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-[#374151] mb-2">Nom</label>
+                      <input 
+                        type="text" 
+                        value={form.lastName} 
+                        onChange={e => set('lastName', e.target.value)} 
+                        required
+                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                        placeholder="Martin" 
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Adresse email universitaire</label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                        <Mail className="h-5 w-5" />
+                      </div>
+                      <input 
+                        type="email" 
+                        value={form.email} 
+                        onChange={e => set('email', e.target.value)} 
+                        required
+                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                        placeholder="votre@uniflow.edu" 
+                      />
+                    </div>
+                  </div>
+
+                  {/* Role */}
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Vous êtes</label>
+                    <select 
+                      value={form.role} 
+                      onChange={e => set('role', e.target.value)}
+                      className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                    >
+                      <option value="student">Étudiant</option>
+                      <option value="delegate">Délégué de classe</option>
+                      <option value="teacher">Enseignant</option>
+                    </select>
+                  </div>
+
+                  {/* Submit */}
+                  <motion.button 
+                    type="submit"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0d9488] to-[#14b8a8] py-3.5 text-base font-bold text-white shadow-lg hover:shadow-xl transition-all"
+                  >
+                    Continuer
+                    <ArrowRight className="h-5 w-5" />
+                  </motion.button>
+                </motion.form>
+              ) : (
+                <motion.form 
+                  key="step2"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  onSubmit={handleSubmit} 
+                  className="space-y-5"
+                >
+                  {/* Academic info */}
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Filière d'études</label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                        <BookOpen className="h-5 w-5" />
+                      </div>
+                      <select 
+                        value={form.filiere} 
+                        onChange={e => set('filiere', e.target.value)}
+                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                      >
+                        {['Informatique', 'Mathématiques', 'Économie', 'Droit', 'Médecine', 'Génie Civil', 'Physique', 'Chimie'].map(f => (
+                          <option key={f}>{f}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Niveau d'études</label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                        <GraduationCap className="h-5 w-5" />
+                      </div>
+                      <select 
+                        value={form.niveau} 
+                        onChange={e => set('niveau', e.target.value)}
+                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                      >
+                        {['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2', 'Doctorat'].map(n => (
+                          <option key={n}>{n}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Password */}
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Mot de passe</label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                        <Lock className="h-5 w-5" />
+                      </div>
+                      <input 
+                        type={showPwd ? 'text' : 'password'} 
+                        value={form.password} 
+                        onChange={e => set('password', e.target.value)} 
+                        required
+                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-12 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                        placeholder="Min. 8 caractères" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPwd(v => !v)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9ca3af] hover:text-[#374151] transition-colors"
+                      >
+                        {showPwd ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Confirmer le mot de passe</label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                        <Lock className="h-5 w-5" />
+                      </div>
+                      <input 
+                        type="password" 
+                        value={form.confirm} 
+                        onChange={e => set('confirm', e.target.value)} 
+                        required
+                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                        placeholder="Répétez le mot de passe"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex gap-3">
+                    <motion.button 
+                      type="button" 
+                      onClick={() => setStep(1)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-6 py-3.5 text-base font-bold text-[#374151] hover:bg-slate-50 transition-all"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                      Retour
+                    </motion.button>
+                    <motion.button 
+                      type="submit" 
+                      disabled={loading}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0d9488] to-[#14b8a8] py-3.5 text-base font-bold text-white shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" /> 
+                          Création en cours...
+                        </>
+                      ) : (
+                        <>
+                          Créer mon compte
+                          <CheckCircle className="h-5 w-5" />
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+
+            {/* Footer */}
+            <div className="mt-8 space-y-3 text-center">
+              <p className="text-sm text-[#6b7280]">
+                Vous avez déjà un compte ?{' '}
+                <Link to="/login" className="font-bold text-[#0d9488] hover:underline">
+                  Se connecter
+                </Link>
+              </p>
+              <Link to="/" className="block text-xs text-[#9ca3af] hover:text-[#0d9488] hover:underline transition-colors">
+                ← Retour à l'accueil
+              </Link>
+            </div>
           </div>
 
-          {step === 1 ? (
-            <form onSubmit={handleNext} className="mt-6 space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-[#374151] mb-1">Prénom</label>
-                  <input type="text" value={form.firstName} onChange={e => set('firstName', e.target.value)} required
-                    className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
-                    placeholder="Emma" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[#374151] mb-1">Nom</label>
-                  <input type="text" value={form.lastName} onChange={e => set('lastName', e.target.value)} required
-                    className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
-                    placeholder="Martin" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#374151] mb-1">Adresse email</label>
-                <input type="email" value={form.email} onChange={e => set('email', e.target.value)} required
-                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
-                  placeholder="votre@uniflow.edu" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#374151] mb-1">Rôle</label>
-                <select value={form.role} onChange={e => set('role', e.target.value)}
-                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a]">
-                  <option value="student">Étudiant</option>
-                  <option value="delegate">Délégué</option>
-                  <option value="teacher">Enseignant</option>
-                </select>
-              </div>
-              <button type="submit"
-                className="w-full rounded-lg bg-[#1e3a8a] py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors shadow-sm">
-                Continuer →
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[#374151] mb-1">Filière</label>
-                <select value={form.filiere} onChange={e => set('filiere', e.target.value)}
-                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a]">
-                  {['Informatique', 'Mathématiques', 'Économie', 'Droit', 'Médecine', 'Génie Civil'].map(f => (
-                    <option key={f}>{f}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#374151] mb-1">Niveau</label>
-                <select value={form.niveau} onChange={e => set('niveau', e.target.value)}
-                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a]">
-                  {['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2', 'Doctorat'].map(n => (
-                    <option key={n}>{n}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#374151] mb-1">Mot de passe</label>
-                <div className="relative">
-                  <input type={showPwd ? 'text' : 'password'} value={form.password} onChange={e => set('password', e.target.value)} required
-                    className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 pr-10 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
-                    placeholder="Min. 8 caractères" />
-                  <button type="button" onClick={() => setShowPwd(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">
-                    {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#374151] mb-1">Confirmer le mot de passe</label>
-                <input type="password" value={form.confirm} onChange={e => set('confirm', e.target.value)} required
-                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]" />
-              </div>
-              <div className="flex gap-2">
-                <button type="button" onClick={() => setStep(1)}
-                  className="flex-1 rounded-lg border border-[#e5e7eb] py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">
-                  ← Retour
-                </button>
-                <button type="submit" disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#1e3a8a] py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] disabled:opacity-60 shadow-sm">
-                  {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Création...</> : 'Créer mon compte'}
-                </button>
-              </div>
-            </form>
-          )}
-
-          <p className="mt-6 text-center text-sm text-[#6b7280]">
-            Déjà inscrit ?{' '}
-            <Link to="/login" className="font-medium text-[#1e3a8a] hover:underline">Se connecter</Link>
-          </p>
-        </div>
+          {/* Mobile logo */}
+          <div className="lg:hidden mt-8 text-center">
+            <img src="/logos/logo-principal.png" alt="UniFlow" className="mx-auto h-12 object-contain opacity-50" />
+          </div>
+        </motion.div>
       </div>
     </div>
   )
