@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CheckCircle, ArrowRight, Zap, Sparkles } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
+import { ScrollFloat } from '../components/ui/ScrollFloat'
 
 const plans = [
   {
@@ -77,7 +78,14 @@ export default function PricingPage() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs font-semibold text-white mb-5">
             <Zap className="h-3 w-3" /> Tarification simple et transparente
           </span>
-          <h1 className="text-4xl font-extrabold text-white mb-4">Simple, transparent, accessible</h1>
+          <ScrollFloat 
+            containerClassName="text-4xl font-extrabold text-white mb-4"
+            textClassName="text-white"
+            animationDuration={0.8}
+            stagger={0.02}
+          >
+            Simple, transparent, accessible
+          </ScrollFloat>
           <p className="text-lg text-blue-100">
             Commencez gratuitement. Évoluez quand vous êtes prêt. Aucune carte de crédit requise.
           </p>
@@ -131,7 +139,13 @@ export default function PricingPage() {
       {/* Compare */}
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-6">
-          <h2 className="text-2xl font-extrabold text-[#111827] text-center mb-8">Comparaison détaillée</h2>
+          <ScrollFloat 
+            containerClassName="text-2xl font-extrabold text-[#111827] text-center mb-8"
+            animationDuration={0.8}
+            stagger={0.02}
+          >
+            Comparaison détaillée
+          </ScrollFloat>
           <div className="overflow-x-auto rounded-2xl border border-[#e5e7eb] shadow-sm">
             <table className="w-full text-sm">
               <thead>
@@ -172,7 +186,13 @@ export default function PricingPage() {
       {/* FAQ */}
       <section className="bg-[#f3f4f6] py-16">
         <div className="mx-auto max-w-3xl px-6">
-          <h2 className="text-2xl font-extrabold text-[#111827] text-center mb-8">Questions fréquentes</h2>
+          <ScrollFloat 
+            containerClassName="text-2xl font-extrabold text-[#111827] text-center mb-8"
+            animationDuration={0.8}
+            stagger={0.02}
+          >
+            Questions fréquentes
+          </ScrollFloat>
           <div className="space-y-3">
             {faq.map(f => (
               <details key={f.q} className="group rounded-xl border border-[#e5e7eb] bg-white">

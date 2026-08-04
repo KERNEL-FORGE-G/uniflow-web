@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Mail, Phone, MapPin, Send, CheckCircle, MessageSquare, Clock, Loader2 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
+import { ScrollFloat } from '../components/ui/ScrollFloat'
 
 const contactInfo = [
   { icon: Mail,    label: 'Email', value: 'ravelnghomsi@gmail.com', sub: 'Réponse sous 24h' },
@@ -49,7 +50,14 @@ export default function ContactPage() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs font-semibold text-white mb-5">
             <MessageSquare className="h-3 w-3" /> On est là pour vous aider
           </span>
-          <h1 className="text-4xl font-extrabold text-white mb-4">Contactez l'équipe UniFlow</h1>
+          <ScrollFloat 
+            containerClassName="text-4xl font-extrabold text-white mb-4"
+            textClassName="text-white"
+            animationDuration={0.8}
+            stagger={0.02}
+          >
+            Contactez l'équipe UniFlow
+          </ScrollFloat>
           <p className="text-lg text-blue-100">
             Une question, un partenariat, un déploiement campus ? Notre équipe vous répond sous 24h.
           </p>

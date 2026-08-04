@@ -229,17 +229,13 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-[#f9fafb] to-white py-20">
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-16 space-y-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            <ScrollFloat 
+              containerClassName="text-4xl font-black text-[#111827] lg:text-5xl"
+              animationDuration={0.8}
+              stagger={0.02}
             >
-              L'équipe{' '}
-              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
-                KERNEL FORGE
-              </span>
-            </motion.h2>
+              L'équipe KERNEL FORGE
+            </ScrollFloat>
           </div>
 
           <motion.div 
@@ -274,15 +270,13 @@ export default function AboutPage() {
       <AnimatedSection className="bg-white py-20" stagger>
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-16 space-y-4">
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            <ScrollFloat 
+              containerClassName="text-4xl font-black text-[#111827] lg:text-5xl"
+              animationDuration={0.8}
+              stagger={0.02}
             >
-              Stack{' '}
-              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
-                technique
-              </span>
-            </motion.h2>
+              Stack technique
+            </ScrollFloat>
             <motion.p 
               variants={fadeInUp}
               className="text-lg text-[#6b7280] max-w-2xl mx-auto"
@@ -328,17 +322,13 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-[#f9fafb] to-white py-20">
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center mb-16 space-y-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            <ScrollFloat 
+              containerClassName="text-4xl font-black text-[#111827] lg:text-5xl"
+              animationDuration={0.8}
+              stagger={0.02}
             >
-              Notre{' '}
-              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
-                parcours
-              </span>
-            </motion.h2>
+              Notre parcours
+            </ScrollFloat>
           </div>
 
           <motion.div 

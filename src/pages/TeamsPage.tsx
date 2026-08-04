@@ -1,5 +1,6 @@
 import { Mail, Code2, Smartphone, Server, Database, Sparkles, Crown, Rocket, Laptop, Users } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
+import { ScrollFloat } from '../components/ui/ScrollFloat'
 
 interface TeamMember {
   id: string
@@ -179,7 +180,13 @@ export default function TeamsPage() {
       <section className="bg-white py-20">
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-[#111827] mb-4">Notre équipe</h2>
+            <ScrollFloat 
+              containerClassName="text-4xl font-extrabold text-[#111827] mb-4"
+              animationDuration={0.8}
+              stagger={0.02}
+            >
+              Notre équipe
+            </ScrollFloat>
             <p className="text-lg text-[#6b7280] max-w-2xl mx-auto">Des étudiants passionnés qui construisent l'avenir de l'éducation numérique</p>
           </div>
 
@@ -269,7 +276,14 @@ export default function TeamsPage() {
       <section className="bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] py-16 text-center">
         <div className="mx-auto max-w-2xl px-6">
           <Sparkles className="mx-auto h-12 w-12 text-white/60 mb-4" />
-          <h2 className="text-3xl font-extrabold text-white mb-4">Rejoignez l'aventure KERNEL FORGE</h2>
+          <ScrollFloat 
+            containerClassName="text-3xl font-extrabold text-white mb-4"
+            textClassName="text-white"
+            animationDuration={0.8}
+            stagger={0.02}
+          >
+            Rejoignez l'aventure KERNEL FORGE
+          </ScrollFloat>
           <p className="text-blue-200 mb-8 text-lg">Contributeurs open source bienvenus !</p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
