@@ -56,14 +56,14 @@ const values = [
 
 const techStack = [
   { 
-    cat: 'Frontend', 
-    items: ['React 19', 'TypeScript', 'Tailwind CSS v4', 'Vite', 'Recharts', 'Framer Motion'], 
+    cat: 'Frontend Web', 
+    items: ['React 19', 'TypeScript', 'Tailwind CSS v4', 'Vite', 'Framer Motion'], 
     color: 'from-blue-500 to-blue-600',
     icon: Code2
   },
   { 
-    cat: 'Mobile', 
-    items: ['React Native', 'Expo', 'SQLite (offline)', 'Push Notifications'], 
+    cat: 'Mobile & Desktop', 
+    items: ['Flutter', 'Dart', 'SQLite (offline)', 'Provider State Management'], 
     color: 'from-emerald-500 to-emerald-600',
     icon: Sparkles
   },
@@ -74,8 +74,8 @@ const techStack = [
     icon: Shield
   },
   { 
-    cat: 'IoT', 
-    items: ['Raspberry Pi', 'Python', 'MQTT', 'TensorFlow Lite'], 
+    cat: 'DevOps & Tools', 
+    items: ['Git', 'GitHub Actions', 'Vercel', 'Docker'], 
     color: 'from-amber-500 to-amber-600',
     icon: Zap
   },
@@ -98,29 +98,29 @@ const milestones = [
   },
   { 
     year: 'Août 2026', 
-    title: 'Prototype web', 
-    desc: 'Développement du prototype avec interface moderne et 4 rôles fonctionnels (Étudiant, Délégué, Enseignant, Admin).',
+    title: 'Développement multiplateforme', 
+    desc: 'Développement simultané du Web (React + Vite) et Mobile/Desktop (Flutter) avec 4 rôles fonctionnels.',
     icon: Sparkles,
     color: 'bg-[#f0fdfa] text-[#0d9488]'
   },
   { 
     year: 'Aujourd\'hui', 
-    title: 'Développement actif', 
-    desc: 'Amélioration continue de l\'interface, optimisation des performances et ajout de nouvelles fonctionnalités.',
+    title: 'Phase active', 
+    desc: 'Amélioration continue de toutes les plateformes, optimisation des performances et ajout de nouvelles fonctionnalités.',
     icon: TrendingUp,
     color: 'bg-rose-50 text-rose-700'
   },
   { 
     year: 'À venir', 
-    title: 'Mobile & Desktop', 
-    desc: 'Applications mobile (iOS/Android) en mode offline et version desktop avec Electron.',
+    title: 'API Publique & Extensions', 
+    desc: 'Ouverture de l\'API REST pour intégrations tierces et développement d\'extensions communautaires.',
     icon: Award,
     color: 'bg-amber-50 text-amber-700'
   },
   { 
     year: 'À venir', 
     title: 'Sentinelle IoT', 
-    desc: 'Modules IoT pour le suivi santé et vigie campus avec Raspberry Pi et IA embarquée.',
+    desc: 'Modules IoT pour le suivi santé et vigie campus avec Raspberry Pi et IA embarquée sans cloud.',
     icon: Shield,
     color: 'bg-emerald-50 text-emerald-700'
   },
