@@ -5,6 +5,7 @@ import {
   Smartphone, Globe, Monitor, Activity, Eye, Megaphone, UserCheck, Settings
 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
+import landingImg from '../assets/landing.png'
 
 const stats = [
   { value: '12 000+', label: 'Étudiants actifs' },
@@ -164,7 +165,7 @@ export default function LandingPage() {
               {/* Hero image */}
               <div className="rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl overflow-hidden">
                 <img
-                  src="/src/assets/hero.png"
+                  src={landingImg}
                   alt="UniFlow Dashboard"
                   className="w-full h-auto object-cover"
                 />
