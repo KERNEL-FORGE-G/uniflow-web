@@ -48,9 +48,9 @@ export default function TeachersPage() {
   ]
 
   const statusConfig = {
-    active: { label: 'Actif', color: 'success' as const },
-    onleave: { label: 'En congé', color: 'warning' as const },
-    retired: { label: 'Retraité', color: 'neutral' as const },
+    active: { label: 'Actif', variant: 'success' as const },
+    onleave: { label: 'En congé', variant: 'warning' as const },
+    retired: { label: 'Retraité', variant: 'neutral' as const },
   }
 
   return (
@@ -170,7 +170,7 @@ export default function TeachersPage() {
                   </td>
                   <td className="px-4 py-3 text-sm font-medium text-[#374151]">{teacher.studentsCount}</td>
                   <td className="px-4 py-3">
-                    <Badge color={statusConfig[teacher.status].color}>
+                    <Badge variant={statusConfig[teacher.status].variant}>
                       {statusConfig[teacher.status].label}
                     </Badge>
                   </td>

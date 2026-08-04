@@ -53,9 +53,9 @@ export default function UEPage() {
   ]
 
   const statusConfig = {
-    active: { label: 'Active', color: 'success' as const },
-    planned: { label: 'Planifiée', color: 'warning' as const },
-    archived: { label: 'Archivée', color: 'neutral' as const },
+    active: { label: 'Active', variant: 'success' as const },
+    planned: { label: 'Planifiée', variant: 'warning' as const },
+    archived: { label: 'Archivée', variant: 'neutral' as const },
   }
 
   const typeColors = {
@@ -202,7 +202,7 @@ export default function UEPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge color={statusConfig[ue.status].color}>
+                      <Badge variant={statusConfig[ue.status].variant}>
                         {statusConfig[ue.status].label}
                       </Badge>
                     </td>

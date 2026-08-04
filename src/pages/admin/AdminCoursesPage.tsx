@@ -49,9 +49,9 @@ export default function AdminCoursesPage() {
   ]
 
   const statusConfig = {
-    ongoing: { label: 'En cours', color: 'success' as const },
-    scheduled: { label: 'Programmé', color: 'warning' as const },
-    completed: { label: 'Terminé', color: 'neutral' as const },
+    ongoing: { label: 'En cours', variant: 'success' as const },
+    scheduled: { label: 'Programmé', variant: 'warning' as const },
+    completed: { label: 'Terminé', variant: 'neutral' as const },
   }
 
   const typeColors = {
@@ -131,7 +131,7 @@ export default function AdminCoursesPage() {
               <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ${typeColors[course.type]}`}>
                 {course.type}
               </span>
-              <Badge color={statusConfig[course.status].color}>{statusConfig[course.status].label}</Badge>
+              <Badge variant={statusConfig[course.status].variant}>{statusConfig[course.status].label}</Badge>
             </div>
             
             <h3 className="font-bold text-[#111827] text-base mb-1">{course.title}</h3>
