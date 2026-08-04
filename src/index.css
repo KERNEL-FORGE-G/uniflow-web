@@ -276,6 +276,37 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* ─── Scrollbar Utilities ─── */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  @apply bg-slate-100 rounded-full;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full hover:bg-slate-400;
+}
+
+.scrollbar-thumb-slate-400::-webkit-scrollbar-thumb {
+  @apply bg-slate-400;
+}
+
+.scrollbar-track-slate-200::-webkit-scrollbar-track {
+  @apply bg-slate-200;
+}
+
 /* ─── Mobile Menu Animation ─── */
 @keyframes mobile-menu-in {
   from {
