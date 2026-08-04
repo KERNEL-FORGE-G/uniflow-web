@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
-  ArrowRight, Globe, Code2, Heart, Shield, Target, Zap, Users, Award, TrendingUp, Sparkles
+  ArrowRight, Globe, Code2, Heart, Shield, Target, Zap, Users, Award, TrendingUp, Sparkles, CheckCircle
 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 import { AnimatedSection, AnimatedItem } from '../components/ui/AnimatedSection'
 import { Card } from '../components/ui/Card'
-import { Button } from '../components/ui/Button'
 import { fadeInUp, staggerContainer } from '../utils/animations'
 
 const team = [
@@ -372,43 +371,122 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-br from-[#1e3a8a] via-[#2d4fa8] to-[#0d9488] py-20">
-        <div className="mx-auto max-w-4xl px-6 text-center space-y-8">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl font-black text-white lg:text-5xl"
-          >
-            Rejoignez l'aventure UniFlow
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-white/90 max-w-2xl mx-auto"
-          >
-            Découvrez comment UniFlow peut transformer votre expérience universitaire
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <Link to="/app">
-              <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-gray-50 text-base px-8 py-4">
-                Essayer maintenant <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white/10 text-base px-8 py-4">
-                Nous contacter
-              </Button>
-            </Link>
-          </motion.div>
+      <section className="relative bg-gradient-to-br from-[#1e3a8a] via-[#2d4fa8] to-[#0d9488] py-32 overflow-hidden">
+        {/* Animated background elements */}
+        <motion.div 
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-white/10 blur-3xl"
+        />
+        <motion.div 
+          animate={{ 
+            rotate: [360, 0],
+            scale: [1, 1.3, 1]
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-white/10 blur-3xl"
+        />
+        
+        <div className="relative mx-auto max-w-5xl px-6">
+          <div className="text-center space-y-8">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2 text-sm font-semibold text-white border border-white/20"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+              </span>
+              Rejoignez des milliers d'utilisateurs
+            </motion.div>
+
+            {/* Title */}
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl font-black text-white lg:text-6xl leading-tight"
+            >
+              Rejoignez l'aventure
+              <br />
+              <span className="bg-gradient-to-r from-white via-blue-100 to-teal-100 bg-clip-text text-transparent">
+                UniFlow
+              </span>
+            </motion.h2>
+
+            {/* Description */}
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed"
+            >
+              Découvrez comment UniFlow peut transformer votre expérience universitaire
+              et simplifier votre quotidien académique
+            </motion.p>
+
+            {/* Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+            >
+              <Link to="/app">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <button className="inline-flex items-center gap-3 rounded-xl bg-white text-[#1e3a8a] px-10 py-5 text-lg font-bold shadow-2xl hover:shadow-white/20 transition-all group">
+                    Essayer maintenant
+                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </motion.div>
+              </Link>
+              
+              <Link to="/contact">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <button className="inline-flex items-center gap-3 rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white px-10 py-5 text-lg font-bold hover:bg-white/20 hover:border-white/50 transition-all">
+                    Nous contacter
+                  </button>
+                </motion.div>
+              </Link>
+            </motion.div>
+
+            {/* Stats mini */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-wrap items-center justify-center gap-8 pt-8 text-white/80"
+            >
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-emerald-300" />
+                <span className="text-sm font-medium">100% gratuit</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-emerald-300" />
+                <span className="text-sm font-medium">Open source</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-emerald-300" />
+                <span className="text-sm font-medium">Mode offline</span>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
