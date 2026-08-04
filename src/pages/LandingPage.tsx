@@ -146,22 +146,8 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Right — dashboard mockup + mascot */}
+            {/* Right — dashboard image */}
             <div className="relative animate-fade-in">
-              {/* Mascot flottante */}
-              <div className="absolute -top-8 -right-4 z-10 animate-float">
-                <div className="relative">
-                  <img
-                    src="/logos/mascotte.png"
-                    alt="Chouette UniFlow"
-                    className="h-28 w-28 object-contain drop-shadow-xl"
-                  />
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-[#1e3a8a] px-3 py-1 text-[10px] font-bold text-white whitespace-nowrap shadow-lg">
-                    Bonjour !
-                  </div>
-                </div>
-              </div>
-
               {/* Hero image */}
               <div className="rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl overflow-hidden">
                 <img
