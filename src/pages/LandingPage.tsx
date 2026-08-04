@@ -8,6 +8,7 @@ import {
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 import { OptimizedImage } from '../components/ui/OptimizedImage'
 import { AnimatedSection, AnimatedItem } from '../components/ui/AnimatedSection'
+import { ScrollFloat } from '../components/ui/ScrollFloat'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { fadeInUp, staggerContainer, float } from '../utils/animations'
@@ -315,15 +316,13 @@ export default function LandingPage() {
       <AnimatedSection className="bg-white py-24" stagger>
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-16 space-y-4">
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            <ScrollFloat 
+              containerClassName="text-4xl font-black text-[#111827] lg:text-5xl"
+              animationDuration={0.8}
+              stagger={0.02}
             >
-              Fonctionnalités{' '}
-              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
-                avancées
-              </span>
-            </motion.h2>
+              Fonctionnalités avancées
+            </ScrollFloat>
             <motion.p 
               variants={fadeInUp}
               className="text-lg text-[#6b7280] max-w-2xl mx-auto"
@@ -358,17 +357,13 @@ export default function LandingPage() {
       <section className="bg-gradient-to-br from-[#f9fafb] to-white py-24">
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-16 space-y-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            <ScrollFloat 
+              containerClassName="text-4xl font-black text-[#111827] lg:text-5xl"
+              animationDuration={0.8}
+              stagger={0.02}
             >
-              Ce qu'ils en{' '}
-              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
-                disent
-              </span>
-            </motion.h2>
+              Ce qu'ils en disent
+            </ScrollFloat>
           </div>
 
           <motion.div 
@@ -415,14 +410,14 @@ export default function LandingPage() {
         />
         
         <div className="relative mx-auto max-w-4xl px-6 text-center space-y-8">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl font-black text-white lg:text-5xl"
+          <ScrollFloat 
+            containerClassName="text-4xl font-black text-white lg:text-5xl"
+            textClassName="text-white"
+            animationDuration={0.8}
+            stagger={0.02}
           >
             Prêt à transformer votre université ?
-          </motion.h2>
+          </ScrollFloat>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

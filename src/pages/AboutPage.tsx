@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
 import { AnimatedSection, AnimatedItem } from '../components/ui/AnimatedSection'
+import { ScrollFloat } from '../components/ui/ScrollFloat'
 import { Card } from '../components/ui/Card'
 import { fadeInUp, staggerContainer } from '../utils/animations'
 
@@ -185,15 +186,13 @@ export default function AboutPage() {
       <AnimatedSection className="bg-white py-20" stagger>
         <div className="mx-auto max-w-[1920px] px-6">
           <div className="text-center mb-16 space-y-4">
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            <ScrollFloat 
+              containerClassName="text-4xl font-black text-[#111827] lg:text-5xl"
+              animationDuration={0.8}
+              stagger={0.02}
             >
-              Notre{' '}
-              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
-                mission
-              </span>
-            </motion.h2>
+              Notre mission
+            </ScrollFloat>
             <motion.p 
               variants={fadeInUp}
               className="text-lg text-[#6b7280] max-w-3xl mx-auto leading-relaxed"
