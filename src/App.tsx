@@ -18,8 +18,8 @@ const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const SchedulePage = lazy(() => import('./pages/SchedulePage'))
 const AttendancePage = lazy(() => import('./pages/AttendancePage'))
+const VideoLobbyPage = lazy(() => import('./pages/VideoLobbyPage'))
 const VideoConfPage = lazy(() => import('./pages/VideoConfPage'))
-const VideoConferenceRoomPage = lazy(() => import('./pages/VideoConferenceRoomPage'))
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'))
 const AssignmentsPage = lazy(() => import('./pages/AssignmentsPage'))
 const GradesPage = lazy(() => import('./pages/GradesPage'))
@@ -97,7 +97,7 @@ export default function App() {
 
           {/* Partie 3 — Présences, Visioconf, Notifications */}
           <Route path="/app/presences" element={<StudentApp><AttendancePage /></StudentApp>} />
-          <Route path="/app/visio" element={<StudentApp><VideoConferenceRoomPage /></StudentApp>} />
+          <Route path="/app/visio" element={<StudentApp><VideoLobbyPage /></StudentApp>} />
           <Route path="/app/visioconference" element={<VideoConfPage />} />
           <Route path="/app/notifications" element={<StudentApp><NotificationsPage /></StudentApp>} />
 
