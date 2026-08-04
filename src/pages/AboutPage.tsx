@@ -104,24 +104,24 @@ const milestones = [
     color: 'bg-[#f0fdfa] text-[#0d9488]'
   },
   { 
-    year: 'Septembre 2026', 
-    title: 'Sentinelle IoT', 
-    desc: 'Intégration des modules Santé et Vigie sur Raspberry Pi avec IA embarquée.',
-    icon: Shield,
-    color: 'bg-amber-50 text-amber-700'
-  },
-  { 
-    year: 'Octobre 2026', 
-    title: 'Version Beta', 
-    desc: 'Tests en conditions réelles avec premiers retours utilisateurs. Amélioration continue basée sur feedback.',
+    year: 'Aujourd\'hui', 
+    title: 'Développement actif', 
+    desc: 'Amélioration continue de l\'interface, optimisation des performances et ajout de nouvelles fonctionnalités.',
     icon: TrendingUp,
     color: 'bg-rose-50 text-rose-700'
   },
   { 
-    year: 'Aujourd\'hui', 
-    title: 'Évolution continue', 
-    desc: 'Développement actif : mobile offline, desktop Electron, API publique et nouvelles fonctionnalités.',
+    year: 'À venir', 
+    title: 'Mobile & Desktop', 
+    desc: 'Applications mobile (iOS/Android) en mode offline et version desktop avec Electron.',
     icon: Award,
+    color: 'bg-amber-50 text-amber-700'
+  },
+  { 
+    year: 'À venir', 
+    title: 'Sentinelle IoT', 
+    desc: 'Modules IoT pour le suivi santé et vigie campus avec Raspberry Pi et IA embarquée.',
+    icon: Shield,
     color: 'bg-emerald-50 text-emerald-700'
   },
 ]

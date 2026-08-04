@@ -44,8 +44,8 @@ const features = [
   },
   {
     icon: Shield,
-    title: 'UniFlow Sentinelle',
-    desc: 'Module IoT pour le suivi santé et surveillance campus. Intelligence artificielle embarquée sans cloud.',
+    title: 'Sécurité & Confidentialité',
+    desc: 'Données chiffrées et protégées. Authentification sécurisée avec gestion des rôles et permissions.',
     color: 'bg-amber-50 text-amber-700',
     gradient: 'from-amber-50 to-amber-100'
   },
