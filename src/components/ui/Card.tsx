@@ -1,58 +1,26 @@
+import { motion, type HTMLMotionProps } from 'framer-motion'
 import { cn } from '../../utils/cn'
+import { cardHover } from '../../utils/animations'
 
-export function Card({
-  children,
-  className,
-  onClick,
-}: {
+interface CardProps extends HTMLMotionProps<'div'> {
+  hover?: boolean
   children: React.ReactNode
-  className?: string
-  onClick?: () => void
-}) {
+}
+
+export function Card({ hover = false, className, children, ...props }: CardProps) {
   return (
-    <div
-      onClick={onClick}
+    <motion.div
+      initial="rest"
+      whileHover={hover ? "hover" : undefined}
+      variants={hover ? cardHover : undefined}
       className={cn(
-        'rounded-xl border border-[#e5e7eb] bg-white shadow-sm transition-all duration-200',
-        onClick && 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0',
-        className,
+        'rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow duration-300',
+        hover && 'cursor-pointer hover:shadow-lg hover:border-[#d1d5db]',
+        className
       )}
+      {...props}
     >
       {children}
-    </div>
+    </motion.div>
   )
-}
-
-export function CardTitle({
-  children,
-  className,
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <h3 className={cn('text-sm font-semibold text-[#111827]', className)}>
-      {children}
-    </h3>
-  )
-}
-
-export function CardHeader({
-  children,
-  className,
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return <div className={cn('mb-4', className)}>{children}</div>
-}
-
-export function CardContent({
-  children,
-  className,
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return <div className={cn('', className)}>{children}</div>
 }

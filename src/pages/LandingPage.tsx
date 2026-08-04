@@ -1,412 +1,452 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   ArrowRight, Play, CheckCircle, GraduationCap, Users, Wifi, Shield,
   MessageSquare, BarChart3, Zap, ChevronRight,
-  Smartphone, Globe, Monitor, Activity, Eye, Megaphone, UserCheck, Settings
+  Smartphone, Globe, Monitor, Star, TrendingUp, Clock, Award
 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
+import { OptimizedImage } from '../components/ui/OptimizedImage'
+import { AnimatedSection, AnimatedItem } from '../components/ui/AnimatedSection'
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { fadeInUp, staggerContainer, float } from '../utils/animations'
 import landingImg from '../assets/landing.png'
 
 const stats = [
-  { value: '12 000+', label: 'Étudiants actifs' },
-  { value: '480+',    label: 'Enseignants' },
-  { value: '98%',     label: 'Satisfaction' },
-  { value: '4',       label: 'Rôles & accès' },
+  { icon: Users, value: '12 000+', label: 'Étudiants actifs', color: 'text-[#1e3a8a] bg-[#eff3ff]' },
+  { icon: Award, value: '480+', label: 'Enseignants', color: 'text-[#0d9488] bg-[#f0fdfa]' },
+  { icon: TrendingUp, value: '98%', label: 'Satisfaction', color: 'text-purple-700 bg-purple-50' },
+  { icon: Clock, value: '24/7', label: 'Disponibilité', color: 'text-amber-700 bg-amber-50' },
 ]
 
 const features = [
   {
     icon: GraduationCap,
-    title: 'Gestion académique',
-    desc: 'Cours, emplois du temps, devoirs, notes et bulletins centralisés dans une interface intuitive.',
+    title: 'Gestion académique complète',
+    desc: 'Cours, emplois du temps, devoirs, notes et bulletins centralisés dans une interface intuitive et moderne.',
     color: 'bg-[#eff3ff] text-[#1e3a8a]',
+    gradient: 'from-[#eff3ff] to-[#dce5fd]'
   },
   {
     icon: Users,
-    title: 'Multi-rôles',
-    desc: 'Étudiant, Délégué, Enseignant, Admin — chaque acteur dispose de son espace dédié.',
+    title: 'Multi-rôles intelligent',
+    desc: 'Étudiant, Délégué, Enseignant, Admin — chaque acteur dispose de son espace dédié et personnalisé.',
     color: 'bg-purple-50 text-purple-700',
+    gradient: 'from-purple-50 to-purple-100'
   },
   {
     icon: Wifi,
-    title: 'Offline First',
-    desc: 'Fonctionne sans Internet. Base de données locale synchronisée au retour du réseau.',
+    title: 'Offline First puissant',
+    desc: 'Fonctionne sans Internet. Base de données locale avec synchronisation automatique au retour du réseau.',
     color: 'bg-[#f0fdfa] text-[#0d9488]',
+    gradient: 'from-[#f0fdfa] to-[#ccfbf1]'
   },
   {
     icon: Shield,
     title: 'UniFlow Sentinelle',
-    desc: 'Module IoT pour le suivi santé et vigie campus. IA embarquée sans cloud.',
+    desc: 'Module IoT pour le suivi santé et surveillance campus. Intelligence artificielle embarquée sans cloud.',
     color: 'bg-amber-50 text-amber-700',
+    gradient: 'from-amber-50 to-amber-100'
   },
   {
     icon: MessageSquare,
-    title: 'Communication & Visioconférence',
-    desc: 'Forums par cours, visioconférence sur réseau local pour cours magistraux.',
+    title: 'Communication intégrée',
+    desc: 'Forums par cours, messagerie instantanée et visioconférence sur réseau local pour cours magistraux.',
     color: 'bg-indigo-50 text-indigo-700',
+    gradient: 'from-indigo-50 to-indigo-100'
   },
   {
     icon: BarChart3,
-    title: 'Statistiques & Export',
-    desc: 'Taux de présence, moyennes, génération automatique de bulletins PDF.',
+    title: 'Statistiques avancées',
+    desc: 'Taux de présence, moyennes, analyses détaillées et génération automatique de bulletins PDF.',
     color: 'bg-rose-50 text-rose-700',
+    gradient: 'from-rose-50 to-rose-100'
   },
 ]
 
 const platforms = [
-  { icon: Smartphone, label: 'Mobile', sub: 'iOS & Android' },
-  { icon: Globe, label: 'Web',    sub: 'PWA Progressive' },
-  { icon: Monitor, label: 'Desktop', sub: 'Win, Mac, Linux' },
+  { icon: Smartphone, label: 'Mobile', sub: 'iOS & Android', color: 'text-[#1e3a8a]' },
+  { icon: Globe, label: 'Web', sub: 'PWA Progressive', color: 'text-[#0d9488]' },
+  { icon: Monitor, label: 'Desktop', sub: 'Win, Mac, Linux', color: 'text-purple-700' },
 ]
 
 const testimonials = [
   {
     name: 'Dr. Kamga',
     role: 'Enseignant — Informatique',
-    text: 'UniFlow a transformé ma gestion de cours. La synchronisation offline est parfaite pour nos campus.',
+    text: 'UniFlow a transformé ma gestion de cours. La synchronisation offline est parfaite pour nos campus avec une connexion instable.',
     avatar: 'K',
+    rating: 5
   },
   {
     name: 'Emma Martin',
     role: 'Étudiante L2 — Informatique',
-    text: 'Je suis mes cours, devoirs et présences depuis mon téléphone, même sans connexion. C\'est révolutionnaire.',
+    text: 'Je suis mes cours, devoirs et présences depuis mon téléphone, même sans connexion. Interface intuitive et rapide.',
     avatar: 'E',
+    rating: 5
   },
   {
     name: 'Lucas Dubois',
     role: 'Délégué — L2 Info',
-    text: 'La gestion des présences par QR code en mode local, c\'est exactement ce dont on avait besoin.',
+    text: 'La gestion des présences par QR code en mode local, avec statistiques en temps réel. Exactement ce dont on avait besoin.',
     avatar: 'L',
+    rating: 5
   },
 ]
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-screen bg-white font-sans overflow-x-hidden">
       <LandingNavbar />
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-white">
+      {/* ── Hero Section ── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-white via-[#f9fafb] to-[#eff3ff] min-h-screen flex items-center">
         {/* Background decoration */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#eff3ff] blur-3xl opacity-60" />
-          <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-[#f0fdfa] blur-3xl opacity-60" />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 8, repeat: Infinity }}
+            className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#1e3a8a] blur-3xl"
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.3, 1],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ duration: 10, repeat: Infinity }}
+            className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-[#0d9488] blur-3xl"
+          />
         </div>
 
-        <div className="relative mx-auto w-full px-6 py-16 lg:py-24">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="relative mx-auto w-full max-w-[1920px] px-6 py-20 lg:py-32">
+          <div className="grid items-center gap-16 lg:grid-cols-2">
             {/* Left content */}
-            <div className="animate-fade-in">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eff3ff] px-3 py-1 text-xs font-semibold text-[#1e3a8a] mb-5 border border-[#1e3a8a]/10">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0d9488] animate-pulse-dot" />
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              className="space-y-8"
+            >
+              <motion.span 
+                variants={fadeInUp}
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#eff3ff] to-[#dce5fd] px-4 py-2 text-sm font-semibold text-[#1e3a8a] border border-[#1e3a8a]/10 shadow-sm"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0d9488] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0d9488]" />
+                </span>
                 Plateforme universitaire intelligente
-              </span>
+              </motion.span>
 
-              <h1 className="text-4xl font-extrabold leading-tight text-[#111827] lg:text-[3.25rem]">
+              <motion.h1 
+                variants={fadeInUp}
+                className="text-5xl font-black leading-tight text-[#111827] lg:text-6xl xl:text-7xl"
+              >
                 Simplifiez l'éducation,<br />
-                <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#1e3a8a] via-[#2d4fa8] to-[#0d9488] bg-clip-text text-transparent">
                   libérez le potentiel
                 </span>
-              </h1>
+              </motion.h1>
 
-              <p className="mt-6 text-lg text-[#6b7280] leading-relaxed max-w-lg">
+              <motion.p 
+                variants={fadeInUp}
+                className="text-xl text-[#6b7280] leading-relaxed max-w-xl"
+              >
                 UniFlow centralise cours, emplois du temps, présences, devoirs et communications
                 dans une plateforme moderne, pensée pour les universités africaines.
-              </p>
+              </motion.p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/app"
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#1e3a8a] px-7 py-3.5 text-sm font-bold text-white hover:bg-[#2d4fa8] transition-all shadow-lg shadow-[#1e3a8a]/20 hover:shadow-xl hover:shadow-[#1e3a8a]/30 hover:-translate-y-0.5"
-                >
-                  Essayer gratuitement <ArrowRight className="h-4 w-4" />
+              <motion.div 
+                variants={fadeInUp}
+                className="flex flex-wrap items-center gap-4"
+              >
+                <Link to="/app">
+                  <Button size="lg" className="gap-2 text-base px-8 py-4 shadow-lg shadow-[#1e3a8a]/20">
+                    Essayer gratuitement <ArrowRight className="h-5 w-5" />
+                  </Button>
                 </Link>
-                <Link
-                  to="/presentation"
-                  className="inline-flex items-center gap-2.5 text-sm font-medium text-[#374151] hover:text-[#1e3a8a] transition-colors"
-                >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-[#e5e7eb] shadow-sm">
-                    <Play className="h-3.5 w-3.5 ml-0.5 text-[#1e3a8a]" />
-                  </span>
-                  Voir la démo vidéo
+                <Link to="/presentation">
+                  <Button variant="outline" size="lg" className="gap-3 text-base px-8 py-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#eff3ff]">
+                      <Play className="h-4 w-4 ml-0.5 text-[#1e3a8a]" />
+                    </div>
+                    Voir la démo vidéo
+                  </Button>
                 </Link>
-              </div>
+              </motion.div>
 
-              <div className="mt-8 flex flex-wrap items-center gap-5">
+              <motion.div 
+                variants={fadeInUp}
+                className="flex flex-wrap items-center gap-6 pt-4"
+              >
                 {[
-                  'Gratuit & Open Source',
-                  'Offline First',
-                  'Multi-plateforme',
-                ].map(t => (
-                  <span key={t} className="flex items-center gap-1.5 text-sm text-[#6b7280]">
-                    <CheckCircle className="h-4 w-4 text-[#0d9488]" />
-                    {t}
-                  </span>
+                  { icon: CheckCircle, text: 'Gratuit & Open Source' },
+                  { icon: Wifi, text: 'Offline First' },
+                  { icon: Zap, text: 'Multi-plateforme' },
+                ].map(({ icon: Icon, text }) => (
+                  <motion.span 
+                    key={text}
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2 text-sm font-medium text-[#374151]"
+                  >
+                    <Icon className="h-5 w-5 text-[#0d9488]" />
+                    {text}
+                  </motion.span>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Right — dashboard image */}
-            <div className="relative animate-fade-in">
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative"
+            >
+              {/* Floating badge */}
+              <motion.div 
+                variants={float}
+                initial="initial"
+                animate="animate"
+                className="absolute -top-8 -left-8 z-10 rounded-2xl bg-gradient-to-br from-[#0d9488] to-[#0a7167] px-6 py-4 text-white shadow-2xl"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-white/20 p-2">
+                    <Wifi className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium opacity-90">Mode</p>
+                    <p className="text-sm font-bold">Offline actif</p>
+                  </div>
+                </div>
+              </motion.div>
+
               {/* Hero image */}
-              <div className="rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl overflow-hidden">
-                <img
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                className="relative rounded-3xl border-2 border-[#e5e7eb] bg-white shadow-2xl overflow-hidden"
+              >
+                <OptimizedImage
                   src={landingImg}
                   alt="UniFlow Dashboard"
                   className="w-full h-auto object-cover"
+                  loading="eager"
                 />
-              </div>
-
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 -left-4 rounded-xl bg-[#0d9488] px-4 py-2.5 text-white shadow-lg text-xs font-bold flex items-center gap-2">
-                <Wifi className="h-4 w-4" /> Mode Offline actif
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── Platforms ── */}
-      <section className="border-y border-[#e5e7eb] bg-[#f9fafb] py-8">
+      {/* ── Stats Section ── */}
+      <AnimatedSection className="border-y border-[#e5e7eb] bg-white py-16">
+        <div className="mx-auto max-w-[1920px] px-6">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 gap-8 lg:grid-cols-4"
+          >
+            {stats.map(({ icon: Icon, value, label, color }) => (
+              <AnimatedItem key={label}>
+                <Card hover className="text-center space-y-4">
+                  <div className={`mx-auto w-fit rounded-2xl p-4 ${color}`}>
+                    <Icon className="h-8 w-8" />
+                  </div>
+                  <div>
+                    <motion.p 
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5 }}
+                      className="text-4xl font-black text-[#111827]"
+                    >
+                      {value}
+                    </motion.p>
+                    <p className="text-sm text-[#6b7280] mt-2 font-medium">{label}</p>
+                  </div>
+                </Card>
+              </AnimatedItem>
+            ))}
+          </motion.div>
+        </div>
+      </AnimatedSection>
+
+      {/* ── Platforms Section ── */}
+      <section className="bg-gradient-to-br from-[#f9fafb] to-white py-12">
         <div className="mx-auto max-w-5xl px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-[#9ca3af] mb-6">
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-[#9ca3af] mb-8">
             Disponible sur toutes les plateformes
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            {platforms.map(p => {
-              const Icon = p.icon
-              return (
-                <div key={p.label} className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white px-5 py-3 shadow-sm">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eff3ff] text-[#1e3a8a]">
-                    <Icon className="h-5 w-5" />
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="flex flex-wrap items-center justify-center gap-6"
+          >
+            {platforms.map(({ icon: Icon, label, sub, color }) => (
+              <AnimatedItem key={label}>
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="flex items-center gap-4 rounded-2xl border border-[#e5e7eb] bg-white px-6 py-4 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#f9fafb] to-[#eff3ff] ${color}`}>
+                    <Icon className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[#111827]">{p.label}</p>
-                    <p className="text-xs text-[#6b7280]">{p.sub}</p>
+                    <p className="text-sm font-bold text-[#111827]">{label}</p>
+                    <p className="text-xs text-[#6b7280]">{sub}</p>
                   </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats ── */}
-      <section className="bg-[#1e3a8a] py-14">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-            {stats.map(({ value, label }) => (
-              <div key={label} className="text-center">
-                <p className="text-4xl font-extrabold text-white">{value}</p>
-                <p className="mt-2 text-sm text-blue-200">{label}</p>
-              </div>
+                </motion.div>
+              </AnimatedItem>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section id="fonctionnalites" className="bg-white py-20">
+      {/* ── Features Section ── */}
+      <AnimatedSection className="bg-white py-24" stagger>
         <div className="mx-auto max-w-[1920px] px-6">
-          <div className="text-center mb-14">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eff3ff] px-3 py-1 text-xs font-semibold text-[#1e3a8a] mb-4">
-              <Zap className="h-3.5 w-3.5" /> Fonctionnalités clés
-            </span>
-            <h2 className="text-3xl font-extrabold text-[#111827]">Tout ce dont votre université a besoin</h2>
-            <p className="mt-3 text-[#6b7280] max-w-xl mx-auto">
-              UniFlow couvre l'intégralité du cycle académique, du cours à la visioconférence en passant par les notes et les présences.
-            </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(({ icon: Icon, title, desc, color }) => (
-              <div key={title} className="group rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
-                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${color}`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-bold text-[#111827] mb-2">{title}</h3>
-                <p className="text-sm text-[#6b7280] leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Sentinelle Teaser ── */}
-      <section className="bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0d9488] py-20 text-white overflow-hidden relative">
-        <div className="mx-auto max-w-[1920px] px-6">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white mb-6 border border-white/20">
-                <Shield className="h-3.5 w-3.5 text-amber-400" /> Nouveauté · UniFlow Sentinelle
+          <div className="text-center mb-16 space-y-4">
+            <motion.h2 
+              variants={fadeInUp}
+              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            >
+              Fonctionnalités{' '}
+              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
+                avancées
               </span>
-              <h2 className="text-3xl font-extrabold mb-4 leading-tight">
-                L'IA physique & IoT au service de la santé et sécurité de votre campus
-              </h2>
-              <p className="text-blue-100 leading-relaxed mb-6">
-                L'extension physique du campus. Matériel bas coût (Raspberry Pi) connecté à la plateforme pour une couverture totale — de la santé à la sécurité des espaces.
-              </p>
-              <div className="space-y-3 mb-8">
-                {[
-                  { icon: Activity, label: 'Module Santé', desc: 'Kiosque de pré-diagnostic avec IA de triage médical' },
-                  { icon: Eye, label: 'Module Vigie', desc: 'Détection d\'anomalies par edge AI, fonctionne offline' },
-                  { icon: Zap, label: 'Synergie inter-modules', desc: 'Déclenchement croisé automatique en cas d\'urgence' },
-                ].map(item => {
-                  const Icon = item.icon
-                  return (
-                    <div key={item.label} className="flex items-start gap-3 rounded-xl bg-white/10 p-3 border border-white/10">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-white shrink-0">
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-white text-sm">{item.label}</p>
-                        <p className="text-xs text-blue-200 mt-0.5">{item.desc}</p>
-                      </div>
+            </motion.h2>
+            <motion.p 
+              variants={fadeInUp}
+              className="text-lg text-[#6b7280] max-w-2xl mx-auto"
+            >
+              Tout ce dont vous avez besoin pour gérer votre établissement universitaire efficacement
+            </motion.p>
+          </div>
+
+          <motion.div 
+            variants={staggerContainer}
+            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {features.map((feat) => {
+              const Icon = feat.icon
+              return (
+                <AnimatedItem key={feat.title}>
+                  <Card hover className="h-full space-y-4 group">
+                    <div className={`w-fit rounded-2xl p-4 bg-gradient-to-br ${feat.gradient} group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className={`h-7 w-7 ${feat.color.split(' ')[1]}`} />
                     </div>
-                  )
-                })}
-              </div>
-              <Link
-                to="/sentinelle"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-[#1e3a8a] hover:bg-blue-50 transition-colors shadow-lg"
-              >
-                Découvrir Sentinelle <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            {/* Visual */}
-            <div className="flex justify-center">
-              <div className="relative">
-                {/* Central mascot enlarged */}
-                <div className="flex h-64 w-64 items-center justify-center rounded-full bg-white/10 border border-white/20">
-                  <img src="/logos/mascotte.png" alt="Sentinelle" className="h-48 w-48 object-contain drop-shadow-2xl animate-float" />
-                </div>
-                {/* Floating module badges */}
-                <div className="absolute -top-4 -right-4 flex items-center gap-1.5 rounded-2xl bg-emerald-500 px-4 py-2.5 text-white text-xs font-bold shadow-xl">
-                  <Activity className="h-4 w-4" /> Santé
-                </div>
-                <div className="absolute -bottom-4 -left-4 flex items-center gap-1.5 rounded-2xl bg-purple-500 px-4 py-2.5 text-white text-xs font-bold shadow-xl">
-                  <Eye className="h-4 w-4" /> Vigie
-                </div>
-                <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex items-center gap-1.5 rounded-2xl bg-[#0d9488] px-4 py-2.5 text-white text-xs font-bold shadow-xl">
-                  <Zap className="h-4 w-4" /> Synergie
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Testimonials ── */}
-      <section className="bg-[#f3f4f6] py-20">
-        <div className="mx-auto max-w-[1920px] px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-extrabold text-[#111827]">Ce qu'en disent nos utilisateurs</h2>
-            <p className="mt-3 text-[#6b7280]">Créé par des étudiants et enseignants de l'Université de Yaoundé I</p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-3">
-            {testimonials.map(t => (
-              <div key={t.name} className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm flex flex-col justify-between">
-                <p className="text-sm text-[#374151] leading-relaxed italic mb-6">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e3a8a] text-sm font-bold text-white">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-[#111827]">{t.name}</p>
-                    <p className="text-xs text-[#6b7280]">{t.role}</p>
-                  </div>
-                </div>
-                <div className="flex gap-0.5 mt-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className="text-amber-400 text-sm">★</span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA final ── */}
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          {/* Mascot */}
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center">
-            <img src="/logos/mascotte.png" alt="UniFlow" className="h-20 w-20 object-contain animate-bounce" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-[#111827]">
-            Prêt à transformer votre expérience universitaire ?
-          </h2>
-          <p className="mt-4 text-lg text-[#6b7280] max-w-xl mx-auto">
-            Rejoignez des milliers d'étudiants et d'enseignants qui utilisent UniFlow au quotidien.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/app"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#1e3a8a] px-8 py-3.5 text-sm font-bold text-white hover:bg-[#2d4fa8] transition-all shadow-lg"
-            >
-              Commencer gratuitement <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/contact"
-              className="rounded-xl border border-[#e5e7eb] px-8 py-3.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors"
-            >
-              Contacter l'équipe
-            </Link>
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-[#9ca3af]">
-            {['Open Source MIT', 'Offline First', 'Gratuit', 'Multi-plateforme'].map(t => (
-              <span key={t} className="flex items-center gap-1.5">
-                <CheckCircle className="h-4 w-4 text-[#0d9488]" />
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Roles overview ── */}
-      <section className="bg-[#f3f4f6] border-t border-[#e5e7eb] py-16">
-        <div className="mx-auto max-w-[1920px] px-6">
-          <h2 className="text-2xl font-extrabold text-[#111827] text-center mb-10">Une plateforme, 4 expériences</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: GraduationCap, role: 'Étudiant', color: 'border-[#1e3a8a] bg-[#eff3ff] text-[#1e3a8a]',
-                features: ['Cours & documents', 'Emploi du temps', 'Notes & devoirs', 'Présences QR Code'],
-              },
-              {
-                icon: Megaphone, role: 'Délégué', color: 'border-purple-300 bg-purple-50 text-purple-700',
-                features: ['Gestion présences', 'QR Code appel', 'Rapports classe', 'Communication'],
-              },
-              {
-                icon: UserCheck, role: 'Enseignant', color: 'border-[#0d9488] bg-[#f0fdfa] text-[#0d9488]',
-                features: ['Espace pédagogique', 'Saisie des notes', 'Visioconférence', 'Suivi cohorte'],
-              },
-              {
-                icon: Settings, role: 'Administrateur', color: 'border-amber-300 bg-amber-50 text-amber-700',
-                features: ['Gestion utilisateurs', 'Structure académique', 'Statistiques', 'Configuration'],
-              },
-            ].map(r => {
-              const Icon = r.icon
-              return (
-                <div key={r.role} className={`rounded-2xl border-2 p-5 ${r.color}`}>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 shadow-sm mb-3">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-bold text-[#111827] mb-3">{r.role}</h3>
-                  <ul className="space-y-1.5">
-                    {r.features.map(f => (
-                      <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
-                        <CheckCircle className="h-3.5 w-3.5 text-[#0d9488] shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                    <h3 className="text-lg font-bold text-[#111827]">{feat.title}</h3>
+                    <p className="text-sm text-[#6b7280] leading-relaxed">{feat.desc}</p>
+                  </Card>
+                </AnimatedItem>
               )
             })}
+          </motion.div>
+        </div>
+      </AnimatedSection>
+
+      {/* ── Testimonials Section ── */}
+      <section className="bg-gradient-to-br from-[#f9fafb] to-white py-24">
+        <div className="mx-auto max-w-[1920px] px-6">
+          <div className="text-center mb-16 space-y-4">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl font-black text-[#111827] lg:text-5xl"
+            >
+              Ce qu'ils en{' '}
+              <span className="bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] bg-clip-text text-transparent">
+                disent
+              </span>
+            </motion.h2>
           </div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid gap-8 md:grid-cols-3"
+          >
+            {testimonials.map((test, idx) => (
+              <AnimatedItem key={idx}>
+                <Card hover className="h-full space-y-6">
+                  <div className="flex gap-1">
+                    {[...Array(test.rating)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-[#374151] leading-relaxed italic">"{test.text}"</p>
+                  <div className="flex items-center gap-3 pt-4 border-t border-[#e5e7eb]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] text-white font-bold text-lg">
+                      {test.avatar}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-[#111827]">{test.name}</p>
+                      <p className="text-xs text-[#6b7280]">{test.role}</p>
+                    </div>
+                  </div>
+                </Card>
+              </AnimatedItem>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── CTA Section ── */}
+      <section className="bg-gradient-to-br from-[#1e3a8a] via-[#2d4fa8] to-[#0d9488] py-24 relative overflow-hidden">
+        <motion.div 
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-white/10 blur-3xl"
+        />
+        
+        <div className="relative mx-auto max-w-4xl px-6 text-center space-y-8">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl font-black text-white lg:text-5xl"
+          >
+            Prêt à transformer votre université ?
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-xl text-white/90 max-w-2xl mx-auto"
+          >
+            Rejoignez les milliers d'étudiants et enseignants qui utilisent déjà UniFlow
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <Link to="/app">
+              <Button 
+                size="lg" 
+                className="bg-white text-[#1e3a8a] hover:bg-gray-50 text-lg px-10 py-5 shadow-2xl gap-3"
+              >
+                Commencer gratuitement <ChevronRight className="h-5 w-5" />
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
