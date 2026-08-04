@@ -262,7 +262,110 @@ body {
 .stagger-item:nth-child(9)  { animation-delay: 0.45s; }
 .stagger-item:nth-child(10) { animation-delay: 0.5s; }
 
-/* ─── Smooth Transitions ─── */
+/* ─── Responsive Utilities ─── */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.touch-action-none {
+  touch-action: none;
+}
+
+.safe-area-inset {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ─── Mobile Menu Animation ─── */
+@keyframes mobile-menu-in {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes mobile-menu-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+.animate-mobile-menu-in {
+  animation: mobile-menu-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-mobile-menu-out {
+  animation: mobile-menu-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ─── Backdrop Blur ─── */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ─── Mobile-Optimized Scroll ─── */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ─── Responsive Text ─── */
+@media (max-width: 640px) {
+  .text-responsive-xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .text-responsive-lg {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+/* ─── Mobile Cards Spacing ─── */
+@media (max-width: 640px) {
+  .card-mobile-compact {
+    padding: 1rem;
+  }
+  
+  .gap-mobile-compact {
+    gap: 0.75rem;
+  }
+}
 .transition-smooth {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
