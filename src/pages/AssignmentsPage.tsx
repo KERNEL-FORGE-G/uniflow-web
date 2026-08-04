@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Plus, Clock, CheckCircle, AlertCircle, FileText, ChevronRight, X } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
+import { AnimatedList } from '../components/ui/AnimatedList'
 import { mockAssignments, type AssignmentStatus } from '../data/mockData'
 
 const statusMeta: Record<AssignmentStatus, { variant: 'warning'|'danger'|'success'|'info'; icon: any; label: string }> = {
@@ -80,52 +81,60 @@ export default function AssignmentsPage() {
       </div>
 
       {/* Assignment list */}
-      <div className="space-y-3">
-        {filtered.length === 0 && (
+      <div>
+        {filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-[#9ca3af]">
             <FileText className="h-10 w-10 mb-3 opacity-30" />
             <p className="text-sm">Aucun devoir dans cette catégorie.</p>
           </div>
-        )}
-        {filtered.map(a => {
-          const meta = statusMeta[a.status]
-          const StatusIcon = meta.icon
-          return (
-            <div key={a.id} className="flex flex-wrap items-center gap-4 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm hover:shadow-md transition-all">
-              <div className="flex-1 min-w-[200px]">
-                <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                  <Badge variant="primary">{a.code}</Badge>
-                  <Badge variant={meta.variant}>
-                    <StatusIcon className="h-3 w-3 mr-1 inline" />{meta.label}
-                  </Badge>
-                  {a.grade && <span className="text-xs font-bold text-[#1e3a8a] bg-[#eff3ff] rounded-md px-2 py-0.5">{a.grade}</span>}
-                </div>
-                <h3 className="font-semibold text-[#111827] text-sm">{a.title}</h3>
-                <p className="text-xs text-[#9ca3af] mt-1 flex items-center gap-1">
-                  <Clock className="h-3 w-3" /> Échéance : {a.due}
-                </p>
-                {a.progress > 0 && (
-                  <div className="mt-3 flex items-center gap-3">
-                    <div className="h-1.5 flex-1 max-w-xs rounded-full bg-[#f3f4f6] overflow-hidden">
-                      <div className="h-full rounded-full bg-[#0d9488] transition-all" style={{ width: `${a.progress}%` }} />
+        ) : (
+          <AnimatedList
+            items={filtered}
+            showGradients
+            enableArrowNavigation
+            displayScrollbar={false}
+            className="max-h-[calc(100vh-500px)]"
+            renderItem={(a: typeof assignments[0]) => {
+              const meta = statusMeta[a.status]
+              const StatusIcon = meta.icon
+              return (
+                <div className="flex flex-wrap items-center gap-4 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex-1 min-w-[200px]">
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <Badge variant="primary">{a.code}</Badge>
+                      <Badge variant={meta.variant}>
+                        <StatusIcon className="h-3 w-3 mr-1 inline" />{meta.label}
+                      </Badge>
+                      {a.grade && <span className="text-xs font-bold text-[#1e3a8a] bg-[#eff3ff] rounded-md px-2 py-0.5">{a.grade}</span>}
                     </div>
-                    <span className="text-xs font-medium text-[#6b7280]">{a.progress}%</span>
+                    <h3 className="font-semibold text-[#111827] text-sm">{a.title}</h3>
+                    <p className="text-xs text-[#9ca3af] mt-1 flex items-center gap-1">
+                      <Clock className="h-3 w-3" /> Échéance : {a.due}
+                    </p>
+                    {a.progress > 0 && (
+                      <div className="mt-3 flex items-center gap-3">
+                        <div className="h-1.5 flex-1 max-w-xs rounded-full bg-[#f3f4f6] overflow-hidden">
+                          <div className="h-full rounded-full bg-[#0d9488] transition-all" style={{ width: `${a.progress}%` }} />
+                        </div>
+                        <span className="text-xs font-medium text-[#6b7280]">{a.progress}%</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <button
-                onClick={() => a.status === 'À rendre' || a.status === 'En retard' ? undefined : undefined}
-                className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-colors shrink-0 ${
-                  a.status === 'À rendre' || a.status === 'En retard'
-                    ? 'bg-[#1e3a8a] text-white hover:bg-[#2d4fa8]'
-                    : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#f9fafb]'
-                }`}>
-                {a.status === 'À rendre' || a.status === 'En retard' ? 'Continuer' : 'Voir'}
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          )
-        })}
+                  <button
+                    onClick={() => a.status === 'À rendre' || a.status === 'En retard' ? undefined : undefined}
+                    className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-colors shrink-0 ${
+                      a.status === 'À rendre' || a.status === 'En retard'
+                        ? 'bg-[#1e3a8a] text-white hover:bg-[#2d4fa8]'
+                        : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#f9fafb]'
+                    }`}>
+                    {a.status === 'À rendre' || a.status === 'En retard' ? 'Continuer' : 'Voir'}
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              )
+            }}
+          />
+        )}
       </div>
 
       {/* New assignment modal */}

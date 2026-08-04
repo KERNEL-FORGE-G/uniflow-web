@@ -31,7 +31,7 @@ const AnimatedItem = ({ children, delay = 0, index, onMouseEnter, onClick }: Ani
 }
 
 interface AnimatedListProps {
-  items: string[] | React.ReactNode[]
+  items: any[]
   onItemSelect?: (item: any, index: number) => void
   showGradients?: boolean
   enableArrowNavigation?: boolean

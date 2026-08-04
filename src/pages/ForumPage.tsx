@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Star, Send, ThumbsUp, MessageCircle, User } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
+import { AnimatedList } from '../components/ui/AnimatedList'
 
 interface Comment {
   id: number
@@ -146,9 +147,14 @@ export default function ForumPage() {
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-6">
           <h2 className="text-2xl font-bold text-[#111827] mb-8">Tous les avis ({comments.length})</h2>
-          <div className="space-y-5">
-            {comments.map(c => (
-              <div key={c.id} className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+          <AnimatedList
+            items={comments}
+            showGradients
+            enableArrowNavigation={false}
+            displayScrollbar={false}
+            className="max-h-[800px]"
+            renderItem={(c: Comment) => (
+              <div className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eff3ff] text-[#1e3a8a] font-bold">
                     <User className="h-5 w-5" />
@@ -175,8 +181,8 @@ export default function ForumPage() {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            )}
+          />
         </div>
       </section>
 

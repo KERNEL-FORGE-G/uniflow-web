@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Megaphone, FileText, Video, Settings, Star, Trash2, Check, UserCheck } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
+import { AnimatedList } from '../components/ui/AnimatedList'
 import { mockNotifications, type Notification, type NotifType } from '../data/mockData'
 
 const iconMap: Record<NotifType, any> = {
@@ -94,46 +95,55 @@ export default function NotificationsPage() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         {/* List */}
-        <div className="space-y-2">
-          {visible.length === 0 && (
+        <div>
+          {visible.length === 0 ? (
             <div className="flex flex-col items-center py-12 text-[#9ca3af]">
               <Check className="h-10 w-10 mb-2 opacity-30" />
               <p className="text-sm">Tout est lu !</p>
             </div>
-          )}
-          {visible.map(n => {
-            const Icon = iconMap[n.type]
-            const bg   = colorMap[n.type]
-            return (
-              <button key={n.id} type="button" onClick={() => { setSelected(n); markRead(n.id) }}
-                className={`w-full rounded-xl border p-4 text-left transition-all ${
-                  selected.id === n.id
-                    ? 'border-[#1e3a8a] bg-[#f0f4ff] shadow-sm'
-                    : n.unread
-                      ? 'border-[#e5e7eb] bg-white hover:border-[#1e3a8a]/40 hover:shadow-sm'
-                      : 'border-[#e5e7eb] bg-white opacity-75 hover:opacity-100 hover:shadow-sm'
-                }`}>
-                <div className="flex items-start gap-3">
-                  <div className={`rounded-lg p-2 shrink-0 ${bg}`}>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className={`text-sm ${n.unread ? 'font-semibold text-[#111827]' : 'font-medium text-[#374151]'} truncate`}>{n.title}</p>
-                      <div className="flex items-center gap-1 shrink-0">
-                        {n.unread && <span className="h-2 w-2 rounded-full bg-[#1e3a8a]" />}
-                        <button onClick={e => { e.stopPropagation(); deleteNotif(n.id) }}
-                          className="rounded p-0.5 hover:bg-red-50 text-[#d1d5db] hover:text-red-500 transition-colors">
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+          ) : (
+            <AnimatedList
+              items={visible}
+              onItemSelect={(n: Notification) => { setSelected(n); markRead(n.id) }}
+              showGradients
+              enableArrowNavigation
+              displayScrollbar={false}
+              className="max-h-[calc(100vh-320px)]"
+              renderItem={(n: Notification, _index, isSelected) => {
+                const Icon = iconMap[n.type]
+                const bg = colorMap[n.type]
+                return (
+                  <button type="button"
+                    className={`w-full rounded-xl border p-4 text-left transition-all ${
+                      isSelected
+                        ? 'border-[#1e3a8a] bg-[#f0f4ff] shadow-sm'
+                        : n.unread
+                          ? 'border-[#e5e7eb] bg-white hover:border-[#1e3a8a]/40 hover:shadow-sm'
+                          : 'border-[#e5e7eb] bg-white opacity-75 hover:opacity-100 hover:shadow-sm'
+                    }`}>
+                    <div className="flex items-start gap-3">
+                      <div className={`rounded-lg p-2 shrink-0 ${bg}`}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className={`text-sm ${n.unread ? 'font-semibold text-[#111827]' : 'font-medium text-[#374151]'} truncate`}>{n.title}</p>
+                          <div className="flex items-center gap-1 shrink-0">
+                            {n.unread && <span className="h-2 w-2 rounded-full bg-[#1e3a8a]" />}
+                            <button onClick={e => { e.stopPropagation(); deleteNotif(n.id) }}
+                              className="rounded p-0.5 hover:bg-red-50 text-[#d1d5db] hover:text-red-500 transition-colors">
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-xs text-[#9ca3af] mt-0.5">{n.sender} · {n.time}</p>
                       </div>
                     </div>
-                    <p className="text-xs text-[#9ca3af] mt-0.5">{n.sender} · {n.time}</p>
-                  </div>
-                </div>
-              </button>
-            )
-          })}
+                  </button>
+                )
+              }}
+            />
+          )}
         </div>
 
         {/* Detail */}

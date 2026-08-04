@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Search, Plus, Phone, Video, Paperclip, Smile, Mic, Send, MoreHorizontal, X, AlertTriangle, UserCircle } from 'lucide-react'
 import { Avatar } from '../components/ui/Avatar'
+import { AnimatedList } from '../components/ui/AnimatedList'
 import { mockConversations, type Conversation, type Message } from '../data/mockData'
 import { useNavigate } from 'react-router-dom'
 
@@ -84,26 +85,34 @@ export default function MessagingPage() {
               className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#1e3a8a] focus:bg-white" />
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto divide-y divide-[#f9fafb]">
-          {filteredConvos.map(c => (
-            <button key={c.id} type="button" onClick={() => selectConvo(c)}
-              className={`flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-[#f9fafb] transition-colors ${active.id === c.id ? 'bg-[#f0f4ff] border-l-2 border-[#1e3a8a]' : ''}`}>
-              <div className="relative shrink-0">
-                <Avatar name={c.name} size="md" />
-                {c.online && <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#10b981] ring-2 ring-white" />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <p className={`text-sm truncate ${c.unread > 0 ? 'font-bold text-[#111827]' : 'font-medium text-[#374151]'}`}>{c.name}</p>
-                  <span className="text-[10px] text-[#9ca3af] ml-1 shrink-0">{c.time}</span>
+        <div className="flex-1 overflow-y-auto">
+          <AnimatedList
+            items={filteredConvos}
+            onItemSelect={(c: Conversation) => selectConvo(c)}
+            showGradients
+            enableArrowNavigation
+            displayScrollbar={false}
+            className="max-h-full"
+            renderItem={(c: Conversation, _index, isSelected) => (
+              <button type="button"
+                className={`flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-[#f9fafb] transition-colors border-b border-[#f9fafb] ${isSelected ? 'bg-[#f0f4ff] border-l-2 border-[#1e3a8a]' : ''}`}>
+                <div className="relative shrink-0">
+                  <Avatar name={c.name} size="md" />
+                  {c.online && <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#10b981] ring-2 ring-white" />}
                 </div>
-                <p className={`text-xs truncate mt-0.5 ${c.unread > 0 ? 'text-[#374151] font-medium' : 'text-[#9ca3af]'}`}>{c.preview}</p>
-              </div>
-              {c.unread > 0 && (
-                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#1e3a8a] px-1.5 text-[10px] font-bold text-white shrink-0">{c.unread}</span>
-              )}
-            </button>
-          ))}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className={`text-sm truncate ${c.unread > 0 ? 'font-bold text-[#111827]' : 'font-medium text-[#374151]'}`}>{c.name}</p>
+                    <span className="text-[10px] text-[#9ca3af] ml-1 shrink-0">{c.time}</span>
+                  </div>
+                  <p className={`text-xs truncate mt-0.5 ${c.unread > 0 ? 'text-[#374151] font-medium' : 'text-[#9ca3af]'}`}>{c.preview}</p>
+                </div>
+                {c.unread > 0 && (
+                  <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#1e3a8a] px-1.5 text-[10px] font-bold text-white shrink-0">{c.unread}</span>
+                )}
+              </button>
+            )}
+          />
         </div>
       </div>
 
