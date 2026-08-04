@@ -84,38 +84,45 @@ const techStack = [
 const milestones = [
   { 
     year: '2024', 
-    title: 'Idée & concept', 
-    desc: 'Naissance du projet KERNEL FORGE lors d\'un hackathon universitaire.',
+    title: 'Naissance KERNEL FORGE', 
+    desc: 'Création du groupe KERNEL FORGE par des étudiants passionnés de l\'Université de Yaoundé I.',
     icon: Target,
     color: 'bg-[#eff3ff] text-[#1e3a8a]'
   },
   { 
-    year: '2025 T1', 
-    title: 'Prototype web', 
-    desc: 'Première version de l\'interface web avec 4 rôles fonctionnels.',
+    year: 'Juillet 2026', 
+    title: 'Idée UniFlow', 
+    desc: 'Première conception du projet UniFlow lors d\'un hackathon universitaire. Vision d\'une plateforme offline-first.',
     icon: Code2,
     color: 'bg-purple-50 text-purple-700'
   },
   { 
-    year: '2025 T2', 
-    title: 'Sentinelle IoT', 
-    desc: 'Développement des modules Santé et Vigie sur Raspberry Pi.',
-    icon: Shield,
+    year: 'Août 2026', 
+    title: 'Prototype web', 
+    desc: 'Développement du prototype avec interface moderne et 4 rôles fonctionnels (Étudiant, Délégué, Enseignant, Admin).',
+    icon: Sparkles,
     color: 'bg-[#f0fdfa] text-[#0d9488]'
   },
   { 
-    year: '2025 T4', 
-    title: 'Version 1.0', 
-    desc: 'Déploiement sur Vercel. Intégration visioconférence LAN.',
-    icon: Award,
+    year: 'Septembre 2026', 
+    title: 'Sentinelle IoT', 
+    desc: 'Intégration des modules Santé et Vigie sur Raspberry Pi avec IA embarquée.',
+    icon: Shield,
     color: 'bg-amber-50 text-amber-700'
   },
   { 
-    year: '2026', 
-    title: 'Version 1.2', 
-    desc: 'Mobile offline, desktop Electron, API publique.',
+    year: 'Octobre 2026', 
+    title: 'Version Beta', 
+    desc: 'Tests en conditions réelles avec premiers retours utilisateurs. Amélioration continue basée sur feedback.',
     icon: TrendingUp,
     color: 'bg-rose-50 text-rose-700'
+  },
+  { 
+    year: 'Aujourd\'hui', 
+    title: 'Évolution continue', 
+    desc: 'Développement actif : mobile offline, desktop Electron, API publique et nouvelles fonctionnalités.',
+    icon: Award,
+    color: 'bg-emerald-50 text-emerald-700'
   },
 ]
 
