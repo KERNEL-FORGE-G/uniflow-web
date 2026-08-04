@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import {
   ArrowRight, Play, CheckCircle, GraduationCap, Users, Wifi, Shield,
-  MessageSquare, BarChart3, Zap, Lock, ChevronRight,
+  MessageSquare, BarChart3, Zap, ChevronRight,
   Smartphone, Globe, Monitor, Activity, Eye, Megaphone, UserCheck, Settings
 } from 'lucide-react'
 import { LandingNavbar, LandingFooter } from '../components/layout/LandingLayout'
@@ -161,53 +161,13 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Browser mockup */}
+              {/* Hero image */}
               <div className="rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl overflow-hidden">
-                {/* Browser chrome */}
-                <div className="flex items-center gap-2 border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3">
-                  <div className="flex gap-1.5">
-                    <div className="h-3 w-3 rounded-full bg-[#ef4444]" />
-                    <div className="h-3 w-3 rounded-full bg-[#f59e0b]" />
-                    <div className="h-3 w-3 rounded-full bg-[#10b981]" />
-                  </div>
-                  <div className="flex-1 mx-4 rounded-md bg-white border border-[#e5e7eb] px-3 py-1 text-xs text-[#9ca3af] flex items-center gap-1.5">
-                    <Lock className="h-2.5 w-2.5 text-[#10b981]" />
-                    uniflow.kernelforge.codes
-                  </div>
-                </div>
-
-                {/* Dashboard preview */}
-                <div className="bg-gradient-to-br from-[#f3f4f6] to-white p-5">
-                  {/* Mini topbar */}
-                  <div className="flex items-center justify-between mb-4 rounded-lg bg-white border border-[#e5e7eb] px-3 py-2">
-                    <span className="text-xs font-bold text-[#111827]">Bonjour, Emma</span>
-                    <span className="text-[10px] text-[#6b7280]">Lundi 13 mai 2024</span>
-                  </div>
-                  {/* KPI cards */}
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    {[
-                      { label: 'Cours inscrits', val: '12', color: 'bg-[#eff3ff] text-[#1e3a8a]' },
-                      { label: 'Moyenne', val: '14.6/20', color: 'bg-[#f0fdfa] text-[#0d9488]' },
-                      { label: 'Présences', val: '87%', color: 'bg-emerald-50 text-emerald-700' },
-                      { label: 'Devoirs', val: '2 à rendre', color: 'bg-amber-50 text-amber-700' },
-                    ].map(k => (
-                      <div key={k.label} className={`rounded-lg p-2.5 ${k.color}`}>
-                        <p className="text-xs font-bold">{k.val}</p>
-                        <p className="text-[10px] opacity-80 mt-0.5">{k.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Progress bar */}
-                  <div className="rounded-lg bg-white border border-[#e5e7eb] p-3">
-                    <div className="flex justify-between text-xs mb-2">
-                      <span className="font-medium text-[#374151]">Progression semestre</span>
-                      <span className="font-bold text-[#0d9488]">72%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-[#f3f4f6] overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-[#1e3a8a] to-[#0d9488]" style={{ width: '72%' }} />
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src="/src/assets/hero.png"
+                  alt="UniFlow Dashboard"
+                  className="w-full h-auto object-cover"
+                />
               </div>
 
               {/* Floating badge */}
