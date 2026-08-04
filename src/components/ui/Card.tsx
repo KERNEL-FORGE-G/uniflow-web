@@ -13,8 +13,8 @@ export function Card({
     <div
       onClick={onClick}
       className={cn(
-        'rounded-xl border border-[#e5e7eb] bg-white shadow-sm',
-        onClick && 'cursor-pointer hover:shadow-md transition-shadow',
+        'rounded-xl border border-[#e5e7eb] bg-white shadow-sm transition-all duration-200',
+        onClick && 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0',
         className,
       )}
     >
