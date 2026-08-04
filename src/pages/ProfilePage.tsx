@@ -4,14 +4,14 @@ import { Card, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
+import { PageHeader } from '../components/ui/PageHeader'
+import { useAuth } from '../auth/AuthContext'
 
 const tabs = ['Informations', 'Parcours', 'Présences', 'Grades', 'Paramètres', 'Références']
 
 const personalInfo = [
-  { label: 'Nom complet', value: 'Emma Martin' },
   { label: 'Date de naissance', value: '15 mars 2003' },
   { label: 'Téléphone', value: '+237 6 12 34 56 78' },
-  { label: 'Email', value: 'emma.martin@uniflow.edu' },
   { label: 'Adresse', value: 'Yaoundé, Cameroun' },
 ]
 
@@ -31,34 +31,37 @@ const stats = [
 ]
 
 export default function ProfilePage() {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('Informations')
+  const name = user?.name ?? 'Utilisateur'
 
   return (
     <div className="space-y-6">
+      <PageHeader title="Mon profil" description={user?.roleLabel} />
       <Card>
         <div className="flex flex-wrap items-center gap-6">
-          <Avatar name="Emma Martin" size="xl" />
+          <Avatar name={name} size="xl" src={user?.avatar} />
           <div className="flex-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">Emma Martin</h1>
-              <Badge variant="success">Actif</Badge>
-            </div>
-            <p className="mt-1 text-muted">Étudiante en Licence 2 — Informatique</p>
+            <h2 className="text-xl font-bold text-text">{name}</h2>
+            <p className="text-sm text-muted">{user?.email}</p>
+            <Badge variant="success" className="mt-2">
+              {user?.status ?? 'En ligne'}
+            </Badge>
           </div>
           <Button variant="outline">
-            <Edit className="h-4 w-4" /> Modifier le profil
+            <Edit className="h-4 w-4" /> Modifier
           </Button>
         </div>
       </Card>
 
-      <div className="flex flex-wrap gap-2 border-b border-border">
+      <div className="flex flex-wrap gap-4 border-b border-border">
         {tabs.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-sm font-medium ${
-              activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-muted hover:text-gray-900'
+            className={`pb-3 text-sm font-medium ${
+              activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-muted'
             }`}
           >
             {tab}
@@ -66,42 +69,45 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
           <CardTitle className="mb-4 text-base">Informations personnelles</CardTitle>
-          <dl className="space-y-3">
-            {personalInfo.map(({ label, value }) => (
-              <div key={label} className="flex justify-between border-b border-border pb-2 text-sm">
-                <dt className="text-muted">{label}</dt>
-                <dd className="font-medium text-gray-900">{value}</dd>
+          <dl className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <dt className="text-xs text-muted">Nom complet</dt>
+              <dd className="font-medium">{name}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted">Email</dt>
+              <dd className="font-medium">{user?.email}</dd>
+            </div>
+            {personalInfo.map((item) => (
+              <div key={item.label}>
+                <dt className="text-xs text-muted">{item.label}</dt>
+                <dd className="font-medium">{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <CardTitle className="mb-4 mt-8 text-base">Parcours académique</CardTitle>
+          <dl className="grid gap-4 sm:grid-cols-2">
+            {academicInfo.map((item) => (
+              <div key={item.label}>
+                <dt className="text-xs text-muted">{item.label}</dt>
+                <dd className="font-medium">{item.value}</dd>
               </div>
             ))}
           </dl>
         </Card>
-
-        <Card>
-          <CardTitle className="mb-4 text-base">Informations académiques</CardTitle>
-          <dl className="space-y-3">
-            {academicInfo.map(({ label, value }) => (
-              <div key={label} className="flex justify-between border-b border-border pb-2 text-sm">
-                <dt className="text-muted">{label}</dt>
-                <dd className="font-medium text-gray-900">{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </Card>
-      </div>
-
-      <div>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Mes statistiques</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-4">
           {stats.map(({ label, value, icon: Icon, color }) => (
-            <Card key={label}>
-              <div className={`mb-3 inline-flex rounded-lg p-2 ${color}`}>
+            <Card key={label} className="flex items-center gap-4 !p-4">
+              <div className={`rounded-lg p-2 ${color}`}>
                 <Icon className="h-5 w-5" />
               </div>
-              <p className="text-3xl font-bold text-gray-900">{value}</p>
-              <p className="text-sm text-muted">{label}</p>
+              <div>
+                <p className="text-xl font-bold">{value}</p>
+                <p className="text-sm text-muted">{label}</p>
+              </div>
             </Card>
           ))}
         </div>

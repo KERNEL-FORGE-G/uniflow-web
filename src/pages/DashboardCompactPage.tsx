@@ -1,53 +1,59 @@
 import { Link } from 'react-router-dom'
 import { Card, CardTitle } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
-
-const schedule = [
-  { time: '08h00 - 10h00', course: 'Algorithmique', teacher: 'Pr. Martin', room: 'A101', type: 'CM', status: 'Terminé' as const },
-  { time: '10h15 - 12h15', course: 'Mathématiques', teacher: 'Dr. Dupont', room: 'B204', type: 'TD', status: 'Terminé' as const },
-  { time: '14h00 - 16h00', course: 'Réseaux', teacher: 'Pr. Kamga', room: 'C302', type: 'TP', status: 'À venir' as const },
-  { time: '16h15 - 18h00', course: 'Anglais', teacher: 'Mme. Johnson', room: 'D105', type: 'CM', status: 'À venir' as const },
-]
-
-const lateHomework = [
-  { title: 'Mathématiques — Devoir 2', due: '10 mai 2024' },
-  { title: 'Économie — Rapport final', due: '8 mai 2024' },
-]
+import { PageHeader } from '../components/ui/PageHeader'
+import { useAssignments, useSchedule } from '../hooks'
+import { EmptyState } from '../components/ui/EmptyState'
 
 export default function DashboardCompactPage() {
+  const { data: schedule, loading: loadingSchedule } = useSchedule()
+  const { data: assignments, loading: loadingAssignments } = useAssignments()
+
+  if (loadingSchedule || loadingAssignments) {
+    return <p className="text-sm text-muted">Chargement…</p>
+  }
+
+  if (!schedule || !assignments) {
+    return <EmptyState title="Données indisponibles" />
+  }
+
+  const dayEvents = schedule.events.filter((e) => e.day === 0)
+  const lateHomework = assignments.items.filter((a) => a.statusVariant === 'danger')
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Cours du jour</h1>
-          <p className="text-sm text-muted">Lundi 13 mai 2024</p>
-        </div>
-        <Link to="/app" className="text-sm font-medium text-primary hover:underline">
-          ← Vue principale
-        </Link>
-      </div>
+      <PageHeader
+        title="Cours du jour"
+        description={schedule.weekLabel}
+        actions={
+          <Link to="/app" className="text-sm font-medium text-primary hover:underline">
+            ← Vue principale
+          </Link>
+        }
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2 !p-0 overflow-hidden">
+        <Card className="overflow-hidden !p-0 lg:col-span-2">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-border bg-gray-50">
+              <thead className="border-b border-border bg-bg">
                 <tr>
-                  {['Heure', 'Cours', 'Enseignant', 'Salle', 'Type', 'Statut'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left font-semibold text-gray-700">{h}</th>
+                  {['Heure', 'Cours', 'Enseignant', 'Salle', 'Type'].map((h) => (
+                    <th key={h} className="px-4 py-3 text-left font-semibold text-gray-700">
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {schedule.map((row) => (
-                  <tr key={row.course} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-muted">{row.time}</td>
-                    <td className="px-4 py-3 font-medium">{row.course}</td>
+                {dayEvents.map((row) => (
+                  <tr key={row.title} className="hover:bg-bg">
+                    <td className="px-4 py-3 text-muted">{schedule.hours[row.start]}</td>
+                    <td className="px-4 py-3 font-medium">{row.title}</td>
                     <td className="px-4 py-3">{row.teacher}</td>
                     <td className="px-4 py-3">{row.room}</td>
-                    <td className="px-4 py-3"><Badge variant="info">{row.type}</Badge></td>
                     <td className="px-4 py-3">
-                      <Badge variant={row.status === 'Terminé' ? 'success' : 'warning'}>{row.status}</Badge>
+                      <Badge variant="info">{row.type}</Badge>
                     </td>
                   </tr>
                 ))}
@@ -58,13 +64,15 @@ export default function DashboardCompactPage() {
 
         <div className="space-y-6">
           <Card>
-            <CardTitle className="mb-4 text-base">Mes devoirs en retard (2)</CardTitle>
+            <CardTitle className="mb-4 text-base">Mes devoirs en retard ({lateHomework.length})</CardTitle>
             <ul className="space-y-3">
               {lateHomework.map((hw) => (
                 <li key={hw.title} className="rounded-lg border border-red-100 bg-red-50 p-3">
-                  <p className="text-sm font-medium text-gray-900">{hw.title}</p>
+                  <p className="text-sm font-medium text-text">{hw.title}</p>
                   <p className="text-xs text-muted">Échéance : {hw.due}</p>
-                  <Badge variant="danger" className="mt-2">En retard</Badge>
+                  <Badge variant="danger" className="mt-2">
+                    En retard
+                  </Badge>
                 </li>
               ))}
             </ul>

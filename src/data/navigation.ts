@@ -10,10 +10,12 @@ import {
   Users,
   BookMarked,
   Database,
+  ClipboardList,
   type LucideIcon,
 } from 'lucide-react'
+import type { Role } from '../types'
 
-export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
+export type { Role }
 
 export interface NavItem {
   to: string
@@ -29,19 +31,14 @@ export interface AdminNavGroup {
 }
 
 export const navItems: NavItem[] = [
-  // Étudiant
   { to: '/app', icon: Home, label: 'Accueil', end: true, roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/cours', icon: BookOpen, label: 'Cours', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/emploi-du-temps', icon: Calendar, label: 'Emploi du temps', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/presences', icon: UserCheck, label: 'Présences', roles: ['student', 'delegate'] },
-  
-  // Délégué (rôle spécial)
-  { to: '/app/gestion-presences', icon: UserCheck, label: 'Gérer Présences', roles: ['delegate'] },
-  
-  // Enseignant
+  { to: '/app/gestion-presences', icon: ClipboardList, label: 'Gérer Présences', roles: ['delegate'] },
   { to: '/app/mes-cours-enseignant', icon: BookMarked, label: 'Mes Cours', roles: ['teacher'] },
-  
-  // Commun
+  { to: '/app/devoirs', icon: ClipboardList, label: 'Devoirs', roles: ['student', 'delegate', 'teacher'] },
+  { to: '/app/notes', icon: GraduationCap, label: 'Notes', roles: ['student', 'delegate'] },
   { to: '/app/messages', icon: MessageSquare, label: 'Messages', roles: ['student', 'delegate', 'teacher'] },
   { to: '/app/parametres', icon: Settings, label: 'Paramètres', roles: ['student', 'delegate', 'teacher', 'admin'] },
 ]
@@ -49,9 +46,7 @@ export const navItems: NavItem[] = [
 export const adminNavGroups: AdminNavGroup[] = [
   {
     title: "Vue d'ensemble",
-    items: [
-      { to: '/admin', icon: BarChart3, label: 'Tableau de bord', end: true },
-    ],
+    items: [{ to: '/admin', icon: BarChart3, label: 'Tableau de bord', end: true }],
   },
   {
     title: 'Gestion Académique',
@@ -72,16 +67,6 @@ export const adminNavGroups: AdminNavGroup[] = [
   },
   {
     title: 'Système',
-    items: [
-      { to: '/admin/parametres', icon: Settings, label: 'Paramètres' },
-    ],
+    items: [{ to: '/admin/parametres', icon: Settings, label: 'Paramètres' }],
   },
 ]
-
-export const currentUser = {
-  name: 'Emma Martin',
-  role: 'Étudiante - L2 Info',
-  email: 'emma.martin@uniflow.edu',
-  avatar: undefined as string | undefined,
-  status: 'En ligne' as const,
-}

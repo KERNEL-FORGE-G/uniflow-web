@@ -8,14 +8,14 @@ export function Card({
   className?: string
 }) {
   return (
-    <div className={cn('rounded-2xl border-2 border-border bg-white p-6 shadow-[0_4px_0_0_#e5e7eb]', className)}>
+    <div className={cn('rounded-xl border border-border bg-surface p-6 shadow-sm', className)}>
       {children}
     </div>
   )
 }
 
 export function CardTitle({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <h3 className={cn('text-sm font-semibold text-gray-900', className)}>{children}</h3>
+  return <h3 className={cn('text-sm font-semibold text-text', className)}>{children}</h3>
 }
 
 export function CardHeader({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -23,5 +23,5 @@ export function CardHeader({ children, className }: { children: React.ReactNode;
 }
 
 export function CardContent({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('', className)}>{children}</div>
+  return <div className={cn(className)}>{children}</div>
 }

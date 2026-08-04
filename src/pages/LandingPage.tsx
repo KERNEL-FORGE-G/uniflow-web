@@ -38,10 +38,10 @@ export default function LandingPage() {
           <a href="#contact" className="text-sm font-medium text-gray-600 hover:text-primary">Contact</a>
         </div>
         <div className="flex items-center gap-3">
-          <Link to="/app">
+          <Link to="/login">
             <Button variant="ghost">Se connecter</Button>
           </Link>
-          <Link to="/app">
+          <Link to="/register">
             <Button>Commencer gratuitement</Button>
           </Link>
         </div>
@@ -56,12 +56,12 @@ export default function LandingPage() {
             UniFlow centralise vos cours, communications, planifications et bien plus encore, dans une interface intuitive et moderne.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link to="/app">
+            <Link to="/register">
               <Button className="px-6 py-3 text-base">
                 Commencer gratuitement <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <Link to="/app" className="text-sm font-medium text-primary hover:underline">
+            <Link to="/login" className="text-sm font-medium text-primary hover:underline">
               Déjà utilisateur ? Se connecter
             </Link>
           </div>

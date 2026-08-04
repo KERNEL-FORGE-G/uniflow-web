@@ -1,6 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
 import { AdminLayout } from './components/layout/AdminLayout'
+import { RequireAuth } from './auth/RequireAuth'
 import LandingPage from './pages/LandingPage'
 import DashboardPage from './pages/DashboardPage'
 import DashboardCompactPage from './pages/DashboardCompactPage'
@@ -16,6 +17,8 @@ import MessagingPage from './pages/MessagingPage'
 import SettingsPage from './pages/SettingsPage'
 import LibraryPage from './pages/LibraryPage'
 import HelpPage from './pages/HelpPage'
+import TeacherCoursesPage from './pages/TeacherCoursesPage'
+import DelegateAttendancePage from './pages/DelegateAttendancePage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import AdminCoursesPage from './pages/admin/AdminCoursesPage'
@@ -24,11 +27,26 @@ import TeachersPage from './pages/admin/TeachersPage'
 import AcademicStructurePage from './pages/admin/AcademicStructurePage'
 import UEPage from './pages/admin/UEPage'
 import ClassroomsPage from './pages/admin/ClassroomsPage'
+import AdminSettingsPage from './pages/admin/AdminSettingsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 
-function StudentApp({ children }: { children: React.ReactNode }) {
-  return <AppLayout>{children}</AppLayout>
+function StudentShell() {
+  return (
+    <RequireAuth roles={['student', 'delegate', 'teacher']}>
+      <AppLayout>
+        <Outlet />
+      </AppLayout>
+    </RequireAuth>
+  )
+}
+
+function AdminShell() {
+  return (
+    <RequireAuth roles={['admin']}>
+      <AdminLayout />
+    </RequireAuth>
+  )
 }
 
 export default function App() {
@@ -38,32 +56,26 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* Partie 1 — Dashboard */}
-      <Route path="/app" element={<StudentApp><DashboardPage /></StudentApp>} />
-      <Route path="/app/accueil-compact" element={<StudentApp><DashboardCompactPage /></StudentApp>} />
+      <Route path="/app" element={<StudentShell />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="accueil-compact" element={<DashboardCompactPage />} />
+        <Route path="cours" element={<CoursesPage />} />
+        <Route path="profil" element={<ProfilePage />} />
+        <Route path="emploi-du-temps" element={<SchedulePage />} />
+        <Route path="presences" element={<AttendancePage />} />
+        <Route path="gestion-presences" element={<DelegateAttendancePage />} />
+        <Route path="mes-cours-enseignant" element={<TeacherCoursesPage />} />
+        <Route path="visioconference" element={<VideoConfPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+        <Route path="devoirs" element={<AssignmentsPage />} />
+        <Route path="notes" element={<GradesPage />} />
+        <Route path="messages" element={<MessagingPage />} />
+        <Route path="parametres" element={<SettingsPage />} />
+        <Route path="bibliotheque" element={<LibraryPage />} />
+        <Route path="aide" element={<HelpPage />} />
+      </Route>
 
-      {/* Partie 2 — Cours, Profil, Emploi du temps */}
-      <Route path="/app/cours" element={<StudentApp><CoursesPage /></StudentApp>} />
-      <Route path="/app/profil" element={<StudentApp><ProfilePage /></StudentApp>} />
-      <Route path="/app/emploi-du-temps" element={<StudentApp><SchedulePage /></StudentApp>} />
-
-      {/* Partie 3 — Présences, Visioconf, Notifications */}
-      <Route path="/app/presences" element={<StudentApp><AttendancePage /></StudentApp>} />
-      <Route path="/app/visioconference" element={<VideoConfPage />} />
-      <Route path="/app/notifications" element={<StudentApp><NotificationsPage /></StudentApp>} />
-
-      {/* Partie 4 — Devoirs, Notes, Messagerie */}
-      <Route path="/app/devoirs" element={<StudentApp><AssignmentsPage /></StudentApp>} />
-      <Route path="/app/notes" element={<StudentApp><GradesPage /></StudentApp>} />
-      <Route path="/app/messages" element={<StudentApp><MessagingPage /></StudentApp>} />
-
-      {/* Partie 6 — Paramètres, Bibliothèque, Aide */}
-      <Route path="/app/parametres" element={<StudentApp><SettingsPage /></StudentApp>} />
-      <Route path="/app/bibliotheque" element={<StudentApp><LibraryPage /></StudentApp>} />
-      <Route path="/app/aide" element={<StudentApp><HelpPage /></StudentApp>} />
-
-      {/* Partie 5 — Administration */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={<AdminShell />}>
         <Route index element={<AdminDashboardPage />} />
         <Route path="utilisateurs" element={<AdminUsersPage />} />
         <Route path="etudiants" element={<StudentsPage />} />
@@ -72,7 +84,8 @@ export default function App() {
         <Route path="cours" element={<AdminCoursesPage />} />
         <Route path="ue" element={<UEPage />} />
         <Route path="salles" element={<ClassroomsPage />} />
-        <Route path="*" element={<AdminDashboardPage />} />
+        <Route path="parametres" element={<AdminSettingsPage />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
