@@ -56,7 +56,7 @@ export function Toast({ id, type, title, message, duration = 5000, onClose }: To
   return (
     <div
       className={cn(
-        'flex items-start gap-3 rounded-lg border p-4 shadow-lg animate-fade-in min-w-[320px] max-w-md',
+        'flex items-start gap-3 rounded-lg border border-l-4 p-4 shadow-lg animate-notification-in min-w-[320px] max-w-md',
         config.bg,
         config.border,
         config.text
@@ -69,7 +69,8 @@ export function Toast({ id, type, title, message, duration = 5000, onClose }: To
       </div>
       <button
         onClick={() => onClose(id)}
-        className="shrink-0 rounded p-0.5 hover:bg-black/5 transition-colors"
+        className="shrink-0 rounded p-0.5 hover:bg-black/10 active:scale-90 transition-all"
+        aria-label="Fermer"
       >
         <X className="h-4 w-4" />
       </button>

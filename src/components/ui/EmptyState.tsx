@@ -22,9 +22,9 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   return (
-    <div className={cn('flex flex-col items-center justify-center py-12 px-4 text-center', className)}>
+    <div className={cn('flex flex-col items-center justify-center py-12 px-4 text-center animate-fade-in', className)}>
       {/* Icon or Mascot */}
-      <div className="mb-4">
+      <div className="mb-4 animate-bounce-in">
         {mascot ? (
           <div className="flex h-24 w-24 items-center justify-center rounded-2xl overflow-hidden">
             <img 
@@ -54,7 +54,7 @@ export function EmptyState({
       {action && (
         <button
           onClick={action.onClick}
-          className="rounded-lg bg-[#1e3a8a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] transition-colors shadow-sm"
+          className="rounded-lg bg-[#1e3a8a] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#2d4fa8] active:scale-95 transition-all shadow-sm hover:shadow-md"
         >
           {action.label}
         </button>
