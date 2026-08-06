@@ -12,9 +12,11 @@ import { ScrollFloat } from '../components/ui/ScrollFloat'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { fadeInUp, staggerContainer, float } from '../utils/animations'
+import { useApi } from '../hooks/useApi'
+import { statsApi } from '../lib/api'
 const landingImg = '/logos/mascotte.png'
 
-const stats = [
+const defaultStats = [
   { icon: Users, value: '12 000+', label: 'Étudiants actifs', color: 'text-[#1e3a8a] bg-[#eff3ff]' },
   { icon: Award, value: '480+', label: 'Enseignants', color: 'text-[#0d9488] bg-[#f0fdfa]' },
   { icon: TrendingUp, value: '98%', label: 'Satisfaction', color: 'text-purple-700 bg-purple-50' },
@@ -97,6 +99,17 @@ const testimonials = [
 ]
 
 export default function LandingPage() {
+  const { data: overview, loading: overviewLoading, error: overviewError } = useApi(() => statsApi.overview())
+
+  const stats = overview
+    ? [
+        { icon: Users, value: `${overview.studentCount}`, label: 'Étudiants actifs', color: 'text-[#1e3a8a] bg-[#eff3ff]' },
+        { icon: Award, value: `${overview.teacherCount}`, label: 'Enseignants', color: 'text-[#0d9488] bg-[#f0fdfa]' },
+        { icon: TrendingUp, value: `${overview.satisfactionRate}%`, label: 'Satisfaction', color: 'text-purple-700 bg-purple-50' },
+        { icon: Clock, value: overview.supportAvailability, label: 'Disponibilité', color: 'text-amber-700 bg-amber-50' },
+      ]
+    : defaultStats
+
   return (
     <div className="min-h-screen bg-white font-sans overflow-x-hidden">
       <LandingNavbar />
@@ -246,6 +259,11 @@ export default function LandingPage() {
 
       {/* ── Stats Section ── */}
       <AnimatedSection className="border-y border-[#e5e7eb] bg-white py-16">
+        {overviewError && (
+          <div className="mx-auto max-w-[1920px] px-6 pb-6 text-center text-sm text-red-600">
+            Impossible de charger les statistiques en temps réel. Les valeurs affichées sont approximatives.
+          </div>
+        )}
         <div className="mx-auto max-w-[1920px] px-6">
           <motion.div 
             variants={staggerContainer}

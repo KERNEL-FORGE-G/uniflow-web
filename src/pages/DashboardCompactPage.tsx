@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Badge } from '../components/ui/Badge'
 import { BookOpen, Clock, TrendingUp, UserCheck, ClipboardList } from 'lucide-react'
+import { useApi } from '../hooks/useApi'
+import { statsApi } from '../lib/api'
 
 const schedule = [
   { time: '08h30 – 10h00', course: 'Mathématiques', teacher: 'Dr. Martin', room: 'A204', type: 'Cours', status: 'Terminé' as const },
@@ -24,6 +26,16 @@ const quickStats = [
 ]
 
 export default function DashboardCompactPage() {
+  const { data: overview } = useApi(() => statsApi.overview())
+
+  const quickStats = [
+    { label: 'Cours inscrits', value: overview ? `${overview.courseCount}` : '...', change: '↑8%', icon: BookOpen, color: 'text-[#1e3a8a]', bg: 'bg-[#eff3ff]' },
+    { label: 'Devoirs à rendre', value: '5', change: '↑1', icon: ClipboardList, color: 'text-[#d97706]', bg: 'bg-[#fef3c7]' },
+    { label: 'Prochain cours', value: '2h30', change: '+15m', icon: Clock, color: 'text-[#0d9488]', bg: 'bg-[#f0fdfa]' },
+    { label: 'Moyenne', value: '14.6/20', change: '+0.6', icon: TrendingUp, color: 'text-[#7c3aed]', bg: 'bg-[#ede9fe]' },
+    { label: 'Présences', value: '87%', change: '+5%', icon: UserCheck, color: 'text-[#059669]', bg: 'bg-[#d1fae5]' },
+  ]
+
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Header */}
