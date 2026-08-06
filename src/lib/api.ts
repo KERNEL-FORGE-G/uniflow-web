@@ -104,13 +104,20 @@ export interface AuthResult {
   accessToken: string; refreshToken: string
   user: { id: string; email: string; role: string; student?: StudentProfile; teacher?: TeacherProfile }
 }
+export interface BackendUser {
+  id: string
+  email: string
+  role: string
+  student?: StudentProfile
+  teacher?: TeacherProfile
+}
 interface StudentProfile { firstName: string; lastName: string; matricule: string }
 interface TeacherProfile { firstName: string; lastName: string }
 
 export const authApi = {
   login:    async (dto: LoginDto)    => u(await api.post<{ data: AuthResult }>('/auth/login', dto)),
   register: async (dto: RegisterDto) => u(await api.post<{ data: AuthResult }>('/auth/register', dto)),
-  me:       async ()                 => u(await api.get<{ data: AuthResult['user'] }>('/auth/me')),
+  me:       async ()                 => u(await api.get<{ data: BackendUser }>('/auth/me')),
   logout:   ()                       => clearTokens(),
 }
 
@@ -242,9 +249,10 @@ export interface Notification {
 }
 
 export const notificationsApi = {
-  list:     async ()           => u(await api.get<{ data: Notification[] }>('/notifications')),
-  unreadCount: async ()        => u(await api.get<{ data: number }>('/notifications/unread-count')),
-  markRead: async (id: string) => u(await api.patch<{ data: Notification }>(`/notifications/${id}/read`)),
+  list:       async ()           => u(await api.get<{ data: Notification[] }>('/notifications')),
+  unreadCount: async ()          => u(await api.get<{ data: number }>('/notifications/unread-count')),
+  markRead:   async (id: string) => u(await api.patch<{ data: Notification }>(`/notifications/${id}/read`)),
+  delete:     async (id: string) => u(await api.delete<void>(`/notifications/${id}`)),
 }
 
 // =============================================================================

@@ -1,4 +1,5 @@
-import { useState, createContext, useContext } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
+import { authApi, clearTokens, getToken, type BackendUser } from '@/lib/api'
 
 export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
 
@@ -15,25 +16,27 @@ export interface UserProfile {
   level?: string
 }
 
-export const usersByRole: Record<Role, UserProfile> = {
+const usersByRole: Record<Role, UserProfile> = {
   student: {
-    name: 'Emma Martin',
-    roleLabel: 'Étudiante - L2 Info',
-    email: 'emma.martin@uniflow.edu',
+    name: 'Étudiant UniFlow',
+    roleLabel: 'Étudiant',
+    email: 'etudiant@uniflow.edu',
     status: 'En ligne',
     filiere: 'L2 Info - Informatique',
+    level: 'L2',
   },
   delegate: {
-    name: 'Lucas Dubois',
-    roleLabel: 'Délégué - L2 Info',
-    email: 'lucas.dubois@uniflow.edu',
+    name: 'Délégué UniFlow',
+    roleLabel: 'Délégué',
+    email: 'delegate@uniflow.edu',
     status: 'En ligne',
     filiere: 'L2 Info - Informatique',
+    level: 'L2',
   },
   teacher: {
-    name: 'Pr. Kamga',
-    roleLabel: 'Enseignant - Informatique',
-    email: 'kamga@uniflow.edu',
+    name: 'Enseignant UniFlow',
+    roleLabel: 'Enseignant',
+    email: 'enseignant@uniflow.edu',
     status: 'En ligne',
   },
   admin: {
@@ -56,11 +59,60 @@ interface RoleContextProps {
 
 const RoleContext = createContext<RoleContextProps | undefined>(undefined)
 
+function mapRole(raw: string | undefined): Role {
+  switch (raw) {
+    case 'ETUDIANT': return 'student'
+    case 'DELEGUE': return 'delegate'
+    case 'ENSEIGNANT': return 'teacher'
+    case 'ADMIN': return 'admin'
+    case 'student': return 'student'
+    case 'delegate': return 'delegate'
+    case 'teacher': return 'teacher'
+    case 'admin': return 'admin'
+    default: return 'student'
+  }
+}
+
+function buildUserProfile(user: BackendUser | null): UserProfile {
+  if (!user) return usersByRole.student
+
+  const role = mapRole(user.role)
+  const firstName = user.student?.firstName ?? user.teacher?.firstName ?? user.email.split('@')[0]
+  const lastName = user.student?.lastName ?? user.teacher?.lastName ?? ''
+  const name = `${firstName}${lastName ? ` ${lastName}` : ''}`
+  const roleLabel = role === 'student'
+    ? 'Étudiant'
+    : role === 'delegate'
+      ? 'Délégué'
+      : role === 'teacher'
+        ? 'Enseignant'
+        : 'Administrateur'
+
+  return {
+    name,
+    email: user.email,
+    roleLabel,
+    status: 'En ligne',
+    role,
+    filiere: role === 'student' ? 'L2 Info - Informatique' : undefined,
+    level: role === 'student' ? 'L2' : undefined,
+  }
+}
+
 export function RoleProvider({ children }: { children: React.ReactNode }) {
+  const [authUser, setAuthUser] = useState<BackendUser | null>(() => {
+    const raw = localStorage.getItem('uniflow_user')
+    if (!raw) return null
+    try { return JSON.parse(raw) as BackendUser } catch { return null }
+  })
+
   const [currentRole, setRoleState] = useState<Role>(() => {
     const saved = localStorage.getItem('uniflow_role')
+    if (authUser) return mapRole(authUser.role)
     return (saved as Role) || 'student'
   })
+
+  const [currentUser, setCurrentUser] = useState<UserProfile>(() => buildUserProfile(authUser))
 
   const [isOfflineMode, setIsOfflineMode] = useState<boolean>(() => {
     return localStorage.getItem('uniflow_offline') === 'true'
@@ -69,6 +121,28 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<'FR' | 'EN'>(() => {
     return (localStorage.getItem('uniflow_lang') as 'FR' | 'EN') || 'FR'
   })
+
+  useEffect(() => {
+    const token = getToken()
+    if (!token) return
+
+    authApi.me()
+      .then(user => {
+        const role = mapRole(user.role)
+        setAuthUser(user)
+        setRoleState(role)
+        setCurrentUser(buildUserProfile(user))
+        localStorage.setItem('uniflow_user', JSON.stringify(user))
+        localStorage.setItem('uniflow_role', role)
+      })
+      .catch(() => {
+        clearTokens()
+        localStorage.removeItem('uniflow_user')
+        setAuthUser(null)
+        setRoleState('student')
+        setCurrentUser(usersByRole.student)
+      })
+  }, [])
 
   const setCurrentRole = (role: Role) => {
     setRoleState(role)
@@ -85,13 +159,12 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('uniflow_lang', lang)
   }
 
-  const currentUser = usersByRole[currentRole]
-
   return (
     <RoleContext.Provider
       value={{
         currentRole,
         setCurrentRole,
+        setAuthUser,
         currentUser,
         isOfflineMode,
         setIsOfflineMode: toggleOffline,

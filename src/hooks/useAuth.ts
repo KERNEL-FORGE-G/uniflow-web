@@ -17,7 +17,7 @@ function mapRole(backendRole: string): Role {
 
 export function useAuth() {
   const navigate = useNavigate()
-  const { setCurrentRole } = useUserRole()
+  const { setCurrentRole, setAuthUser } = useUserRole()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,6 +29,7 @@ export function useAuth() {
       setTokens(data.accessToken, data.refreshToken)
       // Persister les infos utilisateur
       localStorage.setItem('uniflow_user', JSON.stringify(data.user))
+      setAuthUser(data.user)
       const role = mapRole(data.user.role)
       setCurrentRole(role)
       // Rediriger selon le rôle
@@ -53,6 +54,7 @@ export function useAuth() {
       const data = await authApi.register(payload)
       setTokens(data.accessToken, data.refreshToken)
       localStorage.setItem('uniflow_user', JSON.stringify(data.user))
+      setAuthUser(data.user)
       const role = mapRole(data.user.role)
       setCurrentRole(role)
       navigate('/app')
@@ -70,9 +72,11 @@ export function useAuth() {
 
   const logout = useCallback(() => {
     clearTokens()
+    localStorage.removeItem('uniflow_user')
+    setAuthUser(null)
     setCurrentRole('student')
     navigate('/login')
-  }, [navigate, setCurrentRole])
+  }, [navigate, setAuthUser, setCurrentRole])
 
   const getCurrentUser = useCallback((): BackendUser | null => {
     const raw = localStorage.getItem('uniflow_user')

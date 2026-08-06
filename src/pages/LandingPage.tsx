@@ -230,12 +230,12 @@ export default function LandingPage() {
               <motion.div 
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
-                className="relative rounded-3xl border-2 border-[#e5e7eb] bg-white shadow-2xl overflow-hidden"
+                className="relative mx-auto w-full max-w-[520px] rounded-3xl border-2 border-[#e5e7eb] bg-white shadow-2xl overflow-hidden"
               >
                 <OptimizedImage
                   src={landingImg}
                   alt="UniFlow Dashboard"
-                  className="w-full h-auto object-cover"
+                  className="w-full h-auto object-contain"
                   loading="eager"
                 />
               </motion.div>

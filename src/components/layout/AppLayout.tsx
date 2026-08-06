@@ -10,7 +10,9 @@ import { Avatar } from '../ui/Avatar'
 import { Footer } from './Footer'
 import { cn } from '../../utils/cn'
 import { useState } from 'react'
-import { mockNotifications } from '../../data/mockData'
+import { useAuth } from '../../hooks/useAuth'
+import { notificationsApi } from '../../lib/api'
+import { useApi } from '../../hooks/useApi'
 
 const roleConfig = {
   student:  { badge: 'Étudiant',    icon: GraduationCap, gradient: 'from-[#1e3a8a] to-[#2d4fa8]', bg: 'bg-[#eff3ff]', text: 'text-[#1e3a8a]', dot: 'bg-[#1e3a8a]' },
@@ -25,7 +27,7 @@ export function Sidebar() {
   const filteredNav = navItems.filter(item => item.roles && item.roles.includes(currentRole))
   const role = roleConfig[currentRole]
   const RoleIcon = role.icon
-  const unreadCount = mockNotifications.filter(n => n.unread).length
+  const { data: unreadCount = 0 } = useApi(() => notificationsApi.unreadCount())
 
   return (
     <aside className="flex min-h-screen w-[240px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white sticky top-0 self-start shadow-sm sidebar-gradient">
@@ -69,28 +71,11 @@ export function Sidebar() {
           <ChevronRight className="h-3.5 w-3.5 text-[#9ca3af] group-hover:text-[#1e3a8a] transition-colors flex-shrink-0" />
         </div>
 
-        {/* Role badge + switcher */}
-        <div>
-          <label className="block text-[10px] font-bold text-[#9ca3af] uppercase tracking-wider mb-1.5 px-1">
-            Mode démo
-          </label>
-          <div className="relative">
-            <div className={cn('absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none')}>
-              <RoleIcon className={cn('h-3.5 w-3.5', role.text)} />
-            </div>
-            <select
-              value={currentRole}
-              onChange={e => setCurrentRole(e.target.value as any)}
-              className={cn(
-                'w-full rounded-lg border border-[#e5e7eb] pl-8 pr-3 py-1.5 text-xs font-semibold outline-none focus:border-[#1e3a8a] focus:ring-2 focus:ring-[#1e3a8a]/10 appearance-none cursor-pointer transition-all',
-                role.bg, role.text
-              )}
-            >
-              <option value="student">Étudiant</option>
-              <option value="delegate">Délégué</option>
-              <option value="teacher">Enseignant</option>
-              <option value="admin">Administrateur</option>
-            </select>
+        <div className="rounded-xl bg-[#f9fafb] p-3">
+          <p className="text-[10px] font-bold text-[#9ca3af] uppercase tracking-wider mb-2">Rôle</p>
+          <div className="flex items-center gap-2 rounded-xl border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-semibold text-[#374151]">
+            <RoleIcon className={cn('h-3.5 w-3.5', role.text)} />
+            <span>{role.badge}</span>
           </div>
         </div>
       </div>
@@ -203,7 +188,8 @@ export function Sidebar() {
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate()
   const { language, currentUser, currentRole } = useUserRole()
-  const unreadCount = mockNotifications.filter(n => n.unread).length
+  const { logout } = useAuth()
+  const { data: unreadCount = 0 } = useApi(() => notificationsApi.unreadCount())
   const role = roleConfig[currentRole]
   const RoleIcon = role.icon
   const [searchFocus, setSearchFocus] = useState(false)
@@ -274,7 +260,7 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
 
         {/* Logout */}
         <button
-          onClick={() => navigate('/login')}
+          onClick={logout}
           className="hidden sm:flex rounded-xl p-2 text-[#6b7280] hover:bg-red-50 hover:text-red-600 transition-all touch-target items-center justify-center"
           title="Se déconnecter"
         >
