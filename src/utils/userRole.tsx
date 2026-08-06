@@ -90,14 +90,22 @@ function buildUserProfile(user: BackendUser | null): UserProfile {
         ? 'Enseignant'
         : 'Administrateur'
 
+  const studentLevel = user.student?.level ?? 'Niveau inconnu'
+  const studentSpecialty = user.student?.specialty
+  const filiereValue = role === 'student'
+    ? studentSpecialty
+      ? `${studentLevel} · ${studentSpecialty}`
+      : studentLevel
+    : undefined
+
   return {
     name,
     email: user.email,
     roleLabel,
     status: 'En ligne',
     role,
-    filiere: role === 'student' ? 'L2 Info - Informatique' : undefined,
-    level: role === 'student' ? 'L2' : undefined,
+    filiere: filiereValue,
+    level: role === 'student' ? studentLevel : undefined,
     matricule: user.student?.matricule,
   }
 }

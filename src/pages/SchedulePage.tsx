@@ -28,7 +28,7 @@ function timeDuration(start: string, end: string): number {
 export default function SchedulePage() {
   const { currentRole } = useUserRole()
   const [selected, setSelected] = useState<Schedule | null>(null)
-  const { data: schedules, loading, error, refetch } = useApi(() => schedulesApi.list())
+  const { data: schedules, loading, error, refetch } = useApi(() => schedulesApi.mine())
 
   const grouped = (schedules ?? []).reduce<Record<string, Schedule[]>>((acc, s) => {
     const d = s.dayOfWeek?.toUpperCase() ?? ''

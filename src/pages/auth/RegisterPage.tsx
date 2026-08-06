@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Loader2, CheckCircle, User, Mail, Lock, GraduationCap, BookOpen, Award, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
+import { authApi, type AcademicLevel, type SpecialtyOption } from '../../lib/api'
 import { fadeInUp, staggerContainer } from '../../utils/animations'
 
 const benefits = [
@@ -49,13 +50,50 @@ export default function RegisterPage() {
     password: '', 
     confirm: '', 
     role: 'student', 
-    filiere: 'Informatique', 
-    niveau: 'Licence 2' 
+    levelId: '', 
+    specialtyId: '',
   })
+  const [levels, setLevels] = useState<AcademicLevel[]>([])
+  const [specialties, setSpecialties] = useState<SpecialtyOption[]>([])
+  const [academicLoading, setAcademicLoading] = useState(true)
+  const [academicError, setAcademicError] = useState<string | null>(null)
   const [showPwd, setShowPwd] = useState(false)
   const [step, setStep] = useState<1 | 2>(1)
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+
+  useEffect(() => {
+    let mounted = true
+
+    const loadAcademicOptions = async () => {
+      setAcademicLoading(true)
+      setAcademicError(null)
+      try {
+        const data = await authApi.academicOptions()
+        if (!mounted) return
+        setLevels(data.levels)
+        setSpecialties(data.specialties)
+        if (data.levels.length > 0) {
+          const firstLevelId = data.levels[0].id
+          const firstSpecialty = data.specialties.find(s => s.levelId === firstLevelId)
+          setForm(f => ({
+            ...f,
+            levelId: firstLevelId,
+            specialtyId: firstSpecialty?.id ?? data.specialties[0]?.id ?? '',
+          }))
+        }
+      } catch (err) {
+        if (!mounted) return
+        setAcademicError('Impossible de charger les filières et niveaux. Réessayez plus tard.')
+      } finally {
+        if (!mounted) return
+        setAcademicLoading(false)
+      }
+    }
+
+    loadAcademicOptions()
+    return () => { mounted = false }
+  }, [])
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,6 +113,8 @@ export default function RegisterPage() {
         firstName: form.firstName,
         lastName: form.lastName,
         role: roleMap[form.role],
+        levelId: form.levelId || undefined,
+        specialtyId: form.specialtyId || undefined,
       })
     } catch {
       // error handled by useAuth
@@ -298,33 +338,64 @@ export default function RegisterPage() {
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
                         <BookOpen className="h-5 w-5" />
                       </div>
-                      <select 
-                        value={form.filiere} 
-                        onChange={e => set('filiere', e.target.value)}
-                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
-                      >
-                        {['Informatique', 'Mathématiques', 'Économie', 'Droit', 'Médecine', 'Génie Civil', 'Physique', 'Chimie'].map(f => (
-                          <option key={f}>{f}</option>
-                        ))}
-                      </select>
+                      {academicLoading ? (
+                        <div className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium text-slate-500">
+                          Chargement...
+                        </div>
+                      ) : academicError ? (
+                        <div className="rounded-xl border-2 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+                          {academicError}
+                        </div>
+                      ) : (
+                        <select
+                          value={form.levelId}
+                          onChange={e => {
+                            const selectedLevelId = e.target.value
+                            const firstSpecialty = specialties.find(s => s.levelId === selectedLevelId)
+                            set('levelId', selectedLevelId)
+                            set('specialtyId', firstSpecialty?.id ?? '')
+                          }}
+                          className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                        >
+                          {levels.map(level => (
+                            <option key={level.id} value={level.id}>
+                              {level.programName} - {level.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-[#374151] mb-2">Niveau d'études</label>
+                    <label className="block text-sm font-bold text-[#374151] mb-2">Spécialité</label>
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
                         <GraduationCap className="h-5 w-5" />
                       </div>
-                      <select 
-                        value={form.niveau} 
-                        onChange={e => set('niveau', e.target.value)}
-                        className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
-                      >
-                        {['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2', 'Doctorat'].map(n => (
-                          <option key={n}>{n}</option>
-                        ))}
-                      </select>
+                      {academicLoading ? (
+                        <div className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium text-slate-500">
+                          Chargement...
+                        </div>
+                      ) : academicError ? (
+                        <div className="rounded-xl border-2 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+                          {academicError}
+                        </div>
+                      ) : (
+                        <select
+                          value={form.specialtyId}
+                          onChange={e => set('specialtyId', e.target.value)}
+                          className="w-full rounded-xl border-2 border-slate-200 bg-slate-50 pl-12 pr-4 py-3 text-sm font-medium outline-none focus:border-[#0d9488] focus:bg-white transition-all"
+                        >
+                          {specialties
+                            .filter(s => s.levelId === form.levelId)
+                            .map(s => (
+                              <option key={s.id} value={s.id}>
+                                {s.name}
+                              </option>
+                            ))}
+                        </select>
+                      )}
                     </div>
                   </div>
 

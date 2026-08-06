@@ -30,14 +30,19 @@ export class ApiError extends Error {
 
 // ─── Core fetch ──────────────────────────────────────────────────────────────
 
-async function req<T>(path: string, init: RequestInit = {}, retry = true): Promise<T> {
+async function req<T>(path: string, init: RequestInit = {}, retry = true, triedApiPrefix = false): Promise<T> {
   const token = getToken()
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(init.headers as Record<string, string> ?? {}),
   }
-  const res = await fetch(`${BASE_URL}${path}`, { ...init, headers })
+  const url = `${BASE_URL}${path}`
+  const res = await fetch(url, { ...init, headers })
+
+  if (res.status === 404 && !triedApiPrefix && !path.startsWith('/api/')) {
+    return req<T>(`/api${path}`, init, retry, true)
+  }
 
   if (res.status === 401 && retry) {
     // If the request is an auth action (login/register/refresh), do not attempt token refresh
@@ -141,13 +146,26 @@ export interface BackendUser {
   student?: StudentProfile
   teacher?: TeacherProfile
 }
-interface StudentProfile { firstName: string; lastName: string; matricule: string }
+interface StudentProfile { firstName: string; lastName: string; matricule: string; level?: string; specialty?: string }
 interface TeacherProfile { firstName: string; lastName: string }
+
+export interface AcademicLevel {
+  id: string
+  name: string
+  programName: string
+}
+export interface SpecialtyOption {
+  id: string
+  name: string
+  levelId: string
+}
 
 export const authApi = {
   login:    async (dto: LoginDto)    => u(await api.post<{ data: AuthResult }>('/auth/login', dto)),
   register: async (dto: RegisterDto) => u(await api.post<{ data: AuthResult }>('/auth/register', dto)),
   me:       async ()                 => u(await api.get<{ data: BackendUser }>('/auth/me')),
+  academicOptions: async ()          => u(await api.get<{ data: { levels: AcademicLevel[]; specialties: SpecialtyOption[] } }>('/auth/academic-options')),
+  specialties: async (levelId?: string) => u(await api.get<{ data: SpecialtyOption[] }>(`/auth/specialties${levelId ? `?levelId=${encodeURIComponent(levelId)}` : ''}`)),
   logout:   ()                       => clearTokens(),
 }
 
@@ -183,6 +201,7 @@ export interface Schedule {
 
 export const schedulesApi = {
   list: async () => u(await api.get<{ data: Schedule[] }>('/schedules')),
+  mine: async () => u(await api.get<{ data: Schedule[] }>('/schedules/my')),
 }
 
 // =============================================================================
