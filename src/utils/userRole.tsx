@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react'
+import { useState, useEffect, useMemo, createContext, useContext } from 'react'
 import { authApi, clearTokens, getToken, type BackendUser } from '@/lib/api'
 
 export type Role = 'student' | 'delegate' | 'teacher' | 'admin'
@@ -14,6 +14,7 @@ export interface UserProfile {
   phone?: string
   address?: string
   level?: string
+  matricule?: string
 }
 
 const usersByRole: Record<Role, UserProfile> = {
@@ -50,6 +51,7 @@ const usersByRole: Record<Role, UserProfile> = {
 interface RoleContextProps {
   currentRole: Role
   setCurrentRole: (role: Role) => void
+  setAuthUser: (user: BackendUser | null) => void
   currentUser: UserProfile
   isOfflineMode: boolean
   setIsOfflineMode: (offline: boolean) => void
@@ -96,6 +98,7 @@ function buildUserProfile(user: BackendUser | null): UserProfile {
     role,
     filiere: role === 'student' ? 'L2 Info - Informatique' : undefined,
     level: role === 'student' ? 'L2' : undefined,
+    matricule: user.student?.matricule,
   }
 }
 
@@ -108,11 +111,10 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
 
   const [currentRole, setRoleState] = useState<Role>(() => {
     const saved = localStorage.getItem('uniflow_role')
-    if (authUser) return mapRole(authUser.role)
-    return (saved as Role) || 'student'
+    return authUser ? mapRole(authUser.role) : ((saved as Role) || 'student')
   })
 
-  const [currentUser, setCurrentUser] = useState<UserProfile>(() => buildUserProfile(authUser))
+  const currentUser = useMemo(() => buildUserProfile(authUser), [authUser])
 
   const [isOfflineMode, setIsOfflineMode] = useState<boolean>(() => {
     return localStorage.getItem('uniflow_offline') === 'true'
@@ -131,7 +133,6 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
         const role = mapRole(user.role)
         setAuthUser(user)
         setRoleState(role)
-        setCurrentUser(buildUserProfile(user))
         localStorage.setItem('uniflow_user', JSON.stringify(user))
         localStorage.setItem('uniflow_role', role)
       })
@@ -140,7 +141,6 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('uniflow_user')
         setAuthUser(null)
         setRoleState('student')
-        setCurrentUser(usersByRole.student)
       })
   }, [])
 

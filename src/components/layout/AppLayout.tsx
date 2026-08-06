@@ -27,7 +27,8 @@ export function Sidebar() {
   const filteredNav = navItems.filter(item => item.roles && item.roles.includes(currentRole))
   const role = roleConfig[currentRole]
   const RoleIcon = role.icon
-  const { data: unreadCount = 0 } = useApi(() => notificationsApi.unreadCount())
+  const { data } = useApi(() => notificationsApi.unreadCount())
+  const unreadCount = data ?? 0
 
   return (
     <aside className="flex min-h-screen w-[240px] shrink-0 flex-col border-r border-[#e5e7eb] bg-white sticky top-0 self-start shadow-sm sidebar-gradient">
@@ -189,7 +190,8 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const navigate = useNavigate()
   const { language, currentUser, currentRole } = useUserRole()
   const { logout } = useAuth()
-  const { data: unreadCount = 0 } = useApi(() => notificationsApi.unreadCount())
+  const { data } = useApi(() => notificationsApi.unreadCount())
+  const unreadCount = data ?? 0
   const role = roleConfig[currentRole]
   const RoleIcon = role.icon
   const [searchFocus, setSearchFocus] = useState(false)

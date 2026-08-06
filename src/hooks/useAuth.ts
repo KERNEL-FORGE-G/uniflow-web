@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authApi, setTokens, clearTokens, type LoginPayload, type RegisterPayload, type BackendUser, ApiError } from '@/lib/api'
+import { authApi, setTokens, clearTokens, type LoginDto, type RegisterDto, type BackendUser, ApiError } from '@/lib/api'
 import { useUserRole } from '@/utils/userRole'
 import type { Role } from '@/utils/userRole'
 
@@ -21,7 +21,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const login = useCallback(async (payload: LoginPayload) => {
+  const login = useCallback(async (payload: LoginDto) => {
     setLoading(true)
     setError(null)
     try {
@@ -47,7 +47,7 @@ export function useAuth() {
     }
   }, [navigate, setCurrentRole])
 
-  const register = useCallback(async (payload: RegisterPayload) => {
+  const register = useCallback(async (payload: RegisterDto) => {
     setLoading(true)
     setError(null)
     try {

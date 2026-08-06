@@ -249,10 +249,13 @@ export interface Notification {
 }
 
 export const notificationsApi = {
-  list:       async ()           => u(await api.get<{ data: Notification[] }>('/notifications')),
-  unreadCount: async ()          => u(await api.get<{ data: number }>('/notifications/unread-count')),
-  markRead:   async (id: string) => u(await api.patch<{ data: Notification }>(`/notifications/${id}/read`)),
-  delete:     async (id: string) => u(await api.delete<void>(`/notifications/${id}`)),
+  list: async () => u(await api.get<{ data: Notification[] }>('/notifications')),
+  unreadCount: async () => {
+    const res = u(await api.get<{ data: { unreadCount: number } | number }>('/notifications/unread-count'))
+    return typeof res === 'number' ? res : res?.unreadCount ?? 0
+  },
+  markRead: async (id: string) => u(await api.patch<{ data: Notification }>(`/notifications/${id}/read`)),
+  delete: async (id: string) => u(await api.delete<void>(`/notifications/${id}`)),
 }
 
 // =============================================================================
