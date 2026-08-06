@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Loader2, CheckCircle, User, Mail, Lock, GraduationCap, BookOpen, Award, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react'
-import { useUserRole } from '../../utils/userRole'
+import { useAuth } from '../../hooks/useAuth'
 import { fadeInUp, staggerContainer } from '../../utils/animations'
 
 const benefits = [
@@ -32,9 +32,16 @@ const benefits = [
   },
 ]
 
+type BackendRole = 'ETUDIANT' | 'DELEGUE' | 'ENSEIGNANT'
+
+const roleMap: Record<string, BackendRole> = {
+  student: 'ETUDIANT',
+  delegate: 'DELEGUE',
+  teacher: 'ENSEIGNANT',
+}
+
 export default function RegisterPage() {
-  const navigate = useNavigate()
-  const { setCurrentRole } = useUserRole()
+  const { register, loading, error, setError } = useAuth()
   const [form, setForm] = useState({ 
     firstName: '', 
     lastName: '', 
@@ -46,7 +53,6 @@ export default function RegisterPage() {
     niveau: 'Licence 2' 
   })
   const [showPwd, setShowPwd] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<1 | 2>(1)
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
@@ -58,10 +64,21 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 900))
-    setCurrentRole(form.role as any)
-    navigate('/app')
+    if (form.password !== form.confirm) {
+      setError('Les mots de passe ne correspondent pas.')
+      return
+    }
+    try {
+      await register({
+        email: form.email,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        role: roleMap[form.role],
+      })
+    } catch {
+      // error handled by useAuth
+    }
   }
 
   return (
