@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Megaphone, FileText, Video, Settings, Star, Trash2, Check, UserCheck } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { AnimatedList } from '../components/ui/AnimatedList'
-import { mockNotifications, type Notification, type NotifType } from '../data/mockData'
+import { notificationsApi, type Notification } from '@/lib/api'
+import { useApi } from '@/hooks/useApi'
 
-const iconMap: Record<NotifType, any> = {
+const iconMap: Record<string, any> = {
   annonce: Megaphone,
   devoir:  FileText,
   video:   Video,
@@ -12,7 +13,7 @@ const iconMap: Record<NotifType, any> = {
   absence: UserCheck,
   note:    Star,
 }
-const colorMap: Record<NotifType, string> = {
+const colorMap: Record<string, string> = {
   annonce: 'bg-[#eff3ff] text-[#1e3a8a]',
   devoir:  'bg-[#fef3c7] text-[#d97706]',
   video:   'bg-[#f0fdfa] text-[#0d9488]',
@@ -29,29 +30,37 @@ const tabs = [
 ] as const
 
 export default function NotificationsPage() {
-  const [notifs, setNotifs] = useState<Notification[]>(mockNotifications)
+  const { data: notifs = [], loading, refetch } = useApi(() => notificationsApi.list())
   const [activeTab, setActiveTab] = useState<string>('Tous')
-  const [selected, setSelected] = useState<Notification>(notifs[0])
+  const [selected, setSelected] = useState<Notification | null>(null)
 
-  const unreadCount = notifs.filter(n => n.unread).length
+  const unreadCount = (notifs ?? []).filter(n => !n.isRead).length
 
-  const visible = notifs.filter(n => {
-    if (activeTab === 'Non lues') return n.unread
+  const visible = (notifs ?? []).filter(n => {
+    if (activeTab === 'Non lues') return !n.isRead
     if (activeTab === 'Annonces') return n.type === 'annonce'
     if (activeTab === 'Système')  return n.type === 'system'
     return true
   })
 
-  const markAllRead = () => setNotifs(prev => prev.map(n => ({ ...n, unread: false })))
-  const markRead = (id: string) => setNotifs(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n))
-  const deleteNotif = (id: string) => {
-    const remaining = notifs.filter(n => n.id !== id)
-    setNotifs(remaining)
-    if (selected.id === id && remaining.length > 0) setSelected(remaining[0])
+  const markAllRead = async () => {
+    // no bulk endpoint: mark each unread as read
+    await Promise.all((notifs ?? []).filter(n => !n.isRead).map(n => notificationsApi.markRead(n.id).catch(() => null)))
+    refetch()
   }
-  const acknowledge = () => {
-    markRead(selected.id)
-    setNotifs(prev => prev.map(n => n.id === selected.id ? { ...n, unread: false } : n))
+  const markRead = async (id: string) => {
+    await notificationsApi.markRead(id).catch(() => null)
+    refetch()
+  }
+  const deleteNotif = async (id: string) => {
+    await notificationsApi.delete(id).catch(() => null)
+    refetch()
+    if (selected && selected.id === id) setSelected(null)
+  }
+  const acknowledge = async () => {
+    if (!selected) return
+    await notificationsApi.markRead(selected.id).catch(() => null)
+    refetch()
   }
 
   return (
@@ -77,8 +86,8 @@ export default function NotificationsPage() {
 
       {/* Tabs */}
       <div className="flex gap-1 border-b border-[#e5e7eb]">
-        {tabs.map(t => {
-          const count = t.label === 'Non lues' ? unreadCount : t.filter ? notifs.filter(n => n.type === t.filter).length : notifs.length
+          {tabs.map(t => {
+          const count = t.label === 'Non lues' ? unreadCount : t.filter ? (notifs ?? []).filter(n => n.type === t.filter).length : (notifs ?? []).length
           return (
             <button key={t.label} onClick={() => setActiveTab(t.label)}
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
@@ -112,12 +121,12 @@ export default function NotificationsPage() {
               renderItem={(n: Notification, _index, isSelected) => {
                 const Icon = iconMap[n.type]
                 const bg = colorMap[n.type]
-                return (
+                        return (
                   <button type="button"
                     className={`w-full rounded-xl border p-4 text-left transition-all ${
                       isSelected
                         ? 'border-[#1e3a8a] bg-[#f0f4ff] shadow-sm'
-                        : n.unread
+                                : !n.isRead
                           ? 'border-[#e5e7eb] bg-white hover:border-[#1e3a8a]/40 hover:shadow-sm'
                           : 'border-[#e5e7eb] bg-white opacity-75 hover:opacity-100 hover:shadow-sm'
                     }`}>
@@ -127,16 +136,16 @@ export default function NotificationsPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <p className={`text-sm ${n.unread ? 'font-semibold text-[#111827]' : 'font-medium text-[#374151]'} truncate`}>{n.title}</p>
-                          <div className="flex items-center gap-1 shrink-0">
-                            {n.unread && <span className="h-2 w-2 rounded-full bg-[#1e3a8a]" />}
+                          <p className={`text-sm ${!n.isRead ? 'font-semibold text-[#111827]' : 'font-medium text-[#374151]'} truncate`}>{n.title}</p>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {!n.isRead && <span className="h-2 w-2 rounded-full bg-[#1e3a8a]" />}
                             <button onClick={e => { e.stopPropagation(); deleteNotif(n.id) }}
                               className="rounded p-0.5 hover:bg-red-50 text-[#d1d5db] hover:text-red-500 transition-colors">
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </div>
-                        <p className="text-xs text-[#9ca3af] mt-0.5">{n.sender} · {n.time}</p>
+                        <p className="text-xs text-[#9ca3af] mt-0.5">{n.type} · {new Date(n.createdAt).toLocaleString()}</p>
                       </div>
                     </div>
                   </button>
@@ -152,16 +161,16 @@ export default function NotificationsPage() {
             <div className="flex items-start justify-between gap-3 mb-4">
               <div>
                 <h2 className="text-base font-bold text-[#111827]">{selected.title}</h2>
-                <p className="text-xs text-[#9ca3af] mt-0.5">{selected.sender} · {selected.time}</p>
+                <p className="text-xs text-[#9ca3af] mt-0.5">{selected.type} · {new Date(selected.createdAt).toLocaleString()}</p>
               </div>
               <div className="flex gap-1">
                 <button className="rounded-lg p-1.5 hover:bg-[#f3f4f6] text-[#9ca3af] transition-colors"><Star className="h-4 w-4" /></button>
                 <button onClick={() => deleteNotif(selected.id)} className="rounded-lg p-1.5 hover:bg-red-50 text-[#9ca3af] hover:text-red-500 transition-colors"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
-            {selected.unread && <Badge variant="primary" className="mb-4">Non lue</Badge>}
+            { !selected.isRead && <Badge variant="primary" className="mb-4">Non lue</Badge>}
             <div className="prose prose-sm max-w-none">
-              <p className="text-sm leading-relaxed text-[#374151] whitespace-pre-line">{selected.content}</p>
+              <p className="text-sm leading-relaxed text-[#374151] whitespace-pre-line">{selected.message}</p>
             </div>
             <div className="mt-6 flex gap-2">
               <button onClick={acknowledge}

@@ -3,7 +3,6 @@ import { Edit, Users, Star, UserCheck, Camera, Microscope, Laptop, Wifi } from '
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
-import { mockUsers } from '../data/mockData'
 
 const tabs = ['Informations', 'Parcours', 'Présences', 'Grades', 'Paramètres', 'Références'] as const
 type Tab = typeof tabs[number]
@@ -13,22 +12,20 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<Tab>('Informations')
   const [editing, setEditing] = useState(false)
 
-  const user = currentRole === 'teacher' ? mockUsers.teacher : currentRole === 'delegate' ? mockUsers.delegate : mockUsers.student
+  const { currentUser: user } = useUserRole()
 
   const personalFields = [
     { label: 'Nom complet',     value: user.name },
-    { label: 'Date de naissance', value: user.birthdate },
-    { label: 'Téléphone',       value: user.phone },
+    { label: 'Téléphone',       value: user.phone ?? '—' },
     { label: 'Email',           value: user.email },
-    { label: 'Adresse',         value: user.address },
+    { label: 'Adresse',         value: user.address ?? '—' },
   ]
   const academicFields = [
-    { label: 'Numéro étudiant', value: user.id },
+    { label: 'Numéro étudiant', value: user.matricule ?? '—' },
     { label: 'Filière',         value: user.filiere ?? 'N/A' },
-    { label: 'Niveau',          value: user.niveau ?? 'N/A' },
+    { label: 'Niveau',          value: user.level ?? 'N/A' },
     { label: 'Langue',          value: 'Français, Anglais' },
     { label: 'Établissement',   value: 'Université de Yaoundé I' },
-    { label: 'Inscription',     value: user.inscription },
   ]
 
   const stats = [
@@ -53,7 +50,7 @@ export default function ProfilePage() {
               <h1 className="text-xl font-bold text-[#111827]">{user.name}</h1>
               <Badge variant="success">Actif</Badge>
             </div>
-            <p className="text-sm text-[#6b7280] mt-0.5">{user.role} en {user.filiere ?? 'Informatique'} — {user.niveau}</p>
+            <p className="text-sm text-[#6b7280] mt-0.5">{user.roleLabel} · {user.filiere ?? 'Informatique'} · {user.level ?? ''}</p>
             <p className="text-xs text-[#9ca3af] mt-1">{user.email}</p>
           </div>
           <button onClick={() => setEditing(!editing)}
