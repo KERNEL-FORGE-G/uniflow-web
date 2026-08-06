@@ -30,6 +30,7 @@ export function useAuth() {
       // Persister les infos utilisateur
       localStorage.setItem('uniflow_user', JSON.stringify(data.user))
       setAuthUser(data.user)
+      try { window.dispatchEvent(new CustomEvent('uniflow:session-restored')) } catch {}
       const role = mapRole(data.user.role)
       setCurrentRole(role)
       // Rediriger selon le rôle

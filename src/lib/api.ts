@@ -79,6 +79,7 @@ async function doRefresh(): Promise<boolean> {
       const d = await res.json()
       const data = d.data ?? d
       setTokens(data.accessToken, data.refreshToken)
+        try { window.dispatchEvent(new CustomEvent('uniflow:session-restored')) } catch {}
       console.debug('[api] refresh succeeded')
       return true
     } catch (e) {
