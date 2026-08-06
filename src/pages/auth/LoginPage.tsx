@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, Loader2, GraduationCap, Wifi, ShieldCheck, ArrowRight, Lock, Mail, Sparkles } from 'lucide-react'
-import { useUserRole } from '../../utils/userRole'
 import { fadeInUp, staggerContainer } from '../../utils/animations'
+import { useAuth } from '../../hooks/useAuth'
 
 const demoAccounts = [
   { role: 'student' as const,  label: 'Étudiant',   email: 'emma.martin@uniflow.edu',  gradient: 'from-[#1e3a8a] to-[#2d4fa8]', icon: GraduationCap },
@@ -34,37 +34,21 @@ const features = [
 ]
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const { setCurrentRole } = useUserRole()
-  const [email, setEmail] = useState('emma.martin@uniflow.edu')
-  const [password, setPassword] = useState('password123')
+  const { login, loading, error, setError } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 800))
-    setLoading(false)
+    setError(null)
     if (!email || !password) { setError('Veuillez remplir tous les champs.'); return }
-    
-    // Detect role from email
-    if (email.includes('admin')) setCurrentRole('admin')
-    else if (email.includes('lucas')) setCurrentRole('delegate')
-    else if (email.includes('dr.martin') || email.includes('kamga') || email.includes('prof')) setCurrentRole('teacher')
-    else setCurrentRole('student')
-    
-    // Redirect
-    if (email.includes('admin')) navigate('/admin')
-    else navigate('/app')
+    await login({ email, password })
   }
 
-  const handleDemo = (role: typeof demoAccounts[0]['role'], demoEmail: string) => {
-    setCurrentRole(role)
+  const handleDemo = (demoEmail: string, demoPassword = 'password123') => {
     setEmail(demoEmail)
-    setPassword('password123')
+    setPassword(demoPassword)
   }
 
   return (
