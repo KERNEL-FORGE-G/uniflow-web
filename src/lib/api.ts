@@ -42,8 +42,11 @@ async function req<T>(path: string, init: RequestInit = {}, retry = true): Promi
   if (res.status === 401 && retry) {
     const ok = await doRefresh()
     if (ok) return req<T>(path, init, false)
+    // No refresh possible: clear local credentials and notify app to show reconnection UI
     clearTokens()
-    window.location.href = '/login'
+    try {
+      window.dispatchEvent(new CustomEvent('uniflow:session-expired'))
+    } catch { /* ignore if env doesn't support CustomEvent */ }
     throw new ApiError(401, 'Session expirée')
   }
 
@@ -65,17 +68,23 @@ async function doRefresh(): Promise<boolean> {
     const r = getRefreshToken()
     if (!r) return false
     try {
+      console.debug('[api] attempting token refresh')
       const res = await fetch(`${BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken: r }),
       })
+      console.debug('[api] refresh response', res.status)
       if (!res.ok) return false
       const d = await res.json()
       const data = d.data ?? d
       setTokens(data.accessToken, data.refreshToken)
+      console.debug('[api] refresh succeeded')
       return true
-    } catch { return false }
+    } catch (e) {
+      console.debug('[api] refresh failed', e)
+      return false
+    }
   })()
 
   ;(doRefresh as any)._promise = promise
