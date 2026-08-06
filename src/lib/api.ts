@@ -1,413 +1,304 @@
 /**
  * Client API UniFlow
- * Pointe vers https://api-uniflow.kernelforge.codes
+ * Base URL : https://api-uniflow.kernelforge.codes
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'https://api-uniflow.kernelforge.codes'
+export const BASE_URL = (import.meta.env.VITE_API_URL as string) ?? 'https://api-uniflow.kernelforge.codes'
 
-// ─── Token helpers ────────────────────────────────────────────────────────────
+// ─── Tokens ──────────────────────────────────────────────────────────────────
 
-export function getAccessToken(): string | null {
-  return localStorage.getItem('uniflow_access_token')
+export const getToken = () => localStorage.getItem('uniflow_access_token')
+export const getRefreshToken = () => localStorage.getItem('uniflow_refresh_token')
+export const setTokens = (a: string, r: string) => {
+  localStorage.setItem('uniflow_access_token', a)
+  localStorage.setItem('uniflow_refresh_token', r)
 }
-
-export function getRefreshToken(): string | null {
-  return localStorage.getItem('uniflow_refresh_token')
-}
-
-export function setTokens(access: string, refresh: string) {
-  localStorage.setItem('uniflow_access_token', access)
-  localStorage.setItem('uniflow_refresh_token', refresh)
-}
-
-export function clearTokens() {
+export const clearTokens = () => {
   localStorage.removeItem('uniflow_access_token')
   localStorage.removeItem('uniflow_refresh_token')
   localStorage.removeItem('uniflow_user')
-  localStorage.removeItem('uniflow_role')
 }
 
-// ─── Core fetch wrapper ───────────────────────────────────────────────────────
-
-async function apiFetch<T>(
-  endpoint: string,
-  options: RequestInit = {},
-  retry = true,
-): Promise<T> {
-  const token = getAccessToken()
-
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...options.headers,
-  }
-
-  const res = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers })
-
-  // Token expiré → tenter un refresh automatique
-  if (res.status === 401 && retry) {
-    const refreshed = await tryRefreshToken()
-    if (refreshed) return apiFetch<T>(endpoint, options, false)
-    clearTokens()
-    window.location.href = '/login'
-    throw new Error('Session expirée')
-  }
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new ApiError(res.status, body?.message ?? 'Erreur serveur', body)
-  }
-
-  // 204 No Content
-  if (res.status === 204) return null as T
-
-  return res.json() as Promise<T>
-}
-
-async function tryRefreshToken(): Promise<boolean> {
-  const refresh = getRefreshToken()
-  if (!refresh) return false
-  try {
-    const res = await fetch(`${BASE_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: refresh }),
-    })
-    if (!res.ok) return false
-    const data = await res.json()
-    setTokens(data.data?.accessToken ?? data.accessToken, data.data?.refreshToken ?? data.refreshToken)
-    return true
-  } catch {
-    return false
-  }
-}
+// ─── ApiError ────────────────────────────────────────────────────────────────
 
 export class ApiError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-    public body?: unknown,
-  ) {
+  constructor(public status: number, message: string, public body?: unknown) {
     super(message)
     this.name = 'ApiError'
   }
 }
 
-// ─── HTTP methods ─────────────────────────────────────────────────────────────
+// ─── Core fetch ──────────────────────────────────────────────────────────────
+
+async function req<T>(path: string, init: RequestInit = {}, retry = true): Promise<T> {
+  const token = getToken()
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(init.headers as Record<string, string> ?? {}),
+  }
+  const res = await fetch(`${BASE_URL}${path}`, { ...init, headers })
+
+  if (res.status === 401 && retry) {
+    const ok = await doRefresh()
+    if (ok) return req<T>(path, init, false)
+    clearTokens()
+    window.location.href = '/login'
+    throw new ApiError(401, 'Session expirée')
+  }
+
+  if (!res.ok) {
+    let msg = 'Erreur serveur'
+    try { const b = await res.json(); msg = b?.message ?? msg } catch { /* ignore */ }
+    throw new ApiError(res.status, msg)
+  }
+  if (res.status === 204) return null as T
+  return res.json()
+}
+
+async function doRefresh(): Promise<boolean> {
+  const r = getRefreshToken()
+  if (!r) return false
+  try {
+    const res = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken: r }),
+    })
+    if (!res.ok) return false
+    const d = await res.json()
+    const data = d.data ?? d
+    setTokens(data.accessToken, data.refreshToken)
+    return true
+  } catch { return false }
+}
+
+// ─── HTTP helpers ─────────────────────────────────────────────────────────────
 
 export const api = {
-  get: <T>(url: string) => apiFetch<T>(url),
-
-  post: <T>(url: string, body?: unknown) =>
-    apiFetch<T>(url, { method: 'POST', body: JSON.stringify(body) }),
-
-  put: <T>(url: string, body?: unknown) =>
-    apiFetch<T>(url, { method: 'PUT', body: JSON.stringify(body) }),
-
-  patch: <T>(url: string, body?: unknown) =>
-    apiFetch<T>(url, { method: 'PATCH', body: JSON.stringify(body) }),
-
-  delete: <T>(url: string) =>
-    apiFetch<T>(url, { method: 'DELETE' }),
+  get:    <T>(p: string)              => req<T>(p),
+  post:   <T>(p: string, b?: unknown) => req<T>(p, { method: 'POST',   body: JSON.stringify(b) }),
+  patch:  <T>(p: string, b?: unknown) => req<T>(p, { method: 'PATCH',  body: JSON.stringify(b) }),
+  put:    <T>(p: string, b?: unknown) => req<T>(p, { method: 'PUT',    body: JSON.stringify(b) }),
+  delete: <T>(p: string)              => req<T>(p, { method: 'DELETE' }),
 }
 
-// ─── Response wrapper (le backend utilise TransformInterceptor) ───────────────
+// ─── Unwrap (TransformInterceptor → { data: T }) ──────────────────────────────
 
-export interface ApiResponse<T> {
-  statusCode: number
-  message: string
-  data: T
+function u<T>(r: { data?: T } | T): T {
+  return (r as { data?: T }).data !== undefined ? (r as { data: T }).data : r as T
 }
 
-function unwrap<T>(res: ApiResponse<T>): T {
-  return res.data ?? (res as unknown as T)
-}
+// =============================================================================
+// AUTH
+// =============================================================================
 
-// ─── Auth API ─────────────────────────────────────────────────────────────────
-
-export interface LoginPayload {
-  email: string
-  password: string
-}
-
-export interface RegisterPayload {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
+export interface LoginDto    { email: string; password: string }
+export interface RegisterDto {
+  email: string; password: string
+  firstName: string; lastName: string
   role: 'ETUDIANT' | 'ENSEIGNANT' | 'DELEGUE' | 'ADMIN'
-  levelId?: string
-  specialtyId?: string
+  levelId?: string; specialtyId?: string
 }
-
-export interface AuthTokens {
-  accessToken: string
-  refreshToken: string
-  user: BackendUser
+export interface AuthResult {
+  accessToken: string; refreshToken: string
+  user: { id: string; email: string; role: string; student?: StudentProfile; teacher?: TeacherProfile }
 }
-
-export interface BackendUser {
-  id: string
-  email: string
-  role: string
-  student?: { firstName: string; lastName: string; matricule: string }
-  teacher?: { firstName: string; lastName: string }
-}
+interface StudentProfile { firstName: string; lastName: string; matricule: string }
+interface TeacherProfile { firstName: string; lastName: string }
 
 export const authApi = {
-  login: async (payload: LoginPayload): Promise<AuthTokens> => {
-    const res = await api.post<ApiResponse<AuthTokens>>('/auth/login', payload)
-    return unwrap(res)
-  },
-
-  register: async (payload: RegisterPayload): Promise<AuthTokens> => {
-    const res = await api.post<ApiResponse<AuthTokens>>('/auth/register', payload)
-    return unwrap(res)
-  },
-
-  me: async (): Promise<BackendUser> => {
-    const res = await api.get<ApiResponse<BackendUser>>('/auth/me')
-    return unwrap(res)
-  },
-
-  logout: () => clearTokens(),
+  login:    async (dto: LoginDto)    => u(await api.post<{ data: AuthResult }>('/auth/login', dto)),
+  register: async (dto: RegisterDto) => u(await api.post<{ data: AuthResult }>('/auth/register', dto)),
+  me:       async ()                 => u(await api.get<{ data: AuthResult['user'] }>('/auth/me')),
+  logout:   ()                       => clearTokens(),
 }
 
-// ─── Courses API ──────────────────────────────────────────────────────────────
+// =============================================================================
+// COURSES  GET /courses  |  GET /courses/my  |  GET /courses/:id
+// =============================================================================
 
 export interface Course {
-  id: string
-  name: string
-  code: string
-  description?: string
-  credits: number
-  teacher?: { firstName: string; lastName: string }
-  ue?: { name: string; code: string }
+  id: string; name: string; code: string; description?: string
+  type: 'CM' | 'TD' | 'TP'; credits: number; hours: number
+  teachingUnit?: { id: string; name: string; code: string; credits: number }
+  teacher?: { id: string; firstName: string; lastName: string }
+  classroom?: { id: string; name: string; building: string }
 }
 
 export const coursesApi = {
-  list: async (): Promise<Course[]> => {
-    const res = await api.get<ApiResponse<Course[]>>('/courses')
-    return unwrap(res)
-  },
-  getById: async (id: string): Promise<Course> => {
-    const res = await api.get<ApiResponse<Course>>(`/courses/${id}`)
-    return unwrap(res)
-  },
+  list:   async ()          => u(await api.get<{ data: Course[] }>('/courses')),
+  mine:   async ()          => u(await api.get<{ data: Course[] }>('/courses/my')),
+  getOne: async (id: string) => u(await api.get<{ data: Course }>(`/courses/${id}`)),
 }
 
-// ─── Students API ─────────────────────────────────────────────────────────────
+// =============================================================================
+// SCHEDULES  GET /schedules
+// =============================================================================
 
-export interface Student {
-  id: string
-  firstName: string
-  lastName: string
-  matricule: string
-  email?: string
-  level?: { name: string }
-  specialty?: { name: string }
-}
-
-export const studentsApi = {
-  list: async (): Promise<Student[]> => {
-    const res = await api.get<ApiResponse<Student[]>>('/students')
-    return unwrap(res)
-  },
-  getById: async (id: string): Promise<Student> => {
-    const res = await api.get<ApiResponse<Student>>(`/students/${id}`)
-    return unwrap(res)
-  },
-}
-
-// ─── Teachers API ─────────────────────────────────────────────────────────────
-
-export interface Teacher {
-  id: string
-  firstName: string
-  lastName: string
-  email?: string
-  specialization?: string
-}
-
-export const teachersApi = {
-  list: async (): Promise<Teacher[]> => {
-    const res = await api.get<ApiResponse<Teacher[]>>('/teachers')
-    return unwrap(res)
-  },
-}
-
-// ─── Schedules API ────────────────────────────────────────────────────────────
-
-export interface ScheduleEntry {
-  id: string
-  dayOfWeek: number
-  startTime: string
-  endTime: string
-  course: { name: string; code: string }
-  classroom: { name: string; building: string }
-  teacher: { firstName: string; lastName: string }
+export interface Schedule {
+  id: string; dayOfWeek: string; startTime: string; endTime: string
+  semesterId: string
+  course: { id: string; name: string; code: string; type: string
+            teacher: { firstName: string; lastName: string }
+            classroom: { name: string; building: string } }
 }
 
 export const schedulesApi = {
-  getMine: async (): Promise<ScheduleEntry[]> => {
-    const res = await api.get<ApiResponse<ScheduleEntry[]>>('/schedules/my')
-    return unwrap(res)
-  },
-  getByLevel: async (levelId: string): Promise<ScheduleEntry[]> => {
-    const res = await api.get<ApiResponse<ScheduleEntry[]>>(`/schedules/level/${levelId}`)
-    return unwrap(res)
-  },
+  list: async () => u(await api.get<{ data: Schedule[] }>('/schedules')),
 }
 
-// ─── Attendance API ───────────────────────────────────────────────────────────
+// =============================================================================
+// STUDENTS  GET /students  |  GET /students/:id
+// =============================================================================
 
+export interface Student {
+  id: string; firstName: string; lastName: string; matricule: string
+  status: string
+  level?: { name: string; program?: { name: string } }
+  specialty?: { name: string }
+  user?: { email: string }
+}
+
+export const studentsApi = {
+  list:   async ()           => u(await api.get<{ data: Student[] }>('/students')),
+  getOne: async (id: string) => u(await api.get<{ data: Student }>(`/students/${id}`)),
+}
+
+// =============================================================================
+// TEACHERS  GET /teachers  |  GET /teachers/:id
+// =============================================================================
+
+export interface Teacher {
+  id: string; firstName: string; lastName: string
+  user?: { email: string }
+  courses?: Course[]
+}
+
+export const teachersApi = {
+  list:   async ()           => u(await api.get<{ data: Teacher[] }>('/teachers')),
+  getOne: async (id: string) => u(await api.get<{ data: Teacher }>(`/teachers/${id}`)),
+}
+
+// =============================================================================
+// ATTENDANCE
+// POST   /attendance/sessions          → créer session
+// GET    /attendance/sessions/:id
+// GET    /attendance/sessions/by-course/:courseId
+// PATCH  /attendance/sessions/:id/mark
+// POST   /attendance/scan              → scanner QR
+// =============================================================================
+
+export interface AttendanceSession {
+  id: string; date: string; courseId: string
+  course?: { name: string; code: string }
+  records: AttendanceRecord[]
+}
 export interface AttendanceRecord {
-  id: string
-  status: 'PRESENT' | 'ABSENT' | 'RETARD' | 'JUSTIFIE'
-  date: string
-  course: { name: string; code: string }
+  id: string; status: 'PRESENT' | 'ABSENT' | 'RETARD' | 'JUSTIFIE'
+  studentId: string
   student?: { firstName: string; lastName: string; matricule: string }
 }
 
 export const attendanceApi = {
-  getMine: async (): Promise<AttendanceRecord[]> => {
-    const res = await api.get<ApiResponse<AttendanceRecord[]>>('/attendance/my')
-    return unwrap(res)
-  },
-  getByCourse: async (courseId: string): Promise<AttendanceRecord[]> => {
-    const res = await api.get<ApiResponse<AttendanceRecord[]>>(`/attendance/course/${courseId}`)
-    return unwrap(res)
-  },
-  markPresence: async (sessionId: string, qrCode?: string): Promise<void> => {
-    await api.post(`/attendance/mark`, { sessionId, qrCode })
-  },
+  createSession: async (dto: { courseId: string; date: string }) =>
+    u(await api.post<{ data: AttendanceSession }>('/attendance/sessions', dto)),
+
+  getSession: async (id: string) =>
+    u(await api.get<{ data: AttendanceSession }>(`/attendance/sessions/${id}`)),
+
+  byCourse: async (courseId: string) =>
+    u(await api.get<{ data: AttendanceSession[] }>(`/attendance/sessions/by-course/${courseId}`)),
+
+  mark: async (sessionId: string, dto: { studentId: string; status: string }) =>
+    u(await api.patch<{ data: AttendanceRecord }>(`/attendance/sessions/${sessionId}/mark`, dto)),
+
+  scan: async (dto: { qrCode: string }) =>
+    u(await api.post<{ data: AttendanceRecord }>('/attendance/scan', dto)),
 }
 
-// ─── Classrooms API ───────────────────────────────────────────────────────────
+// =============================================================================
+// CLASSROOMS  GET /classrooms  |  GET /classrooms/:id
+// =============================================================================
 
 export interface Classroom {
-  id: string
-  name: string
-  building: string
-  floor: number
-  capacity: number
-  type: string
-  equipment: string[]
-  isAvailable: boolean
+  id: string; name: string; building: string; floor?: number
+  capacity: number; type: string; isAvailable: boolean
+  equipment?: string[]
 }
 
 export const classroomsApi = {
-  list: async (): Promise<Classroom[]> => {
-    const res = await api.get<ApiResponse<Classroom[]>>('/classrooms')
-    return unwrap(res)
-  },
-  getAvailability: async (classroomId: string, date: string): Promise<unknown> => {
-    const res = await api.get<ApiResponse<unknown>>(`/classrooms/${classroomId}/availability?date=${date}`)
-    return unwrap(res)
-  },
-  reserve: async (payload: {
-    classroomId: string
-    date: string
-    startTime: string
-    endTime: string
-    purpose: string
-  }): Promise<void> => {
-    await api.post('/classrooms/reserve', payload)
-  },
+  list:   async ()           => u(await api.get<{ data: Classroom[] }>('/classrooms')),
+  getOne: async (id: string) => u(await api.get<{ data: Classroom }>(`/classrooms/${id}`)),
 }
 
-// ─── Notifications API ────────────────────────────────────────────────────────
+// =============================================================================
+// NOTIFICATIONS  GET /notifications  |  PATCH /:id/read
+// =============================================================================
 
 export interface Notification {
-  id: string
-  title: string
-  message: string
-  type: string
-  isRead: boolean
-  createdAt: string
+  id: string; title: string; message: string; type: string
+  isRead: boolean; createdAt: string
 }
 
 export const notificationsApi = {
-  list: async (): Promise<Notification[]> => {
-    const res = await api.get<ApiResponse<Notification[]>>('/notifications')
-    return unwrap(res)
-  },
-  markRead: async (id: string): Promise<void> => {
-    await api.patch(`/notifications/${id}/read`)
-  },
-  markAllRead: async (): Promise<void> => {
-    await api.patch('/notifications/read-all')
-  },
+  list:     async ()           => u(await api.get<{ data: Notification[] }>('/notifications')),
+  unreadCount: async ()        => u(await api.get<{ data: number }>('/notifications/unread-count')),
+  markRead: async (id: string) => u(await api.patch<{ data: Notification }>(`/notifications/${id}/read`)),
 }
 
-// ─── UE API ───────────────────────────────────────────────────────────────────
+// =============================================================================
+// UE  GET /ue  |  GET /ue/by-level/:levelId
+// =============================================================================
 
 export interface UE {
-  id: string
-  name: string
-  code: string
-  credits: number
+  id: string; name: string; code: string; credits: number
   courses?: Course[]
 }
 
 export const ueApi = {
-  list: async (): Promise<UE[]> => {
-    const res = await api.get<ApiResponse<UE[]>>('/ue')
-    return unwrap(res)
-  },
-  getMine: async (): Promise<UE[]> => {
-    const res = await api.get<ApiResponse<UE[]>>('/ue/my')
-    return unwrap(res)
-  },
+  list:      async ()              => u(await api.get<{ data: UE[] }>('/ue')),
+  byLevel:   async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-level/${id}`)),
+  bySemester:async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-semester/${id}`)),
 }
 
-// ─── Files / Library API ──────────────────────────────────────────────────────
+// =============================================================================
+// VIDEO CONFERENCE  POST /videoconference/rooms
+// =============================================================================
 
-export interface LibraryFile {
-  id: string
-  name: string
-  type: string
-  url: string
-  size: number
-  course?: { name: string }
-  uploadedBy?: { firstName: string; lastName: string }
-  createdAt: string
+export interface VideoRoom { roomName: string; token: string; serverUrl: string }
+
+export const videoApi = {
+  create: async (dto: { courseId?: string; roomName?: string }) =>
+    u(await api.post<{ data: VideoRoom }>('/videoconference/rooms', dto)),
 }
+
+// =============================================================================
+// ENROLLMENTS
+// =============================================================================
+
+export interface Enrollment {
+  id: string; status: string; teachingUnitId: string
+  teachingUnit?: { name: string; code: string; credits: number }
+}
+
+export const enrollmentsApi = {
+  mine: async () => u(await api.get<{ data: Enrollment[] }>('/enrollments/my')),
+}
+
+// =============================================================================
+// FILE UPLOAD  (multipart)
+// =============================================================================
 
 export const filesApi = {
-  list: async (courseId?: string): Promise<LibraryFile[]> => {
-    const url = courseId ? `/files?courseId=${courseId}` : '/files'
-    const res = await api.get<ApiResponse<LibraryFile[]>>(url)
-    return unwrap(res)
-  },
-  upload: async (formData: FormData): Promise<LibraryFile> => {
-    const token = getAccessToken()
+  upload: async (formData: FormData) => {
+    const token = getToken()
     const res = await fetch(`${BASE_URL}/files`, {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: formData,
     })
     if (!res.ok) throw new ApiError(res.status, 'Upload échoué')
-    const data = await res.json()
-    return unwrap(data)
-  },
-}
-
-// ─── Video Conference API ────────────────────────────────────────────────────
-
-export interface VideoRoom {
-  roomName: string
-  token: string
-  url: string
-}
-
-export const videoApi = {
-  createRoom: async (courseId: string): Promise<VideoRoom> => {
-    const res = await api.post<ApiResponse<VideoRoom>>('/videoconference/create', { courseId })
-    return unwrap(res)
-  },
-  joinRoom: async (roomName: string): Promise<VideoRoom> => {
-    const res = await api.post<ApiResponse<VideoRoom>>('/videoconference/join', { roomName })
-    return unwrap(res)
+    return u(await res.json())
   },
 }

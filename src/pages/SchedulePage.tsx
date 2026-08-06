@@ -1,106 +1,128 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Download, Printer, Sparkles, X } from 'lucide-react'
-
-import { mockScheduleEvents, eventColors, type ScheduleEvent } from '../data/mockData'
+import { ChevronLeft, ChevronRight, RefreshCw, AlertCircle, Clock, MapPin, User } from 'lucide-react'
+import { useApi } from '../hooks/useApi'
+import { schedulesApi, type Schedule } from '../lib/api'
 import { useUserRole } from '../utils/userRole'
 
-const hours = ['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00']
-const days  = ['Lun 13','Mar 14','Mer 15','Jeu 16','Ven 17','Sam 18']
+const HOURS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00']
+const DAY_LABELS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi']
+const DAY_KEYS   = ['LUNDI','MARDI','MERCREDI','JEUDI','VENDREDI','SAMEDI']
 const CELL_H = 56
 
-const typeLegend = [
-  { label: 'CM',       color: 'bg-[#1e3a8a]' },
-  { label: 'TD',       color: 'bg-[#0d9488]' },
-  { label: 'TP',       color: 'bg-orange-500' },
-  { label: 'Séminaire',color: 'bg-emerald-600' },
-]
+const typeColors: Record<string, string> = {
+  CM: 'bg-[#1e3a8a] border-[#1e3a8a]',
+  TD: 'bg-[#0d9488] border-[#0d9488]',
+  TP: 'bg-orange-500 border-orange-500',
+}
+
+function timeToRow(time: string): number {
+  const [h, m] = time.split(':').map(Number)
+  return (h - 8) * CELL_H + (m / 60) * CELL_H
+}
+function timeDuration(start: string, end: string): number {
+  const [sh, sm] = start.split(':').map(Number)
+  const [eh, em] = end.split(':').map(Number)
+  return ((eh * 60 + em) - (sh * 60 + sm)) / 60 * CELL_H
+}
 
 export default function SchedulePage() {
   const { currentRole } = useUserRole()
-  const [view, setView] = useState<'Semaine'|'Mois'|'Jour'>('Semaine')
-  
-  // Teacher only sees their own courses
-  const displayEvents = currentRole === 'teacher' 
-    ? mockScheduleEvents.filter(e => e.teacher === 'Pr. Martin')
-    : mockScheduleEvents
-    
-  const [selected, setSelected] = useState<ScheduleEvent | null>(displayEvents[0] || null)
+  const [selected, setSelected] = useState<Schedule | null>(null)
+  const { data: schedules, loading, error, refetch } = useApi(() => schedulesApi.list())
+
+  const grouped = (schedules ?? []).reduce<Record<string, Schedule[]>>((acc, s) => {
+    const d = s.dayOfWeek?.toUpperCase() ?? ''
+    if (!acc[d]) acc[d] = []
+    acc[d].push(s)
+    return acc
+  }, {})
+
+  if (loading) return (
+    <div className="space-y-4 animate-fade-in">
+      <div className="h-8 w-64 rounded-lg bg-[#f3f4f6] animate-pulse" />
+      <div className="h-[600px] rounded-xl bg-[#f3f4f6] animate-pulse" />
+    </div>
+  )
+  if (error) return (
+    <div className="flex flex-col items-center justify-center py-20 gap-4">
+      <AlertCircle className="h-12 w-12 text-red-400" />
+      <p className="text-sm text-[#6b7280]">{error}</p>
+      <button onClick={refetch} className="flex items-center gap-2 rounded-lg bg-[#1e3a8a] px-4 py-2 text-sm font-semibold text-white">
+        <RefreshCw className="h-4 w-4" /> Réessayer
+      </button>
+    </div>
+  )
 
   return (
     <div className="space-y-4 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white border border-[#e5e7eb] p-4 shadow-sm">
-        <div className="flex items-center gap-2">
-          <button className="rounded-lg border border-[#e5e7eb] p-1.5 hover:bg-[#f9fafb] transition-colors">
-            <ChevronLeft className="h-4 w-4 text-[#374151]" />
-          </button>
-          <h1 className="text-2xl font-bold text-[#111827]">13 – 19 mai 2026</h1>
-          <button className="rounded-lg border border-[#e5e7eb] p-1.5 hover:bg-[#f9fafb] transition-colors">
-            <ChevronRight className="h-4 w-4 text-[#374151]" />
-          </button>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm">
+        <div>
+          <h1 className="text-xl font-bold text-[#111827]">Emploi du temps</h1>
+          <p className="text-sm text-[#6b7280]">
+            {currentRole === 'teacher' ? 'Vos cours programmés' : 'Planning hebdomadaire'}
+          </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {['Programme','Niveau','Semestre'].map(f => (
-            <select key={f} className="rounded-lg border border-[#e5e7eb] bg-white px-2.5 py-1.5 text-xs font-medium text-[#374151] outline-none focus:border-[#1e3a8a]">
-              <option>{f} ▾</option>
-            </select>
-          ))}
-          <div className="flex rounded-lg border border-[#e5e7eb] overflow-hidden">
-            {(['Semaine','Mois','Jour'] as const).map(v => (
-              <button key={v} onClick={() => setView(v)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${view === v ? 'bg-[#1e3a8a] text-white' : 'text-[#6b7280] hover:bg-[#f9fafb]'}`}>
-                {v}
-              </button>
-            ))}
-          </div>
-          <button className="flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb]">
-            <Download className="h-3.5 w-3.5" /> Export PDF
-          </button>
-          <button className="flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb]">
-            <Printer className="h-3.5 w-3.5" /> Imprimer
-          </button>
-          <button className="flex items-center gap-1.5 rounded-lg bg-[#1e3a8a] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2d4fa8]">
-            <Sparkles className="h-3.5 w-3.5" /> Auto-générer
+        <div className="flex items-center gap-2">
+          <button className="rounded-lg border border-[#e5e7eb] p-2 hover:bg-[#f9fafb]"><ChevronLeft className="h-4 w-4" /></button>
+          <span className="text-sm font-semibold text-[#111827] px-2">Cette semaine</span>
+          <button className="rounded-lg border border-[#e5e7eb] p-2 hover:bg-[#f9fafb]"><ChevronRight className="h-4 w-4" /></button>
+          <button onClick={refetch} className="rounded-lg border border-[#e5e7eb] p-2 hover:bg-[#f9fafb] text-[#6b7280]">
+            <RefreshCw className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-3 flex-wrap">
-        {typeLegend.map(t => (
-          <span key={t.label} className="flex items-center gap-1.5 text-xs font-medium text-[#374151]">
-            <span className={`h-3 w-3 rounded ${t.color}`} />{t.label}
+      {/* Légende */}
+      <div className="flex items-center gap-3 px-1">
+        {Object.entries(typeColors).map(([type, cls]) => (
+          <span key={type} className="flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
+            <span className={`h-2.5 w-2.5 rounded-sm ${cls.split(' ')[0]}`} /> {type}
           </span>
         ))}
       </div>
 
-      {/* Grid + panel */}
-      <div className="grid gap-4 lg:grid-cols-4">
-        {/* Calendar grid */}
-        <div className={`${selected ? 'lg:col-span-3' : 'lg:col-span-4'} rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-x-auto`}>
-          <div className="min-w-[640px]">
-            {/* Day headers */}
-            <div className="grid border-b border-[#e5e7eb] bg-[#f9fafb]" style={{ gridTemplateColumns: '60px repeat(6,1fr)' }}>
-              <div className="p-2.5" />
-              {days.map(d => (
-                <div key={d} className="border-l border-[#e5e7eb] p-2.5 text-center text-xs font-semibold text-[#374151]">{d}</div>
+      {/* Grille */}
+      <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm overflow-x-auto">
+        <div className="min-w-[700px]">
+          {/* Header jours */}
+          <div className="grid border-b border-[#e5e7eb]" style={{ gridTemplateColumns: '60px repeat(6,1fr)' }}>
+            <div className="border-r border-[#e5e7eb]" />
+            {DAY_LABELS.map(d => (
+              <div key={d} className="border-r border-[#e5e7eb] px-2 py-2.5 text-center text-xs font-bold text-[#374151]">{d}</div>
+            ))}
+          </div>
+
+          {/* Body */}
+          <div className="grid relative" style={{ gridTemplateColumns: '60px repeat(6,1fr)' }}>
+            {/* Colonne heures */}
+            <div className="border-r border-[#e5e7eb]">
+              {HOURS.map(h => (
+                <div key={h} className="border-b border-[#f3f4f6] text-right pr-2 text-[10px] text-[#9ca3af]" style={{ height: CELL_H }}>
+                  <span className="relative -top-2">{h}</span>
+                </div>
               ))}
             </div>
-            {/* Hour rows */}
-            {hours.map((hour, hi) => (
-              <div key={hour} className="grid border-b border-[#f3f4f6] last:border-0" style={{ gridTemplateColumns: '60px repeat(6,1fr)', minHeight: CELL_H }}>
-                <div className="p-2 text-[10px] text-[#9ca3af] font-mono">{hour}</div>
-                {days.map((_, di) => {
-                  const ev = displayEvents.find(e => e.day === di && e.start === hi)
+
+            {/* Colonnes jours */}
+            {DAY_KEYS.map(dayKey => (
+              <div key={dayKey} className="relative border-r border-[#e5e7eb]">
+                {HOURS.map(h => <div key={h} className="border-b border-[#f3f4f6]" style={{ height: CELL_H }} />)}
+                {(grouped[dayKey] ?? []).map(s => {
+                  const top = timeToRow(s.startTime ?? '08:00')
+                  const height = timeDuration(s.startTime ?? '08:00', s.endTime ?? '09:30')
+                  const type = s.course?.type ?? 'CM'
+                  const color = typeColors[type] ?? typeColors.CM
                   return (
-                    <div key={di} className="relative border-l border-[#f3f4f6]">
-                      {ev && (
-                        <button onClick={() => setSelected(ev === selected ? null : ev)}
-                          className={`absolute inset-x-1 rounded-lg px-2 py-1.5 text-left transition-all hover:opacity-90 ${eventColors[ev.type]} ${selected?.id === ev.id ? 'ring-2 ring-white ring-offset-1' : ''}`}
-                          style={{ top: 3, height: ev.duration * CELL_H - 6, zIndex: 1 }}>
-                          <p className="text-[11px] font-bold leading-tight truncate">{ev.title}</p>
-                          <p className="text-[10px] opacity-80 truncate">{ev.type} · {ev.room}</p>
-                        </button>
+                    <div key={s.id}
+                      onClick={() => setSelected(s)}
+                      className={`absolute left-0.5 right-0.5 rounded-lg border ${color} bg-opacity-90 p-1.5 cursor-pointer hover:brightness-110 transition-all`}
+                      style={{ top, height: Math.max(height - 4, 20) }}
+                    >
+                      <p className="text-[10px] font-bold text-white leading-tight truncate">{s.course?.name}</p>
+                      <p className="text-[9px] text-white/80 truncate">{s.startTime} - {s.endTime}</p>
+                      {height > 50 && (
+                        <p className="text-[9px] text-white/70 truncate">{s.course?.classroom?.name}</p>
                       )}
                     </div>
                   )
@@ -109,45 +131,42 @@ export default function SchedulePage() {
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Detail panel */}
-        {selected && (
-          <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm animate-slide-in">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-[#111827]">Cours sélectionné</h2>
-              <button onClick={() => setSelected(null)} className="rounded-lg p-1 hover:bg-[#f3f4f6]">
-                <X className="h-4 w-4 text-[#9ca3af]" />
-              </button>
+      {/* Détail */}
+      {selected && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          onClick={() => setSelected(null)}>
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className={`p-5 ${typeColors[selected.course?.type ?? 'CM'].split(' ')[0]} text-white`}>
+              <p className="text-xs font-bold opacity-70 mb-1">{selected.course?.code} · {selected.course?.type}</p>
+              <h2 className="text-xl font-black">{selected.course?.name}</h2>
             </div>
-            <div className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-bold text-white mb-3 ${eventColors[selected.type]}`}>
-              {selected.type}
-            </div>
-            <h3 className="font-bold text-[#1e3a8a] text-base mb-4">{selected.title}</h3>
-            <dl className="space-y-2.5 text-sm">
-              {[
-                { label: 'Enseignant', value: selected.teacher },
-                { label: 'Salle',      value: selected.room },
-                { label: 'Groupe',     value: 'L2 — Groupe A' },
-                { label: 'Type',       value: selected.type },
-                { label: 'Description',value: 'Travaux pratiques — apportez votre ordinateur portable.' },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <dt className="text-xs text-[#9ca3af] font-medium">{label}</dt>
-                  <dd className="mt-0.5 font-medium text-[#374151]">{value}</dd>
+            <div className="p-5 space-y-3 text-sm">
+              <div className="flex items-center gap-2 text-[#374151]">
+                <Clock className="h-4 w-4 text-[#6b7280]" />
+                {selected.dayOfWeek} · {selected.startTime} – {selected.endTime}
+              </div>
+              {selected.course?.classroom && (
+                <div className="flex items-center gap-2 text-[#374151]">
+                  <MapPin className="h-4 w-4 text-[#6b7280]" />
+                  {selected.course.classroom.name} · {selected.course.classroom.building}
                 </div>
-              ))}
-            </dl>
-            <div className="mt-5 space-y-2">
-              <button className="w-full rounded-lg border border-[#e5e7eb] py-2 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] transition-colors">
-                Voir les étudiants
-              </button>
-              <button className="w-full rounded-lg bg-[#1e3a8a] py-2 text-xs font-semibold text-white hover:bg-[#2d4fa8] transition-colors">
-                Ajouter au calendrier
+              )}
+              {selected.course?.teacher && (
+                <div className="flex items-center gap-2 text-[#374151]">
+                  <User className="h-4 w-4 text-[#6b7280]" />
+                  {selected.course.teacher.firstName} {selected.course.teacher.lastName}
+                </div>
+              )}
+              <button onClick={() => setSelected(null)}
+                className="mt-2 w-full rounded-xl bg-[#1e3a8a] py-2.5 text-sm font-bold text-white hover:bg-[#2d4fa8]">
+                Fermer
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
