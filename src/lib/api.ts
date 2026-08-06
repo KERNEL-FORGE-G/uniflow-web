@@ -322,6 +322,18 @@ export const ueApi = {
   bySemester:async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-semester/${id}`)),
 }
 
+export interface OverviewStats {
+  studentCount: number
+  teacherCount: number
+  courseCount: number
+  satisfactionRate: number
+  supportAvailability: string
+}
+
+export const statsApi = {
+  overview: async () => u(await api.get<{ data: OverviewStats }>('/stats/overview')),
+}
+
 // =============================================================================
 // VIDEO CONFERENCE  POST /videoconference/rooms
 // =============================================================================

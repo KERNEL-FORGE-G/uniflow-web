@@ -3,6 +3,8 @@ import { BookOpen, ClipboardList, Clock, TrendingUp, UserCheck, Calendar, Bell, 
 import { useUserRole } from '../utils/userRole'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LineChart, Line, XAxis, YAxis, AreaChart, Area } from 'recharts'
 import { useState } from 'react'
+import { useApi } from '../hooks/useApi'
+import { statsApi } from '../lib/api'
 
 const gradeDistrib = [
   { name: 'Excellentes', value: 35, color: '#1e3a8a' },
@@ -39,9 +41,10 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const firstName = currentUser.name.split(' ')[0]
   const [activeCalDay, setActiveCalDay] = useState(today)
+  const { data: overview, loading: overviewLoading, error: overviewError } = useApi(() => statsApi.overview())
 
   const studentStats = [
-    { label: 'Cours inscrits',   value: '12',      delta: '+8%',    up: true,  icon: BookOpen,      bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]', to: '/app/cours' },
+    { label: 'Cours inscrits',   value: overview ? `${overview.courseCount}` : '...',      delta: '+8%',    up: true,  icon: BookOpen,      bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]', to: '/app/cours' },
     { label: 'Devoirs à rendre', value: '5',       delta: '↓1',     up: false, icon: ClipboardList, bg: 'bg-[#fef3c7]', color: 'text-[#d97706]', to: '/app/devoirs' },
     { label: 'Prochain cours',   value: '2h30',    delta: '+15m',   up: true,  icon: Clock,         bg: 'bg-[#f0fdfa]', color: 'text-[#0d9488]', to: '/app/emploi-du-temps' },
     { label: 'Moyenne',          value: '14.6/20', delta: '+0.6',   up: true,  icon: TrendingUp,    bg: 'bg-[#ede9fe]', color: 'text-[#7c3aed]', to: '/app/notes' },
@@ -51,7 +54,7 @@ export default function DashboardPage() {
     { label: 'Taux présence',     value: '89%',  delta: '+3%',    up: true,  icon: UserCheck,     bg: 'bg-[#f0fdfa]', color: 'text-[#0d9488]', to: '/app/gestion-presences' },
     { label: 'Sync. en attente',  value: '2',    delta: 'Offline', up: false, icon: ClipboardList, bg: 'bg-[#fee2e2]', color: 'text-[#dc2626]', to: '/app/gestion-presences' },
     { label: 'Justif. en attente',value: '3',    delta: '↓2',     up: true,  icon: Bell,          bg: 'bg-[#fef3c7]', color: 'text-[#d97706]', to: '/app/gestion-presences' },
-    { label: 'Cohorte L2 Info',   value: '52',   delta: 'Stable',  up: true,  icon: BookOpen,      bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]', to: '/app/cours' },
+    { label: 'Cohorte L2 Info',   value: overview ? `${overview.studentCount}` : '...',   delta: 'Stable',  up: true,  icon: BookOpen,      bg: 'bg-[#eff3ff]', color: 'text-[#1e3a8a]', to: '/app/cours' },
     { label: 'Sessions validées', value: '18',   delta: '+1',     up: true,  icon: Calendar,      bg: 'bg-[#d1fae5]', color: 'text-[#059669]', to: '/app/emploi-du-temps' },
   ]
   const teacherStats = [

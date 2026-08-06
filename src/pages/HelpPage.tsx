@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Search, HelpCircle, BookOpen, Video, MessageCircle, Mail, ChevronRight } from 'lucide-react'
 
 const faqs = [
@@ -14,6 +15,7 @@ const guides = [
   { title: 'Guide de démarrage rapide', desc: 'Découvrez les fonctionnalités essentielles en 5 minutes.', icon: BookOpen, duration: '5 min' },
   { title: 'Tutoriel vidéo : Mes Cours', desc: 'Comment naviguer dans vos cours et ressources.', icon: Video, duration: '8 min' },
   { title: 'Tutoriel vidéo : Visioconférence', desc: 'Organiser et rejoindre une visioconférence.', icon: Video, duration: '12 min' },
+  { title: 'Présentation vidéo du projet', desc: 'Regardez la démo et découvrez l’interface UniFlow.', icon: Video, duration: '10 min' },
   { title: 'Guide Offline First', desc: 'Utiliser UniFlow sans connexion Internet.', icon: BookOpen, duration: '7 min' },
 ]
 
@@ -71,18 +73,26 @@ export default function HelpPage() {
       <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
         <h2 className="text-sm font-bold text-[#111827] mb-4 flex items-center gap-1.5"><BookOpen className="h-4 w-4 text-[#1e3a8a]" /> Guides & Tutoriels</h2>
         <div className="grid gap-3 sm:grid-cols-2">
-          {guides.map(g => (
-            <button key={g.title} className="flex items-center gap-3 rounded-lg border border-[#e5e7eb] p-3 hover:bg-[#f9fafb] transition-colors text-left">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#f3f4f6]">
-                <g.icon className="h-5 w-5 text-[#1e3a8a]" />
+          {guides.map(g => {
+            const card = (
+              <div className="flex items-center gap-3 rounded-lg border border-[#e5e7eb] p-3 hover:bg-[#f9fafb] transition-colors text-left">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#f3f4f6]">
+                  <g.icon className="h-5 w-5 text-[#1e3a8a]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-[#111827] text-sm">{g.title}</h3>
+                  <p className="text-xs text-[#9ca3af] mt-0.5">{g.desc} · {g.duration}</p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-[#9ca3af] shrink-0" />
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-[#111827] text-sm">{g.title}</h3>
-                <p className="text-xs text-[#9ca3af] mt-0.5">{g.desc} · {g.duration}</p>
-              </div>
-              <ChevronRight className="h-4 w-4 text-[#9ca3af] shrink-0" />
-            </button>
-          ))}
+            )
+
+            return g.title === 'Présentation vidéo du projet' ? (
+              <Link key={g.title} to="/app/demo">{card}</Link>
+            ) : (
+              <button key={g.title} type="button">{card}</button>
+            )
+          })}
         </div>
       </div>
 

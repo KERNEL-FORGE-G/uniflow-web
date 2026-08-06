@@ -27,6 +27,7 @@ const MessagingPage = lazy(() => import('./pages/MessagingPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const LibraryPage = lazy(() => import('./pages/LibraryPage'))
 const HelpPage = lazy(() => import('./pages/HelpPage'))
+const DemoPage = lazy(() => import('./pages/DemoPage'))
 const AttendanceManagePage = lazy(() => import('./pages/AttendanceManagePage'))
 const TeacherCoursesPage = lazy(() => import('./pages/TeacherCoursesPage'))
 const ClassroomsPage = lazy(() => import('./pages/ClassroomsPage'))
@@ -121,6 +122,7 @@ export default function App() {
           <Route path="/app/bibliotheque" element={<StudentApp><LibraryPage /></StudentApp>} />
           <Route path="/app/salles" element={<StudentApp><ClassroomsPage /></StudentApp>} />
           <Route path="/app/aide" element={<StudentApp><HelpPage /></StudentApp>} />
+          <Route path="/app/demo" element={<StudentApp><DemoPage /></StudentApp>} />
 
           {/* Partie 5 — Administration */}
           <Route path="/admin" element={<AdminLayout />}>
