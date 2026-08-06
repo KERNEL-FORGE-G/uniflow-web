@@ -57,20 +57,33 @@ async function req<T>(path: string, init: RequestInit = {}, retry = true): Promi
 }
 
 async function doRefresh(): Promise<boolean> {
-  const r = getRefreshToken()
-  if (!r) return false
+  // Ensure only one refresh request runs at a time to avoid rotation races
+  ;(doRefresh as any)._promise = (doRefresh as any)._promise || null
+  if ((doRefresh as any)._promise) return (doRefresh as any)._promise
+
+  const promise = (async () => {
+    const r = getRefreshToken()
+    if (!r) return false
+    try {
+      const res = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: r }),
+      })
+      if (!res.ok) return false
+      const d = await res.json()
+      const data = d.data ?? d
+      setTokens(data.accessToken, data.refreshToken)
+      return true
+    } catch { return false }
+  })()
+
+  ;(doRefresh as any)._promise = promise
   try {
-    const res = await fetch(`${BASE_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: r }),
-    })
-    if (!res.ok) return false
-    const d = await res.json()
-    const data = d.data ?? d
-    setTokens(data.accessToken, data.refreshToken)
-    return true
-  } catch { return false }
+    return await promise
+  } finally {
+    ;(doRefresh as any)._promise = null
+  }
 }
 
 // ─── HTTP helpers ─────────────────────────────────────────────────────────────

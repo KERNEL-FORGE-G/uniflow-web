@@ -266,9 +266,9 @@ export default function AttendanceManagePage() {
             <div className="mx-auto flex h-52 w-52 items-center justify-center rounded-xl border border-[#e5e7eb] bg-[#f9fafb]">
               <QrCode className="h-44 w-44 text-[#1e3a8a]" />
             </div>
-            <p className="mt-4 rounded-lg bg-[#fef3c7] border border-[#fde68a] px-3 py-2 text-xs font-semibold text-[#92400e] animate-pulse flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 shrink-0" /> Expire dans 04:59 — Rotation automatique anti-fraude
-            </p>
+              <p className="mt-4 rounded-lg bg-[#fef3c7] border border-[#fde68a] px-3 py-2 text-xs font-semibold text-[#92400e] flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 shrink-0" /> QR permanent
+              </p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button onClick={() => setShowQR(false)} className="rounded-lg border border-[#e5e7eb] py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">Fermer</button>
               <button className="rounded-lg bg-[#1e3a8a] py-2 text-sm font-semibold text-white hover:bg-[#2d4fa8] flex items-center justify-center gap-1.5">
