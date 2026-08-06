@@ -40,6 +40,13 @@ async function req<T>(path: string, init: RequestInit = {}, retry = true): Promi
   const res = await fetch(`${BASE_URL}${path}`, { ...init, headers })
 
   if (res.status === 401 && retry) {
+    // If the request is an auth action (login/register/refresh), do not attempt token refresh
+    if (path.startsWith('/auth/login') || path.startsWith('/auth/register') || path.startsWith('/auth/refresh')) {
+      let msg = 'Non autorisé'
+      try { const b = await res.json(); msg = b?.message ?? msg } catch {}
+      throw new ApiError(401, msg)
+    }
+
     const ok = await doRefresh()
     if (ok) return req<T>(path, init, false)
     // No refresh possible: clear local credentials and notify app to show reconnection UI
