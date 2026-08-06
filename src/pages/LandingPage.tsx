@@ -12,7 +12,7 @@ import { ScrollFloat } from '../components/ui/ScrollFloat'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { fadeInUp, staggerContainer, float } from '../utils/animations'
-import landingImg from '../assets/landing.png'
+const landingImg = '/logos/mascotte.png'
 
 const stats = [
   { icon: Users, value: '12 000+', label: 'Étudiants actifs', color: 'text-[#1e3a8a] bg-[#eff3ff]' },

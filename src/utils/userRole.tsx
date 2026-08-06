@@ -9,6 +9,10 @@ export interface UserProfile {
   avatar?: string
   status: 'En ligne' | 'Hors ligne' | 'Synchro...'
   filiere?: string
+  role?: string
+  phone?: string
+  address?: string
+  level?: string
 }
 
 export const usersByRole: Record<Role, UserProfile> = {
