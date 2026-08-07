@@ -24,9 +24,11 @@ const getCourseIcon = (code: string): LucideIcon => {
 export default function TeacherCoursesPage() {
   const {} = useUserRole()
   const navigate = useNavigate()
-  const [selCode, setSelCode] = useState('INFO101')
-  const [students, setStudents] = useState<TeacherStudent[]>(mockTeacherStudents)
-  const [resources, setResources] = useState<TeacherResource[]>(mockResources.filter(r => r.courseId === 'INFO101'))
+  const [courses, setCourses] = useState<Course[]>([])
+  const [selCode, setSelCode] = useState<string | null>(null)
+  const [students, setStudents] = useState<any[]>([]) 
+  const [resources, setResources] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [newName, setNewName] = useState('')
   const [newType, setNewType] = useState('Cours')
   const [uploading, setUploading] = useState(false)
@@ -34,16 +36,31 @@ export default function TeacherCoursesPage() {
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'contenu'|'participants'|'devoirs'|'notes'>('contenu')
 
-  const course = mockTeacherCourses.find(c => c.id === selCode)!
+  useEffect(() => {
+    coursesApi.mine().then(data => {
+      setCourses(data)
+      if (data.length > 0) setSelCode(data[0].id)
+    }).finally(() => setLoading(false))
+  }, [])
 
-  const avg = parseFloat((students.reduce((s, st) => s + (st.cc * CC_W + st.exam * EXAM_W), 0) / students.length).toFixed(2))
-  const passRate = Math.round(students.filter(st => (st.cc * CC_W + st.exam * EXAM_W) >= 10).length / students.length * 100)
+  useEffect(() => {
+    if (!selCode) return
+    // As mentioned, studentsApi.list() is used as fallback for students
+    studentsApi.list().then(setStudents)
+    // Resources remain local
+  }, [selCode])
+
+  const course = courses.find(c => c.id === selCode)
+
+  const avg = students.length > 0 ? parseFloat((students.reduce((s: number, st: any) => s + (st.cc * CC_W + st.exam * EXAM_W), 0) / students.length).toFixed(2)) : 0
+  const passRate = students.length > 0 ? Math.round(students.filter(st => (st.cc * CC_W + st.exam * EXAM_W) >= 10).length / students.length * 100) : 0
 
   const updateGrade = (id: string, field: 'cc'|'exam', val: number) => {
     setStudents(prev => prev.map(s => s.id === id ? { ...s, [field]: Math.min(20, Math.max(0, val)) } : s))
   }
 
   const toggleLock = (id: string) => setStudents(prev => prev.map(s => s.id === id ? { ...s, locked: !s.locked } : s))
+
 
   const handleUpload = (e: React.FormEvent) => {
     e.preventDefault()
@@ -74,6 +91,8 @@ export default function TeacherCoursesPage() {
     { id: 'notes',        label: 'Notes' },
   ] as const
 
+  if (loading) return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-[#1e3a8a]" /></div>
+
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Header */}
@@ -86,10 +105,10 @@ export default function TeacherCoursesPage() {
           <p className="text-sm text-[#6b7280] mt-0.5">Gérez vos syllabus, ressources et notes · CC 30% + Examen 70%</p>
         </div>
         <div className="flex gap-2">
-          {mockTeacherCourses.map(c => {
+          {courses.map(c => {
             const Icon = getCourseIcon(c.code)
             return (
-              <button key={c.id} onClick={() => { setSelCode(c.id); setResources(mockResources.filter(r => r.courseId === c.id)) }}
+              <button key={c.id} onClick={() => setSelCode(c.id)}
                 className={`rounded-lg px-3 py-2 text-xs font-bold border transition-all flex items-center gap-2 ${selCode === c.id ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-[#374151] border-[#e5e7eb] hover:bg-[#f9fafb]'}`}>
                 <Icon className="h-4 w-4" strokeWidth={2} />
                 {c.code}
@@ -105,55 +124,56 @@ export default function TeacherCoursesPage() {
         </div>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        {/* Course card + visio */}
-        <div className="space-y-4">
-          <div className="rounded-xl border border-[#e5e7eb] bg-white overflow-hidden shadow-sm">
-            <div className={`h-24 bg-gradient-to-r ${course.color} p-4 flex flex-col justify-between`}>
-              <Badge className="self-start bg-white/20 text-white border-0 text-[10px]">{course.code}</Badge>
-              <div>
-                <h3 className="font-bold text-white text-base">{course.title}</h3>
-                <p className="text-xs text-white/80">{course.hours}</p>
-              </div>
-            </div>
-            <div className="p-4 space-y-3">
-              <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-[#6b7280]">Progression</span>
-                  <span className="font-semibold">{course.progress}%</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-[#f3f4f6] overflow-hidden">
-                  <div className="h-full rounded-full bg-indigo-600" style={{ width: `${course.progress}%` }} />
+      {course && (
+        <div className="grid gap-5 lg:grid-cols-3">
+          {/* Course card + visio */}
+          <div className="space-y-4">
+            <div className="rounded-xl border border-[#e5e7eb] bg-white overflow-hidden shadow-sm">
+              <div className="h-24 bg-gradient-to-r from-blue-600 to-blue-800 p-4 flex flex-col justify-between">
+                <Badge className="self-start bg-white/20 text-white border-0 text-[10px]">{course.code}</Badge>
+                <div>
+                  <h3 className="font-bold text-white text-base">{course.name}</h3>
+                  <p className="text-xs text-white/80">{course.hours}h</p>
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-[#6b7280]">
-                <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{course.students} étudiants</span>
-                <span className="font-semibold text-indigo-600">L2 Info</span>
+              <div className="p-4 space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-[#6b7280]">Progression</span>
+                    <span className="font-semibold">0%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-[#f3f4f6] overflow-hidden">
+                    <div className="h-full rounded-full bg-indigo-600" style={{ width: `0%` }} />
+                  </div>
+                </div>
+                <div className="flex justify-between text-xs text-[#6b7280]">
+                  <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> 0 étudiants</span>
+                  <span className="font-semibold text-indigo-600">L2 Info</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Quick stats */}
-          <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm space-y-2">
-            <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">Stats notes</h2>
-            <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Moyenne générale</span><span className="font-bold text-indigo-600">{avg}/20</span></div>
-            <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Taux de réussite</span><span className="font-bold text-[#059669]">{passRate}%</span></div>
-            <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Notes figées</span><span className="font-bold text-[#374151]">{students.filter(s => s.locked).length}/{students.length}</span></div>
-          </div>
-
-          {/* Visio launcher */}
-          <div className="rounded-xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-4 shadow-md">
-            <div className="flex items-center gap-2 mb-2">
-              <Video className="h-4 w-4 text-[#0d9488]" />
-              <h3 className="text-sm font-bold">Planifier / Démarrer Visioconf</h3>
+            {/* Quick stats */}
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm space-y-2">
+              <h2 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">Stats notes</h2>
+              <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Moyenne générale</span><span className="font-bold text-indigo-600">{avg}/20</span></div>
+              <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Taux de réussite</span><span className="font-bold text-[#059669]">{passRate}%</span></div>
+              <div className="flex justify-between text-sm"><span className="text-[#6b7280]">Notes figées</span><span className="font-bold text-[#374151]">{students.filter(s => s.locked).length}/{students.length}</span></div>
             </div>
-            <p className="text-xs text-indigo-200 mb-3">Hébergez un cours virtuel en LAN ou Internet. Mode bas-débit disponible.</p>
-            <button onClick={() => navigate('/app/visioconference')}
-              className="w-full rounded-lg bg-[#0d9488] py-2 text-sm font-bold text-white hover:bg-[#0a7167] transition-colors flex items-center justify-center gap-2">
-              <Video className="h-4 w-4" /> Lancer la visioconférence
-            </button>
+
+            {/* Visio launcher */}
+            <div className="rounded-xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-4 shadow-md">
+              <div className="flex items-center gap-2 mb-2">
+                <Video className="h-4 w-4 text-[#0d9488]" />
+                <h3 className="text-sm font-bold">Planifier / Démarrer Visioconf</h3>
+              </div>
+              <p className="text-xs text-indigo-200 mb-3">Hébergez un cours virtuel en LAN ou Internet. Mode bas-débit disponible.</p>
+              <button onClick={() => navigate('/app/visioconference')}
+                className="w-full rounded-lg bg-[#0d9488] py-2 text-sm font-bold text-white hover:bg-[#0a7167] transition-colors flex items-center justify-center gap-2">
+                <Video className="h-4 w-4" /> Lancer la visioconférence
+              </button>
+            </div>
           </div>
-        </div>
 
         {/* Main tabs panel */}
         <div className="lg:col-span-2 space-y-4">

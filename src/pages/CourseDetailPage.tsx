@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, BookOpen, FileText, Video, Users, Clock, Calendar, Download, Play, Eye, CheckCircle, Film, Loader2 } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
@@ -28,7 +28,9 @@ const mockSyllabus = [
   { week: 4, title: 'Structures de données II', topics: ['Arbres binaires', 'Arbres de recherche', 'AVL'], completed: false },
   { week: 5, title: 'Algorithmes de tri', topics: ['Tri par insertion', 'Tri fusion', 'Tri rapide'], completed: false },
 ]
-interface UiCourse extends Course {
+interface UiCourse {
+  id: string; code: string; name: string; description?: string
+  type: 'CM' | 'TD' | 'TP'; credits: number; hours: number
   title: string
   teacher: string
   semester: string
@@ -37,6 +39,17 @@ interface UiCourse extends Course {
   enrolled: number
   status: string
 }
+
+const mapToUiCourse = (c: Course): UiCourse => ({
+  ...c,
+  title: c.name,
+  teacher: c.teacher ? `${c.teacher.firstName} ${c.teacher.lastName}` : 'N/A',
+  semester: 'N/A',
+  progress: 0,
+  color: 'from-blue-600 to-blue-800',
+  enrolled: 0,
+  status: 'En cours'
+})
 
 export default function CourseDetailPage() {
   const navigate = useNavigate()
@@ -49,16 +62,7 @@ export default function CourseDetailPage() {
   useEffect(() => {
     if (!courseId) return
     coursesApi.getOne(courseId)
-      .then(c => setCourse({
-        ...c,
-        title: c.name,
-        teacher: c.teacher ? `${c.teacher.firstName} ${c.teacher.lastName}` : 'N/A',
-        semester: 'N/A',
-        progress: 0,
-        color: 'from-blue-600 to-blue-800',
-        enrolled: 0,
-        status: 'En cours'
-      }))
+      .then(c => setCourse(mapToUiCourse(c)))
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [courseId])
