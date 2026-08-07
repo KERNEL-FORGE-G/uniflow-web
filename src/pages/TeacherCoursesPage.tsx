@@ -373,5 +373,6 @@ export default function TeacherCoursesPage() {
         </div>
       </div>
     </div>
+    )}
   )
 }
