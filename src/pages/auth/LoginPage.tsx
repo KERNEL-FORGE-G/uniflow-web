@@ -161,7 +161,7 @@ export default function LoginPage() {
                     <motion.button 
                       key={acc.role} 
                       type="button" 
-                      onClick={() => handleDemo(acc.role, acc.email)}
+                      onClick={() => handleDemo(acc.email)}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       className={`group rounded-xl bg-gradient-to-br ${acc.gradient} px-4 py-3 text-white shadow-lg hover:shadow-xl transition-all`}

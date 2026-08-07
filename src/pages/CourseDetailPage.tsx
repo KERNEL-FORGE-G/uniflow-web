@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, BookOpen, FileText, Video, Users, Clock, Calendar, Download, Play, Eye, CheckCircle, Film } from 'lucide-react'
+import { ArrowLeft, BookOpen, FileText, Video, Users, Clock, Calendar, Download, Play, Eye, CheckCircle, Film, Loader2 } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
-import { mockCourses } from '../data/mockData'
+import { Course, coursesApi } from '../lib/api'
 
 type Tab = 'infos' | 'documents' | 'videos' | 'visio' | 'syllabus'
 
@@ -28,12 +28,40 @@ const mockSyllabus = [
   { week: 4, title: 'Structures de données II', topics: ['Arbres binaires', 'Arbres de recherche', 'AVL'], completed: false },
   { week: 5, title: 'Algorithmes de tri', topics: ['Tri par insertion', 'Tri fusion', 'Tri rapide'], completed: false },
 ]
+interface UiCourse extends Course {
+  title: string
+  teacher: string
+  semester: string
+  progress: number
+  color: string
+  enrolled: number
+  status: string
+}
+
 export default function CourseDetailPage() {
   const navigate = useNavigate()
   const { courseId } = useParams()
   const [activeTab, setActiveTab] = useState<Tab>('infos')
-  
-  const course = mockCourses.find(c => c.id === courseId) || mockCourses[0]
+  const [course, setCourse] = useState<UiCourse | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!courseId) return
+    coursesApi.getOne(courseId)
+      .then(c => setCourse({
+        ...c,
+        title: c.name,
+        teacher: c.teacher ? `${c.teacher.firstName} ${c.teacher.lastName}` : 'N/A',
+        semester: 'N/A',
+        progress: 0,
+        color: 'from-blue-600 to-blue-800',
+        enrolled: 0,
+        status: 'En cours'
+      }))
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false))
+  }, [courseId])
   
   const tabs: { id: Tab; label: string; icon: any }[] = [
     { id: 'infos', label: 'Informations', icon: BookOpen },
@@ -42,6 +70,10 @@ export default function CourseDetailPage() {
     { id: 'visio', label: 'Visioconférence', icon: Users },
     { id: 'syllabus', label: 'Programme', icon: Calendar },
   ]
+
+  if (loading) return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-[#1e3a8a]" /></div>
+  if (error) return <div className="p-6 text-red-500">Erreur: {error}</div>
+  if (!course) return <div className="p-6">Cours introuvable</div>
 
   return (
     <div className="space-y-5 animate-fade-in">

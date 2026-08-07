@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Users, Download, UploadCloud, Trash2, Save, Video, Check, Code2, Database, Network, Brain, GraduationCap, UserCheck, Calendar, Upload, CheckCircle, AlertTriangle, BookOpen } from 'lucide-react'
+import { Plus, Users, Download, UploadCloud, Trash2, Save, Video, Check, Code2, Database, Network, Brain, GraduationCap, UserCheck, Calendar, Upload, CheckCircle, AlertTriangle, BookOpen, Loader2 } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { Avatar } from '../components/ui/Avatar'
 import { useUserRole } from '../utils/userRole'
-import { mockTeacherCourses, mockTeacherStudents, mockResources, type TeacherStudent, type TeacherResource } from '../data/mockData'
+import { coursesApi, studentsApi, Course } from '../lib/api'
 import type { LucideIcon } from 'lucide-react'
 
 const CC_W = 0.3, EXAM_W = 0.7

@@ -307,6 +307,7 @@ export const notificationsApi = {
   delete: async (id: string) => u(await api.delete<void>(`/notifications/${id}`)),
 }
 
+
 // =============================================================================
 // UE  GET /ue  |  GET /ue/by-level/:levelId
 // =============================================================================
@@ -320,6 +321,33 @@ export const ueApi = {
   list:      async ()              => u(await api.get<{ data: UE[] }>('/ue')),
   byLevel:   async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-level/${id}`)),
   bySemester:async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-semester/${id}`)),
+}
+
+// =============================================================================
+// AUDIT LOGS  GET /audit-logs
+// =============================================================================
+
+export interface AuditLog {
+  id: string; action: string; entity: string; entityId: string
+  details: any; user: { firstName: string; lastName: string }; createdAt: string
+}
+
+export const auditLogsApi = {
+  list: async () => u(await api.get<{ data: AuditLog[] }>('/audit-logs')),
+}
+
+// =============================================================================
+// USERS ADMIN (List all)
+// =============================================================================
+
+export const usersApi = {
+  listAll: async () => {
+    const [students, teachers] = await Promise.all([
+      studentsApi.list(),
+      teachersApi.list()
+    ])
+    return [...students.map(s => ({ ...s, type: 'student' })), ...teachers.map(t => ({ ...t, type: 'teacher' }))]
+  }
 }
 
 export interface OverviewStats {
