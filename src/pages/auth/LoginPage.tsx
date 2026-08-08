@@ -46,9 +46,9 @@ export default function LoginPage() {
     await login({ email, password })
   }
 
-  const handleDemo = (demoEmail: string, demoPassword = 'password123') => {
+  const handleDemo = (demoEmail: string) => {
     setEmail(demoEmail)
-    setPassword(demoPassword)
+    setPassword('password123')
   }
 
   return (

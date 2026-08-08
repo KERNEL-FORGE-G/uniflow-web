@@ -1,60 +1,143 @@
-import { useState } from 'react'
-import { GraduationCap, Search, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { GraduationCap, Search, Download, Plus, Eye, Edit, Trash2, Mail, Phone, Loader2, X, Save } from 'lucide-react'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
-
-interface Student {
-  id: string
-  matricule: string
-  name: string
-  email: string
-  phone: string
-  department: string
-  level: string
-  year: string
-  status: 'active' | 'suspended' | 'graduated'
-  average: number
-  credits: number
-}
-
-const mockStudents: Student[] = [
-  { id: '1', matricule: '20INFO001', name: 'Adamou Ibrahim', email: 'adamou.i@facsciences-uy1.cm', phone: '+237 670 123 456', department: 'Informatique', level: 'L3', year: '2025-2026', status: 'active', average: 14.5, credits: 180 },
-  { id: '2', matricule: '20INFO045', name: 'Kameni Sarah', email: 'kameni.s@facsciences-uy1.cm', phone: '+237 690 234 567', department: 'Informatique', level: 'L2', year: '2025-2026', status: 'active', average: 16.2, credits: 120 },
-  { id: '3', matricule: '19MATH012', name: 'Nkodo Paul', email: 'nkodo.p@facsciences-uy1.cm', phone: '+237 655 345 678', department: 'Mathématiques', level: 'M1', year: '2025-2026', status: 'active', average: 15.8, credits: 240 },
-  { id: '4', matricule: '21INFO089', name: 'Fotso Divine', email: 'fotso.d@facsciences-uy1.cm', phone: '+237 677 456 789', department: 'Informatique', level: 'L1', year: '2025-2026', status: 'active', average: 13.9, credits: 60 },
-  { id: '5', matricule: '18ECO034', name: 'Mballa Jean', email: 'mballa.j@uy1.cm', phone: '+237 693 567 890', department: 'Économie', level: 'M2', year: '2025-2026', status: 'graduated', average: 17.1, credits: 300 },
-  { id: '6', matricule: '20INFO078', name: 'Tchoumba Alice', email: 'tchoumba.a@facsciences-uy1.cm', phone: '+237 680 678 901', department: 'Informatique', level: 'L2', year: '2025-2026', status: 'suspended', average: 9.2, credits: 105 },
-  { id: '7', matricule: '21MATH056', name: 'Onana Marc', email: 'onana.m@facsciences-uy1.cm', phone: '+237 671 789 012', department: 'Mathématiques', level: 'L1', year: '2025-2026', status: 'active', average: 15.3, credits: 55 },
-  { id: '8', matricule: '19INFO023', name: 'Bella Christelle', email: 'bella.c@facsciences-uy1.cm', phone: '+237 694 890 123', department: 'Informatique', level: 'M1', year: '2025-2026', status: 'active', average: 16.7, credits: 245 },
-]
+import { studentsApi, Student } from '../../lib/api'
 
 export default function StudentsPage() {
+  const [students, setStudents] = useState<Student[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterDept, setFilterDept] = useState<string>('all')
-  const [filterLevel, setFilterLevel] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<string>('all')
 
-  const filtered = mockStudents.filter(s => {
-    const matchSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       s.matricule.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       s.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchDept = filterDept === 'all' || s.department === filterDept
-    const matchLevel = filterLevel === 'all' || s.level === filterLevel
+  // Edit / Add Modal state
+  const [showModal, setShowModal] = useState(false)
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    matricule: '',
+    status: 'ACTIVE',
+    email: '',
+  })
+
+  const loadStudents = async () => {
+    setLoading(true)
+    try {
+      const data = await studentsApi.list()
+      setStudents(data)
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors du chargement')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadStudents()
+  }, [])
+
+  const handleOpenAdd = () => {
+    setEditingStudent(null)
+    setForm({
+      firstName: '',
+      lastName: '',
+      matricule: '',
+      status: 'ACTIVE',
+      email: '',
+    })
+    setShowModal(true)
+  }
+
+  const handleOpenEdit = (student: Student) => {
+    setEditingStudent(student)
+    setForm({
+      firstName: student.firstName,
+      lastName: student.lastName,
+      matricule: student.matricule,
+      status: student.status || 'ACTIVE',
+      email: student.user?.email || '',
+    })
+    setShowModal(true)
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Voulez-vous vraiment supprimer cet étudiant ?')) return
+    try {
+      await studentsApi.delete(id)
+      setStudents(prev => prev.filter(s => s.id !== id))
+    } catch (err: any) {
+      alert('Erreur lors de la suppression : ' + err.message)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      if (editingStudent) {
+        // Edit student
+        const updated = await studentsApi.update(editingStudent.id, {
+          firstName: form.firstName,
+          lastName: form.lastName,
+          matricule: form.matricule,
+          status: form.status,
+        })
+        setStudents(prev => prev.map(s => s.id === editingStudent.id ? updated : s))
+      } else {
+        // Add new student
+        const created = await studentsApi.create({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          matricule: form.matricule,
+          status: form.status,
+          // If backend supports auto-user creation, we can pass email
+          user: { email: form.email } as any
+        })
+        setStudents(prev => [created, ...prev])
+      }
+      setShowModal(false)
+    } catch (err: any) {
+      alert('Erreur de sauvegarde : ' + err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const filtered = students.filter(s => {
+    const fullName = `${s.firstName} ${s.lastName}`.toLowerCase()
+    const matchSearch = fullName.includes(searchTerm.toLowerCase()) ||
+                        s.matricule.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (s.user?.email || '').toLowerCase().includes(searchTerm.toLowerCase())
     const matchStatus = filterStatus === 'all' || s.status === filterStatus
-    return matchSearch && matchDept && matchLevel && matchStatus
+    return matchSearch && matchStatus
   })
 
   const stats = [
-    { label: 'Total Étudiants', value: mockStudents.length, color: 'text-[#1e3a8a]', bg: 'bg-[#eff3ff]' },
-    { label: 'Actifs', value: mockStudents.filter(s => s.status === 'active').length, color: 'text-[#059669]', bg: 'bg-emerald-50' },
-    { label: 'Suspendus', value: mockStudents.filter(s => s.status === 'suspended').length, color: 'text-[#d97706]', bg: 'bg-amber-50' },
-    { label: 'Diplômés 2026', value: mockStudents.filter(s => s.status === 'graduated').length, color: 'text-[#7c3aed]', bg: 'bg-purple-50' },
+    { label: 'Total Étudiants', value: students.length, color: 'text-[#1e3a8a]', bg: 'bg-[#eff3ff]' },
+    { label: 'Actifs', value: students.filter(s => s.status === 'ACTIVE' || s.status === 'active').length, color: 'text-[#059669]', bg: 'bg-emerald-50' },
+    { label: 'Suspendus', value: students.filter(s => s.status === 'SUSPENDED').length, color: 'text-[#d97706]', bg: 'bg-amber-50' },
+    { label: 'Diplômés', value: students.filter(s => s.status === 'GRADUATED').length, color: 'text-[#7c3aed]', bg: 'bg-purple-50' },
   ]
 
-  const statusConfig = {
-    active: { label: 'Actif', variant: 'success' as const },
-    suspended: { label: 'Suspendu', variant: 'warning' as const },
-    graduated: { label: 'Diplômé', variant: 'neutral' as const },
+  const statusConfig: Record<string, { label: string; variant: 'success'|'warning'|'danger'|'neutral' }> = {
+    ACTIVE: { label: 'Actif', variant: 'success' },
+    active: { label: 'Actif', variant: 'success' },
+    SUSPENDED: { label: 'Suspendu', variant: 'warning' },
+    suspended: { label: 'Suspendu', variant: 'warning' },
+    GRADUATED: { label: 'Diplômé', variant: 'neutral' },
+    graduated: { label: 'Diplômé', variant: 'neutral' },
+  }
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#1e3a8a]" />
+      </div>
+    )
   }
 
   return (
@@ -65,11 +148,17 @@ export default function StudentsPage() {
           <h1 className="text-2xl font-bold text-[#111827]">Gestion des Étudiants</h1>
           <p className="text-sm text-[#6b7280] mt-0.5">Administration · UniFlow 2026</p>
         </div>
-        <Button className="bg-[#1e3a8a] hover:bg-[#1e3a8a]/90">
+        <Button onClick={handleOpenAdd} className="bg-[#1e3a8a] hover:bg-[#1e3a8a]/90">
           <Plus className="h-4 w-4 mr-2" />
           Nouvel Étudiant
         </Button>
       </div>
+
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
+          Erreur: {error}
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -98,32 +187,16 @@ export default function StudentsPage() {
             />
           </div>
           <div className="flex gap-2">
-            <select value={filterDept} onChange={e => setFilterDept(e.target.value)}
-              className="rounded-lg border border-[#d1d5db] px-3 py-2 text-sm focus:border-[#1e3a8a] focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20">
-              <option value="all">Tous départements</option>
-              <option value="Informatique">Informatique</option>
-              <option value="Mathématiques">Mathématiques</option>
-              <option value="Économie">Économie</option>
-            </select>
-            <select value={filterLevel} onChange={e => setFilterLevel(e.target.value)}
-              className="rounded-lg border border-[#d1d5db] px-3 py-2 text-sm focus:border-[#1e3a8a] focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20">
-              <option value="all">Tous niveaux</option>
-              <option value="L1">L1</option>
-              <option value="L2">L2</option>
-              <option value="L3">L3</option>
-              <option value="M1">M1</option>
-              <option value="M2">M2</option>
-            </select>
             <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
               className="rounded-lg border border-[#d1d5db] px-3 py-2 text-sm focus:border-[#1e3a8a] focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20">
               <option value="all">Tous statuts</option>
-              <option value="active">Actif</option>
-              <option value="suspended">Suspendu</option>
-              <option value="graduated">Diplômé</option>
+              <option value="ACTIVE">Actif</option>
+              <option value="SUSPENDED">Suspendu</option>
+              <option value="GRADUATED">Diplômé</option>
             </select>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => window.print()}>
               <Download className="h-4 w-4 mr-2" />
-              Export
+              Exporter PDF
             </Button>
           </div>
         </div>
@@ -138,10 +211,7 @@ export default function StudentsPage() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Matricule</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Étudiant</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Contact</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Département</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Niveau</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Moyenne</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Crédits</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Niveau / Filière</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Statut</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-[#6b7280] uppercase tracking-wider">Actions</th>
               </tr>
@@ -153,52 +223,32 @@ export default function StudentsPage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#1e3a8a] to-[#7c3aed] flex items-center justify-center text-white font-bold text-sm shrink-0">
-                        {student.name.split(' ').map(n => n[0]).join('')}
+                        {student.firstName[0]}{student.lastName[0] || ''}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-[#111827]">{student.name}</p>
-                        <p className="text-xs text-[#6b7280]">{student.year}</p>
+                        <p className="text-sm font-medium text-[#111827]">{student.firstName} {student.lastName}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5 text-xs text-[#6b7280]">
-                        <Mail className="h-3 w-3" />
-                        <span>{student.email}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-[#6b7280]">
-                        <Phone className="h-3 w-3" />
-                        <span>{student.phone}</span>
-                      </div>
-                    </div>
+                  <td className="px-4 py-3 text-sm text-[#6b7280] select-all">
+                    {student.user?.email || 'N/A'}
                   </td>
-                  <td className="px-4 py-3 text-sm text-[#374151]">{student.department}</td>
-                  <td className="px-4 py-3">
-                    <span className="inline-flex items-center rounded-full bg-[#eff3ff] px-2.5 py-0.5 text-xs font-semibold text-[#1e3a8a]">
-                      {student.level}
-                    </span>
+                  <td className="px-4 py-3 text-sm text-[#374151]">
+                    {student.level?.name || 'N/A'} {student.specialty?.name ? `· ${student.specialty.name}` : ''}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-sm font-bold ${student.average >= 14 ? 'text-[#059669]' : student.average >= 10 ? 'text-[#d97706]' : 'text-[#dc2626]'}`}>
-                      {student.average.toFixed(1)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-[#374151]">{student.credits}</td>
-                  <td className="px-4 py-3">
-                    <Badge variant={statusConfig[student.status].variant}>
-                      {statusConfig[student.status].label}
+                    <Badge variant={statusConfig[student.status]?.variant || 'neutral'}>
+                      {statusConfig[student.status]?.label || student.status}
                     </Badge>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
-                      <button className="rounded-lg p-1.5 hover:bg-[#eff3ff] text-[#6b7280] hover:text-[#1e3a8a] transition-colors">
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      <button className="rounded-lg p-1.5 hover:bg-[#eff3ff] text-[#6b7280] hover:text-[#1e3a8a] transition-colors">
+                      <button onClick={() => handleOpenEdit(student)}
+                        className="rounded-lg p-1.5 hover:bg-[#eff3ff] text-[#6b7280] hover:text-[#1e3a8a] transition-colors">
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button className="rounded-lg p-1.5 hover:bg-red-50 text-[#6b7280] hover:text-red-600 transition-colors">
+                      <button onClick={() => handleDelete(student.id)}
+                        className="rounded-lg p-1.5 hover:bg-red-50 text-[#6b7280] hover:text-red-600 transition-colors">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -214,6 +264,64 @@ export default function StudentsPage() {
           </div>
         )}
       </div>
+
+      {/* CRUD Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between mb-4 border-b pb-2">
+              <h3 className="text-lg font-bold text-[#111827]">
+                {editingStudent ? 'Modifier l\'Étudiant' : 'Ajouter un Étudiant'}
+              </h3>
+              <button onClick={() => setShowModal(false)} className="rounded-lg p-1 hover:bg-[#f3f4f6] text-[#9ca3af]"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Prénom</label>
+                <input type="text" required value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})}
+                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm focus:border-[#1e3a8a]" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Nom</label>
+                <input type="text" required value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})}
+                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm focus:border-[#1e3a8a]" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Matricule</label>
+                <input type="text" required value={form.matricule} onChange={e => setForm({...form, matricule: e.target.value})}
+                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm focus:border-[#1e3a8a]" />
+              </div>
+              {!editingStudent && (
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Adresse E-mail</label>
+                  <input type="email" required value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+                    className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm focus:border-[#1e3a8a]" />
+                </div>
+              )}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Statut</label>
+                <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}
+                  className="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm focus:border-[#1e3a8a]">
+                  <option value="ACTIVE">Actif</option>
+                  <option value="SUSPENDED">Suspendu</option>
+                  <option value="GRADUATED">Diplômé</option>
+                </select>
+              </div>
+              <div className="flex gap-2 justify-end pt-3 border-t">
+                <button type="button" onClick={() => setShowModal(false)}
+                  className="rounded-lg border border-[#e5e7eb] px-4 py-2 text-sm font-medium hover:bg-[#f9fafb]">Annuler</button>
+                <button type="submit" disabled={saving}
+                  className="flex items-center gap-1.5 rounded-lg bg-[#1e3a8a] text-white px-5 py-2 text-sm font-semibold hover:bg-[#2d4fa8] disabled:opacity-50">
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+                  <Save className="h-4 w-4" />
+                  Sauvegarder
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+

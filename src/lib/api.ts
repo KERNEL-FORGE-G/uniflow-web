@@ -71,12 +71,13 @@ async function req<T>(path: string, init: RequestInit = {}, retry = true, triedA
   return res.json()
 }
 
+let _refreshPromise: Promise<boolean> | null = null
+
 async function doRefresh(): Promise<boolean> {
   // Ensure only one refresh request runs at a time to avoid rotation races
-  ;(doRefresh as any)._promise = (doRefresh as any)._promise || null
-  if ((doRefresh as any)._promise) return (doRefresh as any)._promise
+  if (_refreshPromise) return _refreshPromise
 
-  const promise = (async () => {
+  _refreshPromise = (async () => {
     const r = getRefreshToken()
     if (!r) return false
     try {
@@ -87,11 +88,16 @@ async function doRefresh(): Promise<boolean> {
         body: JSON.stringify({ refreshToken: r }),
       })
       console.debug('[api] refresh response', res.status)
-      if (!res.ok) return false
+      if (!res.ok) {
+        // Refresh token is invalid/expired — clear everything
+        clearTokens()
+        return false
+      }
       const d = await res.json()
       const data = d.data ?? d
+      if (!data.accessToken || !data.refreshToken) return false
       setTokens(data.accessToken, data.refreshToken)
-        try { window.dispatchEvent(new CustomEvent('uniflow:session-restored')) } catch {}
+      try { window.dispatchEvent(new CustomEvent('uniflow:session-restored')) } catch {}
       console.debug('[api] refresh succeeded')
       return true
     } catch (e) {
@@ -100,11 +106,10 @@ async function doRefresh(): Promise<boolean> {
     }
   })()
 
-  ;(doRefresh as any)._promise = promise
   try {
-    return await promise
+    return await _refreshPromise
   } finally {
-    ;(doRefresh as any)._promise = null
+    _refreshPromise = null
   }
 }
 
@@ -185,6 +190,9 @@ export const coursesApi = {
   list:   async ()          => u(await api.get<{ data: Course[] }>('/courses')),
   mine:   async ()          => u(await api.get<{ data: Course[] }>('/courses/my')),
   getOne: async (id: string) => u(await api.get<{ data: Course }>(`/courses/${id}`)),
+  create: async (dto: Partial<Course> & { teachingUnitId: string; teacherId: string; classroomId: string }) => u(await api.post<{ data: Course }>('/courses', dto)),
+  update: async (id: string, dto: Partial<Course>) => u(await api.patch<{ data: Course }>(`/courses/${id}`, dto)),
+  delete: async (id: string) => u(await api.delete<void>(`/courses/${id}`)),
 }
 
 // =============================================================================
@@ -219,6 +227,9 @@ export interface Student {
 export const studentsApi = {
   list:   async ()           => u(await api.get<{ data: Student[] }>('/students')),
   getOne: async (id: string) => u(await api.get<{ data: Student }>(`/students/${id}`)),
+  create: async (dto: Partial<Student> & { userId?: string; levelId?: string; specialtyId?: string }) => u(await api.post<{ data: Student }>('/students', dto)),
+  update: async (id: string, dto: Partial<Student>) => u(await api.patch<{ data: Student }>(`/students/${id}`, dto)),
+  delete: async (id: string) => u(await api.delete<void>(`/students/${id}`)),
 }
 
 // =============================================================================
@@ -234,6 +245,9 @@ export interface Teacher {
 export const teachersApi = {
   list:   async ()           => u(await api.get<{ data: Teacher[] }>('/teachers')),
   getOne: async (id: string) => u(await api.get<{ data: Teacher }>(`/teachers/${id}`)),
+  create: async (dto: Partial<Teacher> & { userId?: string }) => u(await api.post<{ data: Teacher }>('/teachers', dto)),
+  update: async (id: string, dto: Partial<Teacher>) => u(await api.patch<{ data: Teacher }>(`/teachers/${id}`, dto)),
+  delete: async (id: string) => u(await api.delete<void>(`/teachers/${id}`)),
 }
 
 // =============================================================================
@@ -286,6 +300,9 @@ export interface Classroom {
 export const classroomsApi = {
   list:   async ()           => u(await api.get<{ data: Classroom[] }>('/classrooms')),
   getOne: async (id: string) => u(await api.get<{ data: Classroom }>(`/classrooms/${id}`)),
+  create: async (dto: Partial<Classroom>) => u(await api.post<{ data: Classroom }>('/classrooms', dto)),
+  update: async (id: string, dto: Partial<Classroom>) => u(await api.patch<{ data: Classroom }>(`/classrooms/${id}`, dto)),
+  delete: async (id: string) => u(await api.delete<void>(`/classrooms/${id}`)),
 }
 
 // =============================================================================
@@ -321,6 +338,10 @@ export const ueApi = {
   list:      async ()              => u(await api.get<{ data: UE[] }>('/ue')),
   byLevel:   async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-level/${id}`)),
   bySemester:async (id: string)    => u(await api.get<{ data: UE[] }>(`/ue/by-semester/${id}`)),
+  getOne:    async (id: string)    => u(await api.get<{ data: UE }>(`/ue/${id}`)),
+  create:    async (dto: Partial<UE> & { levelId: string; semesterId: string }) => u(await api.post<{ data: UE }>('/ue', dto)),
+  update:    async (id: string, dto: Partial<UE>) => u(await api.patch<{ data: UE }>(`/ue/${id}`, dto)),
+  delete:    async (id: string) => u(await api.delete<void>(`/ue/${id}`)),
 }
 
 // =============================================================================
@@ -328,12 +349,26 @@ export const ueApi = {
 // =============================================================================
 
 export interface AuditLog {
-  id: string; action: string; entity: string; entityId: string
-  details: any; user: { firstName: string; lastName: string }; createdAt: string
+  id: string
+  userId?: string
+  userRole?: string
+  action: string
+  resource: string
+  resourceId?: string
+  ipAddress?: string
+  userAgent?: string
+  statusCode?: number
+  details?: any
+  createdAt: string
 }
 
 export const auditLogsApi = {
-  list: async () => u(await api.get<{ data: AuditLog[] }>('/audit-logs')),
+  list: async (page = 1, limit = 50, resource?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (resource) params.set('resource', resource)
+    return u(await api.get<{ data: AuditLog[] }>(`/audit-logs?${params.toString()}`))
+  },
+  getOne: async (id: string) => u(await api.get<{ data: AuditLog }>(`/audit-logs/${id}`)),
 }
 
 // =============================================================================
@@ -384,6 +419,11 @@ export interface Enrollment {
 
 export const enrollmentsApi = {
   mine: async () => u(await api.get<{ data: Enrollment[] }>('/enrollments/my')),
+  list: async () => u(await api.get<{ data: Enrollment[] }>('/enrollments')),
+  byStudent: async (studentId: string) => u(await api.get<{ data: Enrollment[] }>(`/enrollments/by-student/${studentId}`)),
+  byUe: async (ueId: string) => u(await api.get<{ data: Enrollment[] }>(`/enrollments/by-ue/${ueId}`)),
+  create: async (dto: { studentId: string; teachingUnitId: string }) => u(await api.post<{ data: Enrollment }>('/enrollments', dto)),
+  updateStatus: async (id: string, status: string) => u(await api.patch<{ data: Enrollment }>(`/enrollments/${id}/status`, { status })),
 }
 
 // =============================================================================
